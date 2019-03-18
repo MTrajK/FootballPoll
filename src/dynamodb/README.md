@@ -41,7 +41,7 @@ Several important things from the AWS implementation (to keep the main goals)
     * **Eventually Consistent Reads** - *Admins*, *ArchivedPolls* and *Players* tables (they are updated only once in a week, so we don't need the latest changes immediatlly)
 2. **Auto-scaling** - *ArchivedPolls* and *Players* tables should have auto-scaling only for reads (because they aren't used often, min RCU 1, max RCU 3-4)
 	* also *CurrentPoll* and *Admins* could have auto-scaling (there is a small possibility for them to be acceses from more PCs in 1 sec, think about this, let say min RCU 1, max RCU 2. Using the same logic *CurrentPoll* could have auto-scaling for writes, min WCU 1, max WCU 2)
-3. Use short names for the attributes, because they are computed in the read memory/capacity (not only the attribute values) (*The English alphabet, numbers, punctuation and common symbols (&, $, %, etc.) are all 1 byte each. However, the pound sign (£) is 2 bytes! Languages like German and Cyrillic are also 2 bytes, while Japanese is 3 bytes. On the top end, emojis are a whopping 4 bytes each 😲!*)
+3. Use short names for the attributes, because they are computed in the read memory/capacity (not only the attribute values) (*In DynamoDB, Strings are Unicode with UTF-8 binary encoding. This means that **each character uses 1 to 4 bytes**. Note that strings can’t be empty. The English alphabet, numbers, punctuation and common symbols (&, $, %, etc.) are all 1 byte each. However, the pound sign (£) is 2 bytes! Languages like German and Cyrillic are also 2 bytes, while Japanese is 3 bytes. On the top end, emojis are a whopping 4 bytes each 😲!*)
 
 
 ### Resources

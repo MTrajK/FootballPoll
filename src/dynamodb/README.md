@@ -16,8 +16,8 @@ Main goals for this NoSQL implementation:
 DB scheme will be composed of 4 tables: 
 
 1.  **Admins** - contains list of admins, each item has these attributes: *admin name* (partition key), *crypted password* and *password salt*
-2. **CurrentPoll** - 
-3. **ArchivedPolls** - contains list of polls (the items have the same attributes as **CurrentPoll** table - without *AllPlayers* attribute)
+2. **CurrentPoll** - cotains only one poll (the current poll), this item has these attributes: *poll number/counter* (the oldest archived poll has 0 as poll number) (partition key), *start date*, *end date*, *title*, *description*, *date and time of the event*, *location link*, *location description*, *max participants*, *all players* (this set is unique only for this poll, this is used for autocomplete in the front-end), *list of players* where each player is a nested object composed of *player name*, *friend name* (if only player is added then value of this field should be null) and *date of adding*  
+3. **ArchivedPolls** - contains list of polls (the items have the same attributes as **CurrentPoll** table - without *all players* attribute)
 4. **Players** - contains list of players, each item has these attributes: *player name* (partition key), *number of played games* (polls participated) and *number of invited friends*
 
 Don't be confused with the relation databases, this db scheme is created to optimize calls (started designing from the lambdas, not from the relations!)

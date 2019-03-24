@@ -1,7 +1,7 @@
 Tables
 
 admins : [{
-    username : string (primary key),
+    name : string (primary key),
     password : string,
     salt : string
 }]
@@ -26,8 +26,7 @@ current-poll : [{
     players : [
         {
             name : string,
-            friend : string,
-            added : number (epoch time)
+            friend : string
         }
     ]
 }]

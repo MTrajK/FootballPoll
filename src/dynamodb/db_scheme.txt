@@ -1,0 +1,52 @@
+Tables
+
+admins : [{
+    username : string (primary key),
+    password : string,
+    salt : string
+}]
+
+players : [{
+    name : string (primary key),
+    played : number,
+    friends : number
+}]
+
+current-poll : [{
+    id : number (primary key),
+    start : number (epoch time),
+    end : number (epoch time),
+    dt : nubmer (epoch time),
+    title : string,
+    desc : string,
+    loc-desc : string,
+    loc-url : string,
+    max-players : number,
+    all-names : string set,
+    players : [
+        {
+            name : string,
+            friend : string,
+            added : number (epoch time)
+        }
+    ]
+}]
+
+archived-polls : [{
+    id : number (primary key),
+    start : number (epoch time),
+    end : number (epoch time),
+    dt : nubmer (epoch time),
+    title : string,
+    desc : string,
+    loc-desc : string,
+    loc-url : string,
+    max-players : number,
+    players : [
+        {
+            name : string,
+            friend : string,
+            added : number (epoch time)
+        }
+    ]
+}]

@@ -14,7 +14,7 @@ More info about the lambdas in the [README file](https://github.com/MTrajK/Footb
 
 
 ## AWS Pricing
-Pricings only for services used for this application.
+Pricings only for services used in this application, EU-Central-1 region (Frankfurt).
 
 ### API Gateway
 2 types of pricing: requests and data out

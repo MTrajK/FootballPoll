@@ -1,5 +1,7 @@
 # Amazon DynamoDB
 
+**TODO: Update this according the new DB structure**
+
 Here you can read more about the goals of this db, db structure and AWS implementation.
 
 ## Goals

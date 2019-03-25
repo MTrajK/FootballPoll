@@ -1,5 +1,7 @@
 # AWS Lambdas
 
+**TODO: Update this according the new DB structure**
+
 For this application we need only 7 lambda functions.
 
 ## HTTP/Rest calls

@@ -11,9 +11,13 @@ For this application we need only 7 lambda functions.
 - get players statistics (scan all of the data from **Players** table)
 - get more archived polls (using paggination, read 5 more archived polls from the **ArchivedPoll** table)
 
-## Scheduled call
+## Scheduled call (ColudWatch)
 
-- everyday at 00:01 checks if the current poll is expired (read from **CurrentPoll** table, if expired writes that data into **ArchivedPolls** table and created new current poll item in **CurrentPoll** table)
+- every day at 00:01 checks if the current poll is expired (read from **CurrentPoll** table, if expired write that data into **ArchivedPolls** table and create a new current poll item in **CurrentPoll** table)
+
+## API Gateway
+
+**Add description about the API gateway!**
 
 ### Resources
 

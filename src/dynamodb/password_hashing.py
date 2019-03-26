@@ -1,8 +1,13 @@
 import hashlib
 import random
 
-# 16 chars salt
 def generate_salt():
+    """Generates random salt with 16 characters (lower, upper leters and digits).
+    
+    Returns:
+        String composed of 16 random characters.
+    """
+
     ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     salt = ""
 
@@ -12,8 +17,17 @@ def generate_salt():
     print("Salt: " + salt)
     return salt
 
-# using sha256 make 10 iterations
 def hash_password(password, salt):
+    """Using the sha256 crypto algorithm hash the combination of password and salt in 10 iterations.
+    
+    Parameters:
+        password: Password.
+        salt: Salt.
+    
+    Returns:
+        Hashed password.
+    """
+
     print("Password: " + password)
     hashed_password = password
 
@@ -23,9 +37,3 @@ def hash_password(password, salt):
         print("Iteration " + str(i) + ": " + hashed_password)
 
     return hashed_password
-
-password = "put password here"
-salt = generate_salt()
-
-hashed_password = hash_password(password, salt)
-print("Final: " + hashed_password)

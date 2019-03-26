@@ -1,14 +1,28 @@
-import boto3
-import json
+from datetime import datetime
 
-dynamodb = boto3.resource('dynamodb')
+t = '2018/11/22'
+dt = datetime.strptime(t + ' 20:40', '%Y/%m/%d %H:%M')
+print(dt)
+print(int(dt.timestamp()*1000))
 
-# gets all tables
-print(dynamodb.tables)
+name = 'meto-(asdasd)' 
+print(name[name.find('(')+1:-1])
 
-# creates a Table resource
-table = dynamodb.Table('fp.admins')
+persons = {
+    "meto": {
+        "polls": 1,
+        "friends": 2
+    }
+}
 
-response = table.scan()
+print(persons)
+persons["meto"]["polls"] += 1
+print(persons)
 
-print(response)
+arr = []
+arr.append({
+    "asd":1,
+    "ass":1,
+})
+
+print(arr)

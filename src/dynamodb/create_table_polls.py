@@ -6,7 +6,7 @@ dynamodb = boto3.resource('dynamodb')
 Table: fp.polls
 Partition key: id (number)
 Attributes: start (number), end (number), dt (number), title (string), note (string), locDesc (string), locUrl (string), max (number)
-RCU: 5
+RCU: 3
 WCU: 1
 """
 polls = dynamodb.create_table(
@@ -24,7 +24,7 @@ polls = dynamodb.create_table(
         }
     ],
     ProvisionedThroughput={
-        'ReadCapacityUnits': 5,
+        'ReadCapacityUnits': 3,
         'WriteCapacityUnits': 1
     }
 )

@@ -14,6 +14,7 @@ def get_old_polls(event, context):
             'statusCode': 400,
             'errorMessage': 'last_poll parameter doesn\'t exist in the API call!'
         }
+
     try:
         lastPoll = int(event['last_poll'])
     except:
@@ -44,7 +45,7 @@ def get_old_polls(event, context):
             if 'Item' not in response:
                 return {
                     'statusCode': 400,
-                    'errorMessage': 'last_poll doesn\'t exist in the database!'
+                    'errorMessage': 'Poll id: ' + lastPoll + ' doesn\'t exist in the polls table!'
                 }
 
             polls.append(response['Item'])
@@ -53,15 +54,3 @@ def get_old_polls(event, context):
         'statusCode': 200,
         'body': polls
     }
-
-"""
-# Testing
-import sys
-
-response = lambda_handler({
-    'last_poll' : 10
-}, None)
-
-print("Response")
-sys.stdout.buffer.write(str(response).encode('utf-8'))
-"""

@@ -6,7 +6,7 @@ dynamodb = boto3.resource('dynamodb')
 Table: fp.config
 Partition key: id (string)
 Attributes: value (string)
-RCU: 2
+RCU: 1
 WCU: 1
 """
 config = dynamodb.create_table(

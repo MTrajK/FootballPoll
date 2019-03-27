@@ -24,7 +24,7 @@ def get_current_poll_id(second_attempt = False):
     except Exception:
         raise Exception('Database error!')
     else:
-        if ('Item' not in response) or ('Item' in response and 'value' not in response['Item']):
+        if 'Item' not in response:
             if second_attempt:
                 raise Exception('Database error!')
 

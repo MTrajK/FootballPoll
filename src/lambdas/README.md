@@ -1,5 +1,7 @@
 # AWS Lambdas
 
+**TODO: Explain (and maybe add all policies in separate folder) here all 10 policies**
+**TODO: Explain each lamba which policies is using**
 For this application we need only 7 lambda functions, from them 6 are API calls and 1 is a schedulled call (using the CloudWatch service).
 
 ## HTTP/Rest calls

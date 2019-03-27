@@ -62,7 +62,7 @@ def get_old_polls(event, context):
         }
 
     try:
-        lastPoll = int(event['last_poll'])
+        last_poll = int(event['last_poll'])
     except:
         return {
             'statusCode': 400,
@@ -70,8 +70,8 @@ def get_old_polls(event, context):
         }
     
     polls = []
-    firstPoll = max(lastPoll - 5, 0)
-    keys = [{'id': id} for id in range(firstPoll, lastPoll)]
+    first_poll = max(last_poll - 5, 0)
+    keys = [{'id': id} for id in range(first_poll, last_poll)]
 
     try:
         response = batch_get_items(keys)

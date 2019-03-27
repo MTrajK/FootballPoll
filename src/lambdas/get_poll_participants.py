@@ -4,7 +4,7 @@ from boto3.dynamodb.conditions import Key
 dynamodb = boto3.resource('dynamodb')
 
 def get_poll_participants(event, context):
-    """Returns all participants from poll_id poll.
+    """Finds all participants from poll_id poll.
 
     Returns:
         List of all participants from the wanted poll.
@@ -17,20 +17,20 @@ def get_poll_participants(event, context):
         }
         
     try:
-        pollId = int(event['poll_id'])
+        poll_id = int(event['poll_id'])
     except:
         return {
             'statusCode': 400,
             'errorMessage': 'poll_id value is not an integer number!'
         }
 
-    participants_table = dynamodb.Table('fp.participants')
+    participantsTable = dynamodb.Table('fp.participants')
 
     participants = []
 
     try:
-        response = participants_table.query(
-            KeyConditionExpression=Key('poll').eq(pollId)
+        response = participantsTable.query(
+            KeyConditionExpression=Key('poll').eq(poll_id)
         )
     except Exception:
         return {

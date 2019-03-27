@@ -48,7 +48,7 @@ class TestGOP(unittest.TestCase):
         time.sleep(1)
 
         # assert
-        self.assertEqual(response['statusCode'], 400)
+        self.assertEqual(response['statusCode'], 200)
 
     def test_no_input(self):
         # arrange

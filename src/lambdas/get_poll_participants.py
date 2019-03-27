@@ -32,7 +32,7 @@ def get_poll_participants(event, context):
         response = participants_table.query(
             KeyConditionExpression=Key('poll').eq(pollId)
         )
-    except Exception as e:
+    except Exception:
         return {
             'statusCode': 500,
             'errorMessage': 'Database error!'

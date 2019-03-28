@@ -130,11 +130,43 @@ def update_current_poll(event, context):
                     'errorMessage': prop + ' value is not an integer number!'
                 }
 
+    # check int values
+    if update_properties['dt'] != None and update_properties['dt'] < 0:
+        return { 
+            'statusCode': 400,
+            'errorMessage': 'dt value shouldn\'t be negative!'
+        }
+
+    if update_properties['end'] != None and update_properties['end'] < 0:
+        return { 
+            'statusCode': 400,
+            'errorMessage': 'end value shouldn\'t be negative!'
+        }
+
+    if update_properties['need'] != None and update_properties['need'] < 1:
+        return { 
+            'statusCode': 400,
+            'errorMessage': 'need value should be bigger than 1!'
+        }
+
+    if update_properties['max'] != None and update_properties['max'] < 1:
+        return { 
+            'statusCode': 400,
+            'errorMessage': 'max value should be bigger than 1!'
+        }
+
     # check if dt is smaller than end
     if (update_properties['end'] != None) and (update_properties['dt'] != None) and (update_properties['dt'] > update_properties['end']):
         return { 
             'statusCode': 400,
             'errorMessage': 'dt value must be smaller or equal than end value!'
+        }
+
+    # check if max is smaller than need
+    if (update_properties['max'] != None) and (update_properties['need'] != None) and (update_properties['max'] > update_properties['need']):
+        return { 
+            'statusCode': 400,
+            'errorMessage': 'need value must be smaller or equal than max value!'
         }
 
     # prepare the expressions for the update query
@@ -154,12 +186,16 @@ def update_current_poll(event, context):
 
     expression_names['#end'] = 'end'
     expression_names['#start'] = 'start'
+    expression_names['#need'] = 'need'
+    expression_names['#max'] = 'max'
 
     update_expression = update_expression[:-2]
 
     expression_attributes[':none'] = 'None'
     expression_attributes[':end'] = 'None' if ('end' not in update_properties) else update_properties['end']
     expression_attributes[':dt'] = 'None' if ('dt' not in update_properties) else update_properties['dt']
+    expression_attributes[':need'] = 'None' if ('need' not in update_properties) else update_properties['need']
+    expression_attributes[':max'] = 'None' if ('max' not in update_properties) else update_properties['max']
 
     # get current poll id
     try:
@@ -174,13 +210,14 @@ def update_current_poll(event, context):
     polls_table = dynamodb.Table('fp.polls')
 
     try:
-        response = polls_table.update_item(
+        polls_table.update_item(
             Key={
                 'id': current_poll_id
             },
             UpdateExpression=update_expression,
             # check if new end new and dt are bigger than start, and if there is no new end check if the new dt is smaller than the old end
-            ConditionExpression="(:end = :none OR :end > #start) AND (:dt = :none OR (:dt > #start AND (:end <> :none OR :dt <= #end)))",
+            # check if need is smaller or equal to max
+            ConditionExpression='(:end = :none OR :end > #start) AND (:dt = :none OR (:dt > #start AND (:end <> :none OR :dt <= #end))) AND (:need = :none OR :need <= #max) AND (:max = :none OR :max >= #need)',
             ExpressionAttributeValues=expression_attributes,
             ExpressionAttributeNames=expression_names
         )

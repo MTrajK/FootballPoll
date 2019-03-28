@@ -5,7 +5,7 @@ dynamodb = boto3.resource('dynamodb')
 """
 Table: fp.polls
 Partition key: id (number)
-Attributes: start (number), end (number), dt (number), title (string), note (string), locDesc (string), locUrl (string), max (number)
+Attributes: start (number), end (number), dt (number), title (string), note (string), locDesc (string), locUrl (string), need (number), max (number)
 RCU: 3
 WCU: 1
 """

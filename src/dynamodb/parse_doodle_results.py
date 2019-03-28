@@ -54,6 +54,7 @@ def parse_file():
                 'note': r'/',
                 'locDesc': 'ОУ Блаже Конески Аеродром',
                 'locUrl': r'https://goo.gl/maps/aivZ5cdPEpz',
+                'need': 12,
                 'max': 14
             })
             

@@ -55,15 +55,15 @@ def add_participant(event, context):
         friend = ' '.join(event['friend'].lower().split())
 
     # allowed characters - LETTERS (cyrilic, latin), digits, +, -, whitespace between characters
-    match_string = '^[\w\d +-]*$'
+    search_not_allowed = '[^\w\d +-]'
 
-    if re.match(match_string, person):
+    if re.search(search_not_allowed, person):
         return {
             'statusCode': 400,
             'errorMessage': 'person value contains not allowed characters!'
         }
     
-    if re.match(match_string, friend):
+    if re.search(search_not_allowed, friend):
         return {
             'statusCode': 400,
             'errorMessage': 'friend value contains not allowed characters!'

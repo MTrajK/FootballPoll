@@ -51,9 +51,9 @@ def parse_file():
                 'end': end,
                 'dt': dt,
                 'title': 'Фудбал-INSCALE',
-                'note': r'/',
+                'note': '/',
                 'locDesc': 'ОУ Блаже Конески Аеродром',
-                'locUrl': r'https://goo.gl/maps/aivZ5cdPEpz',
+                'locUrl': 'https://goo.gl/maps/aivZ5cdPEpz',
                 'need': 12,
                 'max': 14
             })
@@ -68,7 +68,7 @@ def parse_file():
                 added += milliseconds_in_hour
                 person = row[i]
                 friends = 0
-                friend = r'/'
+                friend = '/'
 
                 findBracket = row[i].find('(')
 
@@ -78,6 +78,8 @@ def parse_file():
                     person = row[i][:findBracket - 1]
                     friends = 1
                     friend = row[i][findBracket + 1 : -1]
+
+                person = ' '.join(person.lower().split())
 
                 participants.append({
                     'poll': poll,

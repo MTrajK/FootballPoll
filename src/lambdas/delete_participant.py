@@ -16,22 +16,20 @@ def get_current_poll_id(second_attempt = False):
     config_table = dynamodb.Table('fp.config')
 
     try:
-        response = response = config_table.get_item(
+        response = config_table.get_item(
             Key={
                 'id': 'CurrentPoll'
             }
         )
     except Exception:
-        raise Exception('Database error!')
-    else:
-        if 'Item' not in response:
-            if second_attempt:
-                raise Exception('Database error!')
+        if second_attempt:
+            raise Exception('Database error!')
 
-            time.sleep(1)
-            return get_current_poll_id(True)
-
-        return int(response['Item']['value'])
+        # tries again if the first attempt failed
+        time.sleep(1)
+        return get_current_poll_id(True)
+        
+    return int(response['Item']['value'])
 
 def delete_participant(event, context):
     """Deletes a participant from the current poll.

@@ -24,12 +24,18 @@ def get_poll_participants(event, context):
             'errorMessage': 'poll_id value is not an integer number!'
         }
 
-    participantsTable = dynamodb.Table('fp.participants')
+    if poll_id < 0:
+        return {
+            'statusCode': 400,
+            'errorMessage': 'poll_id value shouldn\'t be smaller than 0!'
+        }
+
+    participants_table = dynamodb.Table('fp.participants')
 
     participants = []
 
     try:
-        response = participantsTable.query(
+        response = participants_table.query(
             KeyConditionExpression=Key('poll').eq(poll_id)
         )
     except Exception:
@@ -37,9 +43,9 @@ def get_poll_participants(event, context):
             'statusCode': 500,
             'errorMessage': 'Database error!'
         }
-    else:
-        if 'Items' in response:
-            participants = response['Items']
+
+    if 'Items' in response:
+        participants = response['Items']
 
 
     return {

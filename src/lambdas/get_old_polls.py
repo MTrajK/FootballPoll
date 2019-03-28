@@ -4,7 +4,7 @@ import time
 dynamodb = boto3.resource('dynamodb')
 
 def batch_get_items(keys, second_attempt = False):
-    """Performs batch get items on polls table, uf the first attempt has unprocessed keys tries again.
+    """Performs batch get items on polls table, if the first attempt failed or has unprocessed keys tries again.
 
     Parameters:
         keys: List with keys of polls.
@@ -26,25 +26,40 @@ def batch_get_items(keys, second_attempt = False):
                 }   
             )
         except Exception:
-            raise Exception('Database error!')
-        else:
-            if ('Responses' not in response) or ('fp.polls' not in response['Responses']):
+            if second_attempt:
+                raise Exception('Database error!')
+
+            # tries again if the first attempt failed
+            try:
+                time.sleep(1)
+                second_response = batch_get_items(response['UnprocessedKeys']['fp.polls']['Keys'], True)
+            except Exception:
                 raise Exception('Database error!')
             
+            # successful second response
+            if ('Responses' in second_response) and ('fp.polls' in second_response['Responses']):
+                result = second_response['Responses']['fp.polls']
+
+            return result
+        
+        # successful response
+        if ('Responses' in response) and ('fp.polls' in response['Responses']):
             result = response['Responses']['fp.polls']
 
-            if second_attempt:
-                return result
-            
-            if ('UnprocessedKeys' in response) and ('fp.polls' in response['UnprocessedKeys']) and ('Keys' in response['UnprocessedKeys']['fp.polls']):
-                try:
-                    time.sleep(1)
-                    second_response = batch_get_items(response['UnprocessedKeys']['fp.polls']['Keys'], True)
-                except Exception:
-                    pass
-                else:
-                    if ('Responses' in second_response) and ('fp.polls' in second_response['Responses']):
-                        result.append(second_response)
+        if second_attempt:
+            return result
+        
+        if ('UnprocessedKeys' in response) and ('fp.polls' in response['UnprocessedKeys']) and ('Keys' in response['UnprocessedKeys']['fp.polls']):
+            # tries again if there are unprocessed keys
+            try:
+                time.sleep(1)
+                second_response = batch_get_items(response['UnprocessedKeys']['fp.polls']['Keys'], True)
+            except Exception:
+                # the first response is successful, returns only the results from the first response
+                pass
+            else:
+                if ('Responses' in second_response) and ('fp.polls' in second_response['Responses']):
+                    result.append(second_response)
         
     return result
 
@@ -80,8 +95,8 @@ def get_old_polls(event, context):
             'statusCode': 500,
             'errorMessage': 'Database error!'
         }
-    else:
-        polls = response
+        
+    polls = response
 
     return {
         'statusCode': 200,

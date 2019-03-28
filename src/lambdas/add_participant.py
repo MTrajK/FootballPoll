@@ -1,6 +1,8 @@
 import boto3
 import time
 import datetime
+import re
+from boto3.dynamodb.conditions import Key
         
 dynamodb = boto3.resource('dynamodb')
 
@@ -17,25 +19,23 @@ def get_current_poll_id(second_attempt = False):
     config_table = dynamodb.Table('fp.config')
 
     try:
-        response = response = config_table.get_item(
+        response = config_table.get_item(
             Key={
                 'id': 'CurrentPoll'
             }
         )
     except Exception:
-        raise Exception('Database error!')
-    else:
-        if 'Item' not in response:
-            if second_attempt:
-                raise Exception('Database error!')
+        if second_attempt:
+            raise Exception('Database error!')
 
-            time.sleep(1)
-            return get_current_poll_id(True)
-
-        return int(response['Item']['value'])
+        # tries again if the first attempt failed
+        time.sleep(1)
+        return get_current_poll_id(True)
+        
+    return int(response['Item']['value'])
 
 def add_participant(event, context):
-    """Add a participant into the current poll.
+    """Adds a participant into the current poll.
 
     Returns:
         Status of adding.
@@ -47,13 +47,27 @@ def add_participant(event, context):
             'errorMessage': 'person parameter doesn\'t exist in the API call!'
         }
     
-    person = event['person']
-    friend = r'/'
+    # lower letters and remove all unnecessary whitespaces
+    person = ' '.join(event['person'].lower().split())
+    friend = '/'
 
-    if 'friend' not in event:
-        friend = event['friend']
+    if 'friend' in event:
+        friend = ' '.join(event['friend'].lower().split())
 
-    # check the name format
+    # allowed characters - LETTERS (cyrilic, latin), digits, +, -, whitespace between characters
+    match_string = '^[\w\d +-]*$'
+
+    if re.match(match_string, person):
+        return {
+            'statusCode': 400,
+            'errorMessage': 'person value contains not allowed characters!'
+        }
+    
+    if re.match(match_string, friend):
+        return {
+            'statusCode': 400,
+            'errorMessage': 'friend value contains not allowed characters!'
+        }
 
     # get current poll id
     try:
@@ -64,19 +78,74 @@ def add_participant(event, context):
             'errorMessage': 'Database error!'
         }
 
+    # get max participants
+    polls_table = dynamodb.Table('fp.polls')
+
+    try:
+        polls_response = polls_table.get_item(
+            Key={
+                'id': current_poll_id
+            }
+        )
+    except Exception:
+        return {
+            'statusCode': 500,
+            'errorMessage': 'Database error!'
+        }
+
+    max_participants = polls_response['Item']['max']
+
     # query participants
     participants_table = dynamodb.Table('fp.participants')
 
     try:
-        # query
+        participants_response = participants_table.query(
+            KeyConditionExpression=Key('poll').eq(current_poll_id)
+        )
+    except Exception:
+        return {
+            'statusCode': 500,
+            'errorMessage': 'Database error!'
+        }
 
-    # add participant
-    added = datetime.datetime.now().timestamp() * 1000
+    participants = []
+    if 'Items' in participants_response:
+        participants = participants_response['Items']
+
+    if len(participants) == max_participants:
+        return {
+            'statusCode': 400,
+            'errorMessage': 'No more participants in this poll!'
+        }
+
+    # check for duplicate
+    if friend == '/':
+        for participant in participants:
+            if participant['person'] == person:
+                return {
+                    'statusCode': 400,
+                    'errorMessage': 'Participant ' + person + ' exists in the current poll!'
+                }
+
+    # add the participant
+    added = int(datetime.datetime.now().timestamp() * 1000)
 
     try:
-        # add
+        participants_table.put_item(
+            Item={
+                'poll': current_poll_id,
+                'added': added,
+                'person': person,
+                'friend': friend
+            }
+        )
+    except Exception:
+        return {
+            'statusCode': 500,
+            'errorMessage': 'Database error!'
+        }
 
     return {
         'statusCode': 200,
-        'statusMessage': 'Participant ' + person + '(' + friend + ')' + ' is successfully added!'
+        'statusMessage': 'Participant ' + person + (' (' + friend + ')' if friend != '/' else '') + ' is successfully added!'
     }

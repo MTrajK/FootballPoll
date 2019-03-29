@@ -101,7 +101,7 @@ def update_current_poll(event, context):
         }
 
     # check properties for updating
-    properties = ['title', 'note', 'locUrl', 'locDesc', 'max', 'end', 'dt']
+    properties = ['title', 'note', 'locUrl', 'locDesc', 'max', 'need', 'end', 'dt']
     update_properties = {}
     found = False
 
@@ -117,8 +117,33 @@ def update_current_poll(event, context):
             'statusCode': 400,
             'errorMessage': 'Nothing to update!'
         }
+
+    # check string lengths
+    if (update_properties['title'] != None) and (len(update_properties['title']) > 50):
+        return { 
+            'statusCode': 400,
+            'errorMessage': 'Too long title!'
+        }
+
+    if (update_properties['note'] != None) and (len(update_properties['note']) > 100):
+        return { 
+            'statusCode': 400,
+            'errorMessage': 'Too long note!'
+        }
     
-    for prop in ['max', 'end', 'dt']:
+    if (update_properties['locUrl'] != None) and (len(update_properties['locUrl']) > 100):
+        return { 
+            'statusCode': 400,
+            'errorMessage': 'Too long locUrl!'
+        }
+    
+    if (update_properties['locDesc'] != None) and (len(update_properties['locDesc']) > 50):
+        return { 
+            'statusCode': 400,
+            'errorMessage': 'Too long locDesc!'
+        }
+    
+    for prop in ['max', 'need', 'end', 'dt']:
         if prop in event:
             try:
                 update_properties[prop] = int(update_properties[prop])
@@ -129,25 +154,25 @@ def update_current_poll(event, context):
                 }
 
     # check int values
-    if update_properties['dt'] != None and update_properties['dt'] < 0:
+    if (update_properties['dt'] != None) and (update_properties['dt'] < 0):
         return { 
             'statusCode': 400,
             'errorMessage': 'dt value shouldn\'t be negative!'
         }
 
-    if update_properties['end'] != None and update_properties['end'] < 0:
+    if (update_properties['end'] != None) and (update_properties['end'] < 0):
         return { 
             'statusCode': 400,
             'errorMessage': 'end value shouldn\'t be negative!'
         }
 
-    if update_properties['need'] != None and update_properties['need'] < 1:
+    if (update_properties['need'] != None) and (update_properties['need'] < 1):
         return { 
             'statusCode': 400,
             'errorMessage': 'need value should be bigger than 1!'
         }
 
-    if update_properties['max'] != None and update_properties['max'] < 1:
+    if (update_properties['max'] != None) and (update_properties['max'] < 1):
         return { 
             'statusCode': 400,
             'errorMessage': 'max value should be bigger than 1!'

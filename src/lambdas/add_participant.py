@@ -34,13 +34,64 @@ def get_current_poll_id(second_attempt = False):
         
     return int(response['Item']['value'])
 
+def query_participants(poll_id, last_evaluated_key = None, second_attempt = False):
+    """Query the participants table and returns all results for given poll, if the first attempt failed or has unprocessed keys tries again.
+
+    Parameters:
+        last_evaluated_key: Last evaluated key, if some data is not read.
+        second_attempt: Flag for the second attempt.
+
+    Returns:
+        List with participants.
+    """
+    
+    result = []
+
+    participants_table = dynamodb.Table('fp.participants')
+
+    try:
+        if last_evaluated_key:
+            response = participants_table.query(
+                KeyConditionExpression=Key('poll').eq(poll_id),
+                ConsistentRead=True,
+                ExclusiveStartKey=last_evaluated_key
+            )
+        else:
+            response = participants_table.query(
+                KeyConditionExpression=Key('poll').eq(poll_id),
+                ConsistentRead=True
+            )
+    except Exception:
+        if second_attempt:
+            raise Exception('Database error!')
+        
+        # tries again if the first attempt failed
+        time.sleep(1)
+        return query_participants(poll_id, last_evaluated_key, True)
+       
+    if 'Items' in response:
+        result = response['Items']
+
+    if (not second_attempt) and ('LastEvaluatedKey' in response):
+        # tries again if there are unprocessed keys
+        try:
+            time.sleep(1)
+            second_result = query_participants(poll_id, response['LastEvaluatedKey'], True)
+        except Exception:
+            # the first response is successful, returns only the results from the first response
+            pass
+        else:
+            result.append(second_result)
+    
+    return result
+
 def add_participant(event, context):
     """Adds a participant into the current poll.
 
     Returns:
         Status of adding.
     """
-
+    
     if 'person' not in event:
         return {
             'statusCode': 400,
@@ -54,6 +105,18 @@ def add_participant(event, context):
     if 'friend' in event:
         friend = ' '.join(event['friend'].lower().split())
 
+    if len(person) > 25:
+        return {
+            'statusCode': 400,
+            'errorMessage': 'Too long person name!'
+        }
+
+    if len(friend) > 25:
+        return {
+            'statusCode': 400,
+            'errorMessage': 'Too long friend name!'
+        }
+
     # allowed characters - LETTERS (cyrilic, latin), digits, +, -, whitespace between characters
     search_not_allowed = '[^\w\d +-]'
 
@@ -63,7 +126,7 @@ def add_participant(event, context):
             'errorMessage': 'person value contains not allowed characters!'
         }
     
-    if re.search(search_not_allowed, friend):
+    if friend != '/' and re.search(search_not_allowed, friend):
         return {
             'statusCode': 400,
             'errorMessage': 'friend value contains not allowed characters!'
@@ -96,21 +159,13 @@ def add_participant(event, context):
     max_participants = polls_response['Item']['max']
 
     # query participants
-    participants_table = dynamodb.Table('fp.participants')
-
     try:
-        participants_response = participants_table.query(
-            KeyConditionExpression=Key('poll').eq(current_poll_id)
-        )
+        participants = query_participants(current_poll_id)
     except Exception:
         return {
             'statusCode': 500,
             'errorMessage': 'Database error!'
         }
-
-    participants = []
-    if 'Items' in participants_response:
-        participants = participants_response['Items']
 
     if len(participants) == max_participants:
         return {
@@ -121,7 +176,7 @@ def add_participant(event, context):
     # check for duplicate
     if friend == '/':
         for participant in participants:
-            if participant['person'] == person:
+            if (participant['person'] == person) and (participant['friend'] == '/'):
                 return {
                     'statusCode': 400,
                     'errorMessage': 'Participant ' + person + ' exists in the current poll!'
@@ -129,6 +184,8 @@ def add_participant(event, context):
 
     # add the participant
     added = int(datetime.datetime.now().timestamp() * 1000)
+
+    participants_table = dynamodb.Table('fp.participants')
 
     try:
         participants_table.put_item(

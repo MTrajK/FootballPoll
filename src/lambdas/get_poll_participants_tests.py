@@ -33,7 +33,7 @@ class TestGOP(unittest.TestCase):
         time.sleep(1)
 
         # assert
-        self.assertEqual(response['statusCode'], 200)
+        self.assertEqual(response['statusCode'], 400)
 
     def test_big_input(self):
         # arrange

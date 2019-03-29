@@ -80,14 +80,14 @@ def batch_get_item_polls(keys, second_attempt = False):
     return result
 
 def scan_persons(last_evaluated_key = None, second_attempt = False):
-    """Performs batch get items on polls table, if the first attempt failed or has unprocessed keys tries again.
+    """Scans the persons table and returns all results, if the first attempt failed or has unprocessed keys tries again.
 
     Parameters:
-        keys: List with keys of polls.
+        last_evaluated_key: Last evaluated key, if some data is not read.
         second_attempt: Flag for the second attempt.
 
     Returns:
-        List with max 4 polls.
+        List with persons.
     """
 
     result = []
@@ -112,6 +112,57 @@ def scan_persons(last_evaluated_key = None, second_attempt = False):
         try:
             time.sleep(1)
             second_result = scan_persons(response['LastEvaluatedKey'], True)
+        except Exception:
+            # the first response is successful, returns only the results from the first response
+            pass
+        else:
+            result.append(second_result)
+    
+    return result
+
+def query_participants(poll_id, last_evaluated_key = None, second_attempt = False):
+    """Query the participants table and returns all results for given poll, if the first attempt failed or has unprocessed keys tries again.
+
+    Parameters:
+        last_evaluated_key: Last evaluated key, if some data is not read.
+        second_attempt: Flag for the second attempt.
+
+    Returns:
+        List with participants.
+    """
+    
+    result = []
+
+    participants_table = dynamodb.Table('fp.participants')
+
+    try:
+        if last_evaluated_key:
+            response = participants_table.query(
+                KeyConditionExpression=Key('poll').eq(poll_id),
+                ConsistentRead=True,
+                ExclusiveStartKey=last_evaluated_key
+            )
+        else:
+            response = participants_table.query(
+                KeyConditionExpression=Key('poll').eq(poll_id),
+                ConsistentRead=True
+            )
+    except Exception:
+        if second_attempt:
+            raise Exception('Database error!')
+        
+        # tries again if the first attempt failed
+        time.sleep(1)
+        return query_participants(poll_id, last_evaluated_key, True)
+       
+    if 'Items' in response:
+        result = response['Items']
+
+    if (not second_attempt) and ('LastEvaluatedKey' in response):
+        # tries again if there are unprocessed keys
+        try:
+            time.sleep(1)
+            second_result = query_participants(poll_id, response['LastEvaluatedKey'], True)
         except Exception:
             # the first response is successful, returns only the results from the first response
             pass
@@ -148,23 +199,14 @@ def get_site_data(event, context):
             'errorMessage': 'Database error!'
         }
         
-    # get participants
-    participants_table = dynamodb.Table('fp.participants')
-
-    participants = []
-
+    # query participants
     try:
-        participants_response = participants_table.query(
-            KeyConditionExpression=Key('poll').eq(current_poll_id)
-        )
+        participants = query_participants(current_poll_id)
     except Exception:
         return {
             'statusCode': 500,
             'errorMessage': 'Database error!'
         }
-
-    if 'Items' in participants_response:
-        participants = participants_response['Items']
 
     # get persons
     try:

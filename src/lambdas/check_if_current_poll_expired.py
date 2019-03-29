@@ -1,5 +1,6 @@
 import boto3
 import time
+import datetime
 from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource('dynamodb')
@@ -130,6 +131,24 @@ def scan_persons(last_evaluated_key = None):
     
     return result
 
+def update_items_persons(persons):
+    """Tries to add the new poll until the query succeeded.
+
+    Parameters:
+        item: New polls item.
+    """
+    # use for cycle, when fails call callback with timer
+    return None
+
+def batch_write_item_persons(persons):
+    """Tries to add the new poll until the query succeeded.
+
+    Parameters:
+        item: New polls item.
+    """
+    # use response['UnprocessedItems']
+    return None
+
 def put_item_polls(item):
     """Tries to add the new poll until the query succeeded.
 
@@ -162,7 +181,7 @@ def update_item_config(new_poll_id):
             Key={
                 'id': 'CurrentPoll'
             },
-            UpdateExpression="set #value = :value",
+            UpdateExpression="SET #value = :value",
             ExpressionAttributeNames={
                 '#value': 'value'
             },
@@ -176,7 +195,8 @@ def update_item_config(new_poll_id):
         update_item_config(new_poll_id)
 
 def check_if_current_poll_expired(event, context):
-    """.
+    """ TODO: Add a description.
+    TODO: Change execution lambda time, from 3 seconds to 15-20 seconds!
 
     Returns:
         Status of the function.
@@ -191,6 +211,7 @@ def check_if_current_poll_expired(event, context):
     ###
     """ TODO: check if expired """
     ###
+    date_now = int(datetime.datetime.now().timestamp() * 1000)
 
     # get current participants
     participants = query_participants(current_poll_id)
@@ -201,14 +222,18 @@ def check_if_current_poll_expired(event, context):
     ###
     """ TODO: find new unique persons """
     ###
+    add_persons = []
 
     # batch write - add new persons (if there is new person/s)
+    batch_write_item_persons(add_persons)
 
     ###
     """ TODO: find persons that need to be updated """
     ###
+    update_persons = []
 
     # update persons
+    update_items_persons(update_persons)
 
     # add new poll
     new_poll_id = current_poll_id + 1

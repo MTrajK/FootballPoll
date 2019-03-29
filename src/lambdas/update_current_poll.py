@@ -72,7 +72,7 @@ def update_current_poll(event, context):
     admins_table = dynamodb.Table('fp.admins')
 
     try:
-        admins_response = admins_table.get_item(
+        admin = admins_table.get_item(
             Key={
                 'name': admin_name
             }
@@ -83,14 +83,14 @@ def update_current_poll(event, context):
             'errorMessage': 'Database error!'
         }
 
-    if 'Item' not in admins_response:
+    if 'Item' not in admin:
         return {
             'statusCode': 403,
             'errorMessage': 'Access denied, wrong credentials!'
         }
     
-    db_hashed_password = admins_response['Item']['password']
-    db_salt = admins_response['Item']['salt']
+    db_hashed_password = admin['Item']['password']
+    db_salt = admin['Item']['salt']
 
     hashed_password = hash_password(admin_password, db_salt)
 

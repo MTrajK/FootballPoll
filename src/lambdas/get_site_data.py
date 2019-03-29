@@ -192,7 +192,7 @@ def get_site_data(event, context):
     keys = [{'id': id} for id in range(first_poll, current_poll_id + 1)]
 
     try:
-        polls_response = batch_get_item_polls(keys)
+        polls = batch_get_item_polls(keys)
     except Exception:
         return {
             'statusCode': 500,
@@ -210,7 +210,7 @@ def get_site_data(event, context):
 
     # get persons
     try:
-        persons_response = scan_persons()
+        persons = scan_persons()
     except Exception:
         return {
             'statusCode': 500,
@@ -221,8 +221,8 @@ def get_site_data(event, context):
         'statusCode': 200,
         'body': {
             'current_poll': current_poll_id,
-            'polls': polls_response,
+            'polls': polls,
             'participants': participants,
-            'persons': persons_response
+            'persons': persons
         }
     }

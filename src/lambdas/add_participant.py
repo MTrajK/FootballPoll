@@ -145,7 +145,7 @@ def add_participant(event, context):
     polls_table = dynamodb.Table('fp.polls')
 
     try:
-        polls_response = polls_table.get_item(
+        current_poll = polls_table.get_item(
             Key={
                 'id': current_poll_id
             }
@@ -156,7 +156,7 @@ def add_participant(event, context):
             'errorMessage': 'Database error!'
         }
 
-    max_participants = polls_response['Item']['max']
+    max_participants = current_poll['Item']['max']
 
     # query participants
     try:

@@ -42,24 +42,24 @@ def put_item(table, item, table_name, second_trial=False):
         second_trial: Flag for the second trial.
     """
 
-    response = table.put_item(
-        Item=item
-    )
-
-    if response['ResponseMetadata']['HTTPStatusCode'] == 200:
-        print('Successfully added item into ' + table_name +' table!')
-        sys.stdout.buffer.write(str(item).encode('utf-8'))
-        print()
-    else:
+    try:
+        table.put_item(
+            Item=item
+        )
+    except Exception as e:
         if second_trial:
             raise Exception('Second trial failed!')
-
+        
         print('Error!')
-        print(response)
+        print(e)
 
         wait(1)
         print('Trying to add the item adain!')
         put_item(table, item, table_name, True)
+
+    print('Successfully added item into ' + table_name +' table!')
+    sys.stdout.buffer.write(str(item).encode('utf-8'))
+    print()
 
 # fill polls table
 table_name = 'fp.polls'
@@ -87,7 +87,6 @@ for person in persons:
     if idx % 2 == 0:
         wait(1) # WCU = 2
     idx += 1
-
 
 # fill config table
 table_name = 'fp.config'

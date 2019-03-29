@@ -75,7 +75,7 @@ def get_old_polls(event, context):
     keys = [{'id': id} for id in range(first_poll, last_poll)]
 
     try:
-        polls_response = batch_get_item_polls(keys)
+        polls = batch_get_item_polls(keys)
     except Exception:
         return {
             'statusCode': 500,
@@ -84,5 +84,5 @@ def get_old_polls(event, context):
 
     return {
         'statusCode': 200,
-        'body': polls_response
+        'body': polls
     }

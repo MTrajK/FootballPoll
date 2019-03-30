@@ -1,4 +1,5 @@
 import parse_doodle_results as pdr
+import add_admin as aa
 import time
 import sys
 import boto3
@@ -96,3 +97,8 @@ item = {
     'value': str(len(polls) - 1)
 }
 put_item(config_table, item, table_name)
+
+# fill admin table
+name = 'put admin name here'
+password = 'put admin password here'
+aa.add_admin(name, password)

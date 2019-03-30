@@ -1,9 +1,10 @@
 import unittest
-import delete_participant as dp
+from context import functions
 import time
 import sys
 
-"""
+class TestGOP(unittest.TestCase):
+
     def test_good_input(self):
         # arrange
         item = {
@@ -11,38 +12,50 @@ import sys
         }
 
         # act
-        response = dp.delete_participant(item, None)
+        response = functions.get_old_polls(item, None)
         sys.stdout.buffer.write(str(response).encode('utf-8'))
         print()
         time.sleep(1)
 
         # assert
         self.assertEqual(response['statusCode'], 200)
-"""
 
-class TestGOP(unittest.TestCase):
-
-    def test_item_not_exist_input(self):
+    def test_negative_input(self):
         # arrange
         item = {
-            'participant_id' : 123213
+            'last_poll' : -3
         }
 
         # act
-        response = dp.delete_participant(item, None)
+        response = functions.get_old_polls(item, None)
         sys.stdout.buffer.write(str(response).encode('utf-8'))
         print()
         time.sleep(1)
 
         # assert
-        self.assertEqual(response['statusCode'], 400)
+        self.assertEqual(response['statusCode'], 200)
+
+    def test_big_input(self):
+        # arrange
+        item = {
+            'last_poll' : 123213
+        }
+
+        # act
+        response = functions.get_old_polls(item, None)
+        sys.stdout.buffer.write(str(response).encode('utf-8'))
+        print()
+        time.sleep(1)
+
+        # assert
+        self.assertEqual(response['statusCode'], 200)
 
     def test_no_input(self):
         # arrange
         item = {}
 
         # act
-        response = dp.delete_participant(item, None)
+        response = functions.get_old_polls(item, None)
         sys.stdout.buffer.write(str(response).encode('utf-8'))
         print()
         time.sleep(1)
@@ -53,11 +66,11 @@ class TestGOP(unittest.TestCase):
     def test_no_integer_input(self):
         # arrange
         item = {
-            'participant_id' : 'asd'
+            'last_poll' : 'asd'
         }
 
         # act
-        response = dp.delete_participant(item, None)
+        response = functions.get_old_polls(item, None)
         sys.stdout.buffer.write(str(response).encode('utf-8'))
         print()
         time.sleep(1)
@@ -65,4 +78,5 @@ class TestGOP(unittest.TestCase):
         # assert
         self.assertEqual(response['statusCode'], 400)
 
-unittest.main()
+if __name__ == '__main__':
+    unittest.main()

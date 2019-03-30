@@ -1,8 +1,14 @@
 # Amazon DynamoDB
 
-**TODO: Update this according the new DB structure**
+**TODO: Update this according the new DB structure**\
+**TODO: Explain about [*BURST*](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html#bp-partition-key-throughput-bursting) and [*ADAPTIVE*](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html#bp-partition-key-partitions-adaptive) capacity**
 
-Here you can read more about the goals of this db, db structure and AWS implementation.
+Here you can read how to create and fill the database, more about the goals of this db, db structure and AWS implementation.
+
+## Create and fill DB
+
+1. To create all tables for this db, run this script: [create_tables/create_all_tables.py](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/create_tables/create_all_tables.py)
+2. To fill the tables with the results from the previous polls (located in [fill_tables/doodle_results.csv](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/fill_tables/doodle_results.csv)), run this script: [fill_tables/fill_tables.py](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/fill_tables/doodle_results.csv)
 
 ## Goals
 

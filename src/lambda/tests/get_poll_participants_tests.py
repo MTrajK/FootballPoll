@@ -1,9 +1,9 @@
 import unittest
-import get_poll_participants as gpp
+from context import functions
 import time
 import sys
 
-class TestGOP(unittest.TestCase):
+class TestGPP(unittest.TestCase):
 
     def test_good_input(self): 
         # arrange
@@ -12,7 +12,7 @@ class TestGOP(unittest.TestCase):
         }
 
         # act
-        response = gpp.get_poll_participants(item, None)
+        response = functions.get_poll_participants(item, None)
         sys.stdout.buffer.write(str(response).encode('utf-8'))
         print()
         time.sleep(1)
@@ -27,7 +27,7 @@ class TestGOP(unittest.TestCase):
         }
 
         # act
-        response = gpp.get_poll_participants(item, None)
+        response = functions.get_poll_participants(item, None)
         sys.stdout.buffer.write(str(response).encode('utf-8'))
         print()
         time.sleep(1)
@@ -42,7 +42,7 @@ class TestGOP(unittest.TestCase):
         }
 
         # act
-        response = gpp.get_poll_participants(item, None)
+        response = functions.get_poll_participants(item, None)
         sys.stdout.buffer.write(str(response).encode('utf-8'))
         print()
         time.sleep(1)
@@ -55,7 +55,7 @@ class TestGOP(unittest.TestCase):
         item = {}
 
         # act
-        response = gpp.get_poll_participants(item, None)
+        response = functions.get_poll_participants(item, None)
         sys.stdout.buffer.write(str(response).encode('utf-8'))
         print()
         time.sleep(1)
@@ -70,7 +70,7 @@ class TestGOP(unittest.TestCase):
         }
 
         # act
-        response = gpp.get_poll_participants(item, None)
+        response = functions.get_poll_participants(item, None)
         sys.stdout.buffer.write(str(response).encode('utf-8'))
         print()
         time.sleep(1)
@@ -78,4 +78,5 @@ class TestGOP(unittest.TestCase):
         # assert
         self.assertEqual(response['statusCode'], 400)
 
-unittest.main()
+if __name__ == '__main__':
+    unittest.main()

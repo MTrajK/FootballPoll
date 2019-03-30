@@ -28,8 +28,3 @@ def add_admin(name, password):
     else:
         print('Error!')
         print(response)
-
-
-name = 'put admin name here'
-password = 'put admin password here'
-add_admin(name, password)

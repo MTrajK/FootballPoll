@@ -7,10 +7,10 @@ Create GitHub page using the gh-pages branch (copy src/site in that branch)
 Located in [src/dynamodb](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/) directory.\
 More info about the database in the [README file](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/README.md).
 
-## AWS Lambdas
+## AWS Lambda
 
-Located in [src/lambdas](https://github.com/MTrajK/FootballPoll/blob/master/src/lambdas/) directory.\
-More info about the lambdas in the [README file](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/README.md).
+Located in [src/lambda](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/) directory.\
+More info about the lambdas in the [README file](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/README.md).
 
 ## AWS Pricing
 

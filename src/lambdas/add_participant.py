@@ -78,10 +78,9 @@ def query_participants(poll_id, last_evaluated_key = None, second_attempt = Fals
             time.sleep(1)
             second_result = query_participants(poll_id, response['LastEvaluatedKey'], True)
         except Exception:
-            # the first response is successful, returns only the results from the first response
-            pass
-        else:
-            result.append(second_result)
+            raise Exception('Database error!')
+        
+        result.append(second_result)
     
     return result
 

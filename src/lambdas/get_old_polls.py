@@ -43,10 +43,9 @@ def batch_get_item_polls(keys, second_attempt = False):
                 time.sleep(1)
                 second_result = batch_get_item_polls(response['UnprocessedKeys']['fp.polls']['Keys'], True)
             except Exception:
-                # the first response is successful, returns only the results from the first response
-                pass
-            else:
-                result.append(second_result)
+                raise Exception('Database error!')
+            
+            result.append(second_result)
         
     return result
 

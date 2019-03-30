@@ -24,3 +24,66 @@ For this application we need only 7 lambda functions, from them 6 are API calls 
 ### Resources
 
 [Official AWS Amazon documentation about lambdas](https://docs.aws.amazon.com/lambda/index.html)
+
+
+**All policies:**\
+get_item - fp.config\
+get_item - fp.polls\
+query - fp.participants\
+scan - fp.persons\
+batch_write_item - fp.persons\
+update_item - fp.persons\
+put_item - fp.polls\
+update_item - fp.config\
+put_item - fp.participants\
+batch_get_item - fp.polls\
+update_item - fp.polls\
+get_item - fp.admins\
+delete_item - fp.participants\
+(optional, for adding admins directly in db) put_item - fp.admins
+
+
+
+
+**check_if_current_poll_expired lambda policies:**\
+get_item - fp.config\
+get_item - fp.polls\
+query - fp.participants\
+scan - fp.persons\
+batch_write_item - fp.persons\
+update_item - fp.persons\
+put_item - fp.polls\
+update_item - fp.config
+
+
+**add_participant lambda policies:**\
+get_item - fp.config\
+query - fp.participants\
+get_item - fp.polls\
+put_item - fp.participants
+
+
+**delete_participant lambda policies:**\
+get_item - fp.config\
+delete_item - fp.participants
+
+
+**get_old_polls lambda policies:**\
+batch_get_item - fp.polls
+
+
+**get_poll_participant lambda policies:**\
+query - fp.participants
+
+
+**get_site_data lambda policies:**\
+get_item - fp.config\
+batch_get_item - fp.polls\
+scan - fp.persons\
+query - fp.participants
+
+
+**update_current_poll lambda policies:**\
+get_item - fp.config\
+get_item - fp.admins\
+update_item - fp.polls

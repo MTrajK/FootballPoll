@@ -83,14 +83,9 @@ def query_participants(poll_id, last_evaluated_key = None):
 
     if 'LastEvaluatedKey' in response:
         # tries again if there are unprocessed keys
-        try:
-            time.sleep(1)
-            second_result = query_participants(poll_id, response['LastEvaluatedKey'])
-        except Exception:
-            # the first response is successful, returns only the results from the first response
-            pass
-        else:
-            result.append(second_result)
+        time.sleep(1)
+        second_result = query_participants(poll_id, response['LastEvaluatedKey'])
+        result.append(second_result)
     
     return result
 
@@ -120,34 +115,66 @@ def scan_persons(last_evaluated_key = None):
 
     if 'LastEvaluatedKey' in response:
         # tries again if there are unprocessed keys
-        try:
-            time.sleep(1)
-            second_result = scan_persons(response['LastEvaluatedKey'])
-        except Exception:
-            # the first response is successful, returns only the results from the first response
-            pass
-        else:
-            result.append(second_result)
+        time.sleep(1)
+        second_result = scan_persons(response['LastEvaluatedKey'])
+        result.append(second_result)
     
     return result
 
+def batch_write_item_persons(item):
+    """Tries to add new persons, tries until the query succeeded.
+
+    Parameters:
+        item: Object with table name, persons and type of requests.
+    """
+
+    if len(item['fp.persons']) != 0:
+        try:
+            response = dynamodb.batch_write_item(
+                RequestItems=item
+            )
+        except Exception:
+            # tries again
+            time.sleep(1)
+            batch_write_item_persons(item)
+        else:
+            if ('UnprocessedItems' in response) and ('fp.persons' in response['UnprocessedItems']):
+                # tries again if there are unprocessed items
+                time.sleep(1)
+                batch_write_item_persons(response['UnprocessedItems'])
+
 def update_items_persons(persons):
-    """Tries to add the new poll until the query succeeded.
+    """Tries to update persons, tries until the query succeeded.
 
     Parameters:
-        item: New polls item.
+        persons: List with persons.
     """
-    # use for cycle, when fails call callback with timer
-    return None
 
-def batch_write_item_persons(persons):
-    """Tries to add the new poll until the query succeeded.
+    if len(persons) != 0:
+        persons_table = dynamodb.Table('fp.persons')
 
-    Parameters:
-        item: New polls item.
-    """
-    # use response['UnprocessedItems']
-    return None
+        try:
+            persons_table.update_item(
+                Key={
+                    'name': persons[0]['name']
+                },
+                UpdateExpression="SET #polls= :polls, #friends= :friends",
+                ExpressionAttributeNames={
+                    '#polls': 'polls',
+                    '#friends': 'friends'
+                },
+                ExpressionAttributeValues={
+                    ':polls': persons[0]['polls'],
+                    ':friends': persons[0]['friends']
+                }
+            )
+        except Exception:
+            # tries again
+            time.sleep(1)
+            update_items_persons(persons)
+        else:
+            # ignores only the updated person
+            update_items_persons(persons[1:])
 
 def put_item_polls(item):
     """Tries to add the new poll until the query succeeded.
@@ -225,7 +252,9 @@ def check_if_current_poll_expired(event, context):
     add_persons = []
 
     # batch write - add new persons (if there is new person/s)
-    batch_write_item_persons(add_persons)
+    batch_write_item_persons({
+        'fp.persons' : [{ 'PutRequest': { 'Item': add_person } } for add_person in add_persons]
+    })
 
     ###
     """ TODO: find persons that need to be updated """

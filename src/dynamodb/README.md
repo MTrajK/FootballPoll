@@ -8,7 +8,7 @@ Here you can read how to create and fill the database, more about the goals of t
 ## Create and fill DB
 
 1. To create all tables for this db, run this script: [create_tables/create_all_tables.py](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/create_tables/create_all_tables.py)
-2. To fill the tables with the results from the previous polls (located in [fill_tables/doodle_results.csv](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/fill_tables/doodle_results.csv)), run this script: [fill_tables/fill_tables.py](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/fill_tables/doodle_results.csv)
+2. To fill the tables with the results from the previous polls (located in [fill_tables/doodle_results.csv](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/fill_tables/doodle_results.csv)), run this script: [fill_tables/fill_tables.py](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/fill_tables/fill_tables.py)
 
 ## Goals
 

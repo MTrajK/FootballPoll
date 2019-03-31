@@ -222,8 +222,8 @@ def update_item_config(new_poll_id):
         update_item_config(new_poll_id)
 
 def check_if_current_poll_expired(event, context):
-    """ TODO: Add a description.
-    TODO: Change execution lambda time, from 3 seconds to 15-20 seconds!
+    """ Checks if the current poll expired.
+    If the current poll is expired then creates a new poll and updates the persons statistics.
 
     Returns:
         Status of the function.
@@ -235,34 +235,75 @@ def check_if_current_poll_expired(event, context):
     # get current poll
     current_poll = get_item_polls(current_poll_id)
 
-    ###
-    """ TODO: check if expired """
-    ###
+    # check if the current poll expired
     date_now = int(datetime.datetime.now().timestamp() * 1000)
+
+    if current_poll['end'] > date_now:
+        return {
+            'statusCode': 400,
+            'statusMessage': 'The current poll is still valid!'
+        }
 
     # get current participants
     participants = query_participants(current_poll_id)
 
+    # find all unique persons from the current poll
+    all_poll_persons = {}
+
+    for participant in participants:
+        person = participant['person']
+
+        if person not in all_poll_persons:
+            all_poll_persons[person] = {
+                'name': person,
+                'friends': 0,
+                'polls': 0
+            }
+            
+        if participant['friend'] == '/':
+            all_poll_persons[person]['polls'] += 1
+        else:
+            all_poll_persons[person]['friends'] += 1
+            
     # get persons
     persons = scan_persons()
 
-    ###
-    """ TODO: find new unique persons """
-    ###
-    add_persons = []
+    db_persons = {}
 
-    # batch write - add new persons (if there is new person/s)
-    batch_write_item_persons({
-        'fp.persons' : [{ 'PutRequest': { 'Item': add_person } } for add_person in add_persons]
-    })
+    for person in persons:
+        db_persons[person['name']] = person
+   
+    # find which unique persons from the current poll exist in the db and which are new
+    old_persons = []
+    new_persons = []
+    
+    for name in all_poll_persons.keys():
+        if name in db_persons:
+            # exists in the db
+            old_persons.append({
+                'name': name,
+                'friends': all_poll_persons[name]['friends'] + db_persons[name]['friends'],
+                'polls': all_poll_persons[name]['polls'] + db_persons[name]['polls']
+            })
+        else:
+            # doesn't exist in the db
+            new_persons.append(all_poll_persons[name])
 
-    ###
-    """ TODO: find persons that need to be updated """
-    ###
-    update_persons = []
+    # batch write - add new persons (if there are)
+    if len(new_persons) > 0:
+        batch_write_item_persons({
+            'fp.persons' : [
+                { 
+                    'PutRequest': { 
+                        'Item': new_person
+                    } 
+                } 
+            for new_person in new_persons]
+        })
 
-    # update persons
-    update_items_persons(update_persons)
+    # update persons (if there are persons that need to be updated)
+    if len(old_persons) > 0:
+        update_items_persons(old_persons)
 
     # add new poll
     new_poll_id = current_poll_id + 1
@@ -270,7 +311,7 @@ def check_if_current_poll_expired(event, context):
 
     put_item_polls({
         'id': new_poll_id,
-        'start': current_poll['start'] + week_milliseconds,
+        'start': current_poll['end'], # because the end and dt dates can be changed
         'end': current_poll['end'] + week_milliseconds,
         'dt': current_poll['dt'] + week_milliseconds,
         'title': current_poll['title'],

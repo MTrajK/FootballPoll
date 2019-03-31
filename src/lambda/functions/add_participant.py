@@ -174,6 +174,12 @@ def add_participant(event, context):
             'statusCode': 400,
             'errorMessage': 'Too long person name!'
         }
+    
+    if len(friend) == 0:
+        return {
+            'statusCode': 400,
+            'errorMessage': 'Friend name should contains at least 1 letter!'
+        }
 
     if len(friend) > 25:
         return {
@@ -181,8 +187,9 @@ def add_participant(event, context):
             'errorMessage': 'Too long friend name!'
         }
 
-    # person allowed characters - LETTERS (cyrilic, latin), digits, whitespace between characters
-    search_not_allowed = '[^\w\d ]'
+    # person allowed characters - LETTERS (mac cyrilic, eng latin), digits, whitespace between characters
+    mac_alphabet = 'абвгдѓежзѕијклљмнњопрстќуфхцчџш'
+    search_not_allowed = '[^a-zA-Z0-9 ' + mac_alphabet + mac_alphabet.upper() + ' ]'
 
     if re.search(search_not_allowed, person):
         return {
@@ -190,10 +197,10 @@ def add_participant(event, context):
             'errorMessage': 'person value contains not allowed characters!'
         }
 
-    # friend allowed characters - LETTERS (cyrilic, latin), digits, +, whitespace between characters
-    search_not_allowed = '[^\w\d +]'
+    # friend allowed characters - LETTERS (mac cyrilic, eng latin), digits, +, whitespace between characters
+    search_not_allowed = search_not_allowed[:-1] + '+]'
     
-    if re.search(search_not_allowed, friend):
+    if (friend != '/') and re.search(search_not_allowed, friend):
         return {
             'statusCode': 400,
             'errorMessage': 'friend value contains not allowed characters!'
@@ -253,7 +260,7 @@ def add_participant(event, context):
     added = int(datetime.datetime.now().timestamp() * 1000)
 
     try:
-        put_status = put_item_participants(Item={
+        put_status = put_item_participants({
             'poll': current_poll_id,
             'added': added,
             'person': person,

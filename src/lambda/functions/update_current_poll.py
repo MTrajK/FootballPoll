@@ -2,6 +2,7 @@ import boto3
 import hashlib
 import time
 from botocore.exceptions import ClientError
+from boto3.dynamodb.conditions import Key
         
 dynamodb = boto3.resource('dynamodb')
 
@@ -51,7 +52,7 @@ def get_item_admins(admin_name, second_attempt = False):
         time.sleep(1)
         return get_item_admins(admin_name, True)
     
-    if 'Item' not in admin:
+    if 'Item' not in response:
         return None
         
     return response['Item']
@@ -149,6 +150,11 @@ def update_item_polls(poll_id, update_expression, expression_attributes, express
         Status of updating.
     """
 
+    # check if need is smaller or equal to max
+    participants_check = '(:need = :none OR (:max <> :none OR :need <= #max)) AND (:max = :none OR (:need <> :none OR :max >= #need))'
+    # check if new end new and dt are bigger than start, and if there is no new end check if the new dt is smaller than the old end
+    dates_check = '(:end = :none OR ((:dt <> :none OR :end >= #dt) AND (:end > #start))) AND (:dt = :none OR ((:end <> :none OR :dt <= #end) AND (:dt > #start)))'
+
     polls_table = dynamodb.Table('fp.polls')
 
     try:
@@ -157,9 +163,7 @@ def update_item_polls(poll_id, update_expression, expression_attributes, express
                 'id': poll_id
             },
             UpdateExpression=update_expression,
-            # check if new end new and dt are bigger than start, and if there is no new end check if the new dt is smaller than the old end
-            # check if need is smaller or equal to max
-            ConditionExpression='(:end = :none OR :end > #start) AND (:dt = :none OR (:dt > #start AND (:end <> :none OR :dt <= #end))) AND (:need = :none OR :need <= #max) AND (:max = :none OR :max >= #need)',
+            ConditionExpression=dates_check + ' AND ' + participants_check,
             ExpressionAttributeValues=expression_attributes,
             ExpressionAttributeNames=expression_names
         )
@@ -302,7 +306,7 @@ def update_current_poll(event, context):
             'errorMessage': 'max value should be bigger than 1!'
         }
 
-    # check if dt is smaller than end
+    # check if end is smaller than dt
     if (update_properties['end'] != None) and (update_properties['dt'] != None) and (update_properties['dt'] > update_properties['end']):
         return { 
             'statusCode': 400,
@@ -310,10 +314,19 @@ def update_current_poll(event, context):
         }
 
     # check if max is smaller than need
-    if (update_properties['max'] != None) and (update_properties['need'] != None) and (update_properties['max'] > update_properties['need']):
+    if (update_properties['need'] != None) and (update_properties['max'] != None) and (update_properties['need'] > update_properties['max']):
         return { 
             'statusCode': 400,
             'errorMessage': 'need value must be smaller or equal than max value!'
+        }
+    
+    # get current poll id
+    try:
+        current_poll_id = get_current_poll_id()
+    except Exception:
+        return {
+            'statusCode': 500,
+            'errorMessage': 'Database error!'
         }
     
     # check if max value is smaller than the number of the current participants
@@ -350,6 +363,7 @@ def update_current_poll(event, context):
 
     expression_names['#end'] = 'end'
     expression_names['#start'] = 'start'
+    expression_names['#dt'] = 'dt'
     expression_names['#need'] = 'need'
     expression_names['#max'] = 'max'
 
@@ -360,15 +374,6 @@ def update_current_poll(event, context):
     expression_attributes[':dt'] = 'None' if ('dt' not in update_properties) else update_properties['dt']
     expression_attributes[':need'] = 'None' if ('need' not in update_properties) else update_properties['need']
     expression_attributes[':max'] = 'None' if ('max' not in update_properties) else update_properties['max']
-
-    # get current poll id
-    try:
-        current_poll_id = get_current_poll_id()
-    except Exception:
-        return {
-            'statusCode': 500,
-            'errorMessage': 'Database error!'
-        }
 
     # update the current poll
     try:

@@ -111,6 +111,36 @@ class Test_add_participant(unittest.TestCase):
         # assert
         self.assertEqual(response['statusCode'], 400)
     
+    def test_good_input_only_person(self):
+        # arrange
+        item = {
+            'person': 'example person'
+        }
+
+        # act
+        response = functions.add_participant(item, None)
+        sys.stdout.buffer.write(str(response).encode('utf-8'))
+        print()
+        time.sleep(1)
+
+        # assert
+        self.assertEqual(response['statusCode'], 200)
+
+    def test_good_input_person_and_friend(self):
+        # arrange
+        item = {
+            'person': 'example person 2',
+            'friend': '+1'
+        }
+
+        # act
+        response = functions.add_participant(item, None)
+        sys.stdout.buffer.write(str(response).encode('utf-8'))
+        print()
+        time.sleep(1)
+
+        # assert
+        self.assertEqual(response['statusCode'], 200)
 
 if __name__ == '__main__':
     unittest.main()

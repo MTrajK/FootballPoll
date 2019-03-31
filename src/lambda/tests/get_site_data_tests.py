@@ -1,10 +1,19 @@
+import unittest
 from context import functions
+import time
 import sys
 
-response = functions.get_site_data({}, None)
-print('Current poll id: ' + str(response['body']['current_poll']))
-print('Length polls: ' + str(len(response['body']['polls'])))
-print('Length participants: ' + str(len(response['body']['participants'])))
-print('Length persons: ' + str(len(response['body']['persons'])))
-sys.stdout.buffer.write(str(response).encode('utf-8'))
-print()
+class Test_get_site_data(unittest.TestCase):
+    
+    def test_get_site_data(self):
+        # act
+        response = functions.get_site_data(None, None)
+        sys.stdout.buffer.write(str(response).encode('utf-8'))
+        print()
+        time.sleep(1)
+
+        # assert
+        self.assertEqual(response['statusCode'], 200)
+
+if __name__ == '__main__':
+    unittest.main()

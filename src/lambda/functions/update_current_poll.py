@@ -317,7 +317,7 @@ def update_current_poll(event, context):
         }
     
     # check if max value is smaller than the number of the current participants
-    if (update_properties['max'] != None)
+    if update_properties['max'] != None:
         # query participants
         try:
             participants = query_participants(current_poll_id)

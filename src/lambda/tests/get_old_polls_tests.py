@@ -3,7 +3,7 @@ from context import functions
 import time
 import sys
 
-class TestGOP(unittest.TestCase):
+class Test_get_old_polls(unittest.TestCase):
 
     def test_good_input(self):
         # arrange

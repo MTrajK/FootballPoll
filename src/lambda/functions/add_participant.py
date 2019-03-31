@@ -163,6 +163,12 @@ def add_participant(event, context):
     if 'friend' in event:
         friend = ' '.join(event['friend'].lower().split())
 
+    if len(person) < 3:
+        return {
+            'statusCode': 400,
+            'errorMessage': 'Person name should contains at least 3 letters!'
+        }
+
     if len(person) > 25:
         return {
             'statusCode': 400,
@@ -175,16 +181,19 @@ def add_participant(event, context):
             'errorMessage': 'Too long friend name!'
         }
 
-    # allowed characters - LETTERS (cyrilic, latin), digits, +, -, whitespace between characters
-    search_not_allowed = '[^\w\d +-]'
+    # person allowed characters - LETTERS (cyrilic, latin), digits, whitespace between characters
+    search_not_allowed = '[^\w\d ]'
 
     if re.search(search_not_allowed, person):
         return {
             'statusCode': 400,
             'errorMessage': 'person value contains not allowed characters!'
         }
+
+    # friend allowed characters - LETTERS (cyrilic, latin), digits, +, whitespace between characters
+    search_not_allowed = '[^\w\d +]'
     
-    if friend != '/' and re.search(search_not_allowed, friend):
+    if re.search(search_not_allowed, friend):
         return {
             'statusCode': 400,
             'errorMessage': 'friend value contains not allowed characters!'

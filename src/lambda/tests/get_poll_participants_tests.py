@@ -3,7 +3,7 @@ from context import functions
 import time
 import sys
 
-class TestGPP(unittest.TestCase):
+class Test_get_poll_participants(unittest.TestCase):
 
     def test_good_input(self): 
         # arrange

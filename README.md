@@ -50,3 +50,7 @@ Pricings only for services used in this application, EU-Central-1 region (Frankf
 - [API Gateway calculator](https://dashbird.io/api-gateway-cost-calculator/)
 - [Lambda calculator 1](https://dashbird.io/lambda-cost-calculator/)
 - [Lambda calculator 2](https://s3.amazonaws.com/lambda-tools/pricing-calculator.html)
+
+## License
+
+This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details

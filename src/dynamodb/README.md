@@ -1,14 +1,11 @@
 # Amazon DynamoDB
 
-**TODO: Update this according the new DB structure**\
-**TODO: Explain about [*BURST*](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html#bp-partition-key-throughput-bursting) and [*ADAPTIVE*](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html#bp-partition-key-partitions-adaptive) capacity**
-
 Here you can read how to create and fill the database, more about the goals of this db, db structure and AWS implementation.
 
-## Create and fill DB
+## Create and fill all tables
 
 1. To create all tables for this db, run this script: [create_tables/create_all_tables.py](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/create_tables/create_all_tables.py)
-2. To fill the tables with the results from the previous polls (located in [fill_tables/doodle_results.csv](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/fill_tables/doodle_results.csv)), run this script: [fill_tables/fill_tables.py](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/fill_tables/fill_tables.py)
+2. To fill the tables with the results from the previous polls (read from csv file - [fill_tables/doodle_results.csv](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/fill_tables/doodle_results.csv)), run this script: [fill_tables/fill_tables.py](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/fill_tables/fill_tables.py)
 
 ## Goals
 
@@ -19,38 +16,67 @@ Main goals for this NoSQL implementation:
 
 ## Database structure
 
-DB scheme will be composed of 4 tables:
+Database will be composed of 5 tables:\
+(**fp** is short from the app name - FootbalPoll, that will be a namespace for all tables used in this application. We'll need this because in DynamoDB all tables are located in same workspace.)
 
-1. **Admins** - contains list of admins, each item has these attributes: *admin name* (partition key), *crypted password* and *password salt*
-2. **CurrentPoll** - cotains only one poll (the current poll), this item has these attributes: *poll number/counter* (the oldest archived poll has 0 as poll number) (partition key), *start date*, *end date*, *title*, *description*, *date and time of the event*, *location link*, *location description*, *max participants*, *all players* (this set is unique only for this poll, this is used for autocomplete in the front-end), *list of players* where each player is a nested object composed of *player name* and *friend name* (if only player is added then value of this field should be null)
-3. **ArchivedPolls** - contains list of polls (the items have the same attributes as **CurrentPoll** table - without *all players* attribute)
-4. **Players** - contains list of players, each item has these attributes: *player name* (partition key), *number of played games* (polls participated) and *number of invited friends*
+1. **Admins**\
+    *Table name*: fp.admins\
+    *Partition key*: name (string)\
+    *Attributes*: password (string), salt (string)\
+    *RCU*: 1\
+    *WCU*: 1
+2. **Config**\
+    *Table name*: fp.config\
+    *Partition key*: id (string)\
+    *Attributes*: value (string)\
+    *RCU*: 1\
+    *WCU*: 1
+3. **Participants**\
+    *Table name*: fp.participants\
+    *Partition key*: poll (number)\
+    *Sort key*: added (number)\
+    *Attributes*: person (string), friend (string)\
+    *RCU*: 2\
+    *WCU*: 2
+4. **Persons**\
+    *Table name*: fp.persons\
+    *Partition key*: name (string)\
+    *Attributes*: polls (number), friends (number)\
+    *RCU*: 2\
+    *WCU*: 2
+5. **Polls**\
+    *Table name*: fp.polls\
+    *Partition key*: id (number)\
+    *Attributes*: start (number), end (number), dt (number), title (string), note (string), locDesc (string), locUrl (string), need (number), max (number)\
+    *RCU*: 3\
+    *WCU*: 1
 
-Don't be confused with the relation databases, this db scheme is created to optimize calls (started designing from the lambdas, not from the relations!)
+Don't be confused with the relational databases, this db is not designed for relations, it is designed for fast queries (to optimize write/read capacity units)!
 
-Sort keys aren't used for this implementation.
-
-Simple comparasion with relational databases:
+Simple comparasion between dynamodb and relational databases:
 
 - **table** is same like **table** in relational db
 - **item** is same as **row** in relational db
 - **attribute** is same as **column** in relational db
 - **partition key** is same as **primary key** in relational db
+- **partition & sort key** is same as **composite key** in relational db
 
 ## AWS implementation
 
 Several important things from the AWS implementation (to keep the main goals)
 
-1. Read Consistency
-    - **Strongly Consistent Reads** - only the *CurrentPoll* table (this table could be updated from different devices, because the users are avilable to make changes in this table, so if there are lot request for this table then we'll get stale results - *but this should be happen with very small probability because this is a small app and not used often*)
-    - **Eventually Consistent Reads** - *Admins*, *ArchivedPolls* and *Players* tables (they are updated only once in a week, so we don't need the latest changes immediatlly)
-2. Auto-scaling (min-max RCU and WCU)
-    - **Admins** - shouldn't be auto-scalable, only 1 RCU and only 1 WCU (no need from writings from code, admins will be added directly in DB).
-    - **CurrentPoll** - there is a small possibility for this table to be acceses from more than 1 PC in 1 sec, think about this, let say min RCU 1 and max RCU 2. Using the same logic for reading, this table could have auto-scaling for writes (updating), min WCU 1, max WCU 2. (**CurrentPoll** can contain more than 1KB info,)
-    - **ArchivedPolls** - more items at once should be read from this table (and one item could be bigger than 1 KB), min RCU 1 and max RCU 5 (you can use BatchRead). About writings min WCU 1 and max WCU 2, because once in a week **ArchivedPolls** will be updated with **CurrentPoll**.
-    - **Players** - this table will be *scanned* (read the whole data from the table) for statistics, min RCU 1 and max RCU 2-3 (total 16-24 KB, eventually consistent). There will be writing in this table once in a week, if there are 12 new players all of them will be added in this table, min WCU 1 and max WCU 2-3 (2-3 items in same time) or use BatchWrite and each second add only 1 player (you'll need to extend the execution of this lambda function to max 12 seconds).
+1. Read Consistency (RCU)
+    - **Strongly Consistent Reads** - When you request a strongly consistent read, DynamoDB returns a response with the most up-to-date data, reflecting the updates from all prior write operations that were successful. One *read request unit* **(RCU)** represents one strongly consistent read request for an item up to **4 KB** in size.
+    - **Eventually Consistent Reads** - When you read data from a DynamoDB table, the response might not reflect the results of a recently completed write operation. The response might include some stale data. If you repeat your read request after a short time, the response should return the latest data. One *read request unit* **(RCU)** represents two eventually consistent read request for an item up to **4 KB** in size (or a half **RCU** for an item up to **2 KB**).
 
-3. Use short names for the attributes, because they are computed in the read memory/capacity (not only the attribute values) (*In DynamoDB, Strings are Unicode with UTF-8 binary encoding. This means that **each character uses 1 to 4 bytes**. Note that strings can’t be empty. The English alphabet, numbers, punctuation and common symbols (&, $, %, etc.) are all 1 byte each. However, the pound sign (£) is 2 bytes! Languages like German and Cyrillic are also 2 bytes, while Japanese is 3 bytes. On the top end, emojis are a whopping 4 bytes each 😲!*)
+2. Write Consistency (WCU)
+    - There are only **Strongly Consistent Writes**! One *write request unit* represents one **(WCU)** write for an item up to **1 KB** in size.
+
+3. Burst capacity\
+DynamoDB provides some flexibility in your per-partition throughput provisioning by providing burst capacity, as follows. Whenever you are not fully using a partition's throughput, DynamoDB reserves a portion of that unused capacity for later bursts of throughput to handle usage spikes.\
+DynamoDB currently retains up to five minutes (300 seconds) of unused read and write capacity. During an occasional burst of read or write activity, these extra capacity units can be consumed quickly—even faster than the per-second provisioned throughput capacity that you've defined for your table.
+
+4. Use short names for the attributes, because they are computed in the read memory/capacity (not only the attribute values) (*In DynamoDB, Strings are Unicode with UTF-8 binary encoding. This means that **each character uses 1 to 4 bytes**. Note that strings can’t be empty. The English alphabet, numbers, punctuation and common symbols (&, $, %, etc.) are all 1 byte each. However, the pound sign (£) is 2 bytes! Languages like German and Cyrillic are also 2 bytes, while Japanese is 3 bytes. On the top end, emojis are a whopping 4 bytes each 😲!*)
 
 ### Resources
 

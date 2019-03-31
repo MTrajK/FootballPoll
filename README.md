@@ -1,6 +1,6 @@
 # FootballPoll
 
-Create GitHub page using the gh-pages branch (copy src/site in that branch)
+**TODO: Create GitHub page using the gh-pages branch (copy src/site in that branch)**
 
 ## Amazon DynamoDB
 
@@ -12,7 +12,7 @@ More info about the database in the [README file](https://github.com/MTrajK/Foot
 Located in [src/lambda](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/) directory.\
 More info about the lambdas in the [README file](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/README.md).
 
-## AWS Pricing
+## Amazon Pricings
 
 Pricings only for services used in this application, EU-Central-1 region (Frankfurt).
 

@@ -1,10 +1,15 @@
 # AWS Lambda
 
-**TODO: Explain (and maybe add all policies in separate folder) here all 10 policies**\
-**TODO: Explain each lamba which policies is using**\
-For this application we need only 7 lambda functions, from them 6 are API calls and 1 is a schedulled call (using the CloudWatch service).
+In this application we have 7 AWS [Lambda](https://aws.amazon.com/lambda/) functions:
+- 6 of them are used like API calls (using the Amazon [API Gateway](https://aws.amazon.com/api-gateway/) service)
+- 1 of them is triggered by a scheduler (using the Amazon [CloudWatch](https://aws.amazon.com/cloudwatch/) service).
 
-## HTTP/Rest calls
+All functions are located in [functions](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/functions) directory.\
+All unit tests are located in [tests](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/tests) directory. 
+
+## HTTP/Rest calls (API Gateway)
+
+**TODO: Update functions descriptions**
 
 - **[get_site_data](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/functions/get_site_data.py)** - get current poll id (*read from **fp.config** table*), get current poll info and 3 latest polls (*read from **fp.polls** table*), current poll participants (*read from **fp.participants** table*), statistics (*read from **fp.persons** table*)
 - **[update_current_poll](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/functions/update_current_poll.py)** - get admin credentials (*read from **fp.admins** table*), get current poll id (*read from **fp.config** table*), change some/all property/ies from the CURRENT poll in db (*update an item from **fp.polls** table*)
@@ -19,7 +24,7 @@ For this application we need only 7 lambda functions, from them 6 are API calls 
 
 ## API Gateway
 
-**Add description about the API gateway!**
+**TODO: Add a description about the API gateway!**
 
 ### Resources
 
@@ -27,7 +32,8 @@ For this application we need only 7 lambda functions, from them 6 are API calls 
 
 ## Polices
 
-Polices needed for each lambda to access needed AWS services.
+Polices needed for each lambda to access needed AWS services.\
+**TODO: Update policies**
 
 **All policies:**\
 get_item - fp.config\

@@ -24,8 +24,40 @@ def hash_password(password, salt):
 
     return hashed_password
 
+def get_item_admins(admin_name, second_attempt = False):
+    """Tries 2 times to access the admins table and take the admin credentials (if there is).
+
+    Parameters:
+        admin_name: Admin name/id.
+        second_attempt: Flag for the second attempt.
+
+    Returns:
+        Admin credentials.
+    """
+
+    admins_table = dynamodb.Table('fp.admins')
+
+    try:
+        response = admins_table.get_item(
+            Key={
+                'name': admin_name
+            }
+        )
+    except Exception:
+        if second_attempt:
+            raise Exception('Database error!')
+
+        # tries again if the first attempt failed
+        time.sleep(1)
+        return get_item_admins(admin_name, True)
+    
+    if 'Item' not in admin:
+        return None
+        
+    return response['Item']
+
 def get_current_poll_id(second_attempt = False):
-    """Tries 2 times to access the config table and take the current poll id.
+    """Tries 2 times to access the config table and takes the current poll id.
 
     Parameters:
         second_attempt: Flag for the second attempt.
@@ -52,6 +84,104 @@ def get_current_poll_id(second_attempt = False):
         
     return int(response['Item']['value'])
 
+def query_participants(poll_id, last_evaluated_key = None, second_attempt = False):
+    """Query the participants table and returns all results for given poll, if the first attempt failed or has unprocessed keys tries again.
+
+    Parameters:
+        poll_id: Current poll id.
+        last_evaluated_key: Last evaluated key, if some data is not read.
+        second_attempt: Flag for the second attempt.
+
+    Returns:
+        List with participants.
+    """
+    
+    result = []
+
+    participants_table = dynamodb.Table('fp.participants')
+
+    try:
+        if last_evaluated_key:
+            response = participants_table.query(
+                KeyConditionExpression=Key('poll').eq(poll_id),
+                ConsistentRead=True,
+                ExclusiveStartKey=last_evaluated_key
+            )
+        else:
+            response = participants_table.query(
+                KeyConditionExpression=Key('poll').eq(poll_id),
+                ConsistentRead=True
+            )
+    except Exception:
+        if second_attempt:
+            raise Exception('Database error!')
+        
+        # tries again if the first attempt failed
+        time.sleep(1)
+        return query_participants(poll_id, last_evaluated_key, True)
+       
+    if 'Items' in response:
+        result = response['Items']
+
+    if (not second_attempt) and ('LastEvaluatedKey' in response):
+        # tries again if there are unprocessed keys
+        try:
+            time.sleep(1)
+            second_result = query_participants(poll_id, response['LastEvaluatedKey'], True)
+        except Exception:
+            raise Exception('Database error!')
+            
+        result.append(second_result)
+    
+    return result
+
+def update_item_polls(poll_id, update_expression, expression_attributes, expression_names, second_attempt = False):
+    """Tries 2 time to update the current poll, if the first attempt failed tries again.
+
+    Parameters:
+        poll_id: Current poll id.
+        update_expression: How to update the polls table
+        expression_attributes: Values used in the update expression.
+        expression_names: Names used in the update expression.
+        second_attempt: Flag for the second attempt.
+
+    Returns:
+        Status of updating.
+    """
+
+    polls_table = dynamodb.Table('fp.polls')
+
+    try:
+        polls_table.update_item(
+            Key={
+                'id': poll_id
+            },
+            UpdateExpression=update_expression,
+            # check if new end new and dt are bigger than start, and if there is no new end check if the new dt is smaller than the old end
+            # check if need is smaller or equal to max
+            ConditionExpression='(:end = :none OR :end > #start) AND (:dt = :none OR (:dt > #start AND (:end <> :none OR :dt <= #end))) AND (:need = :none OR :need <= #max) AND (:max = :none OR :max >= #need)',
+            ExpressionAttributeValues=expression_attributes,
+            ExpressionAttributeNames=expression_names
+        )
+    except ClientError as e:
+        if e.response['Error']['Code'] == "ConditionalCheckFailedException":
+            return { 
+                'statusCode': 400,
+                'errorMessage': e.response['Error']['Message'] + '!'
+            }
+
+        if second_attempt:
+            raise Exception('Database error!')
+
+        # tries again if the first attempt failed
+        time.sleep(1)
+        return update_item_polls(poll_id, update_expression, expression_attributes, expression_names, True)
+    
+    return {
+        'statusCode': 200,
+        'statusMessage': 'The current poll is successfully updated!'
+    }
+
 def update_current_poll(event, context):
     """Updates the current poll, admin credentials are mandatory
 
@@ -68,29 +198,23 @@ def update_current_poll(event, context):
     
     admin_name = event['admin_name']
     admin_password = event['admin_password']
-    
-    admins_table = dynamodb.Table('fp.admins')
 
     try:
-        admin = admins_table.get_item(
-            Key={
-                'name': admin_name
-            }
-        )
+        admin = get_item_admins(admin_name)
     except Exception:
         return {
             'statusCode': 500,
             'errorMessage': 'Database error!'
         }
 
-    if 'Item' not in admin:
+    if admin == None:
         return {
             'statusCode': 403,
             'errorMessage': 'Access denied, wrong credentials!'
         }
     
-    db_hashed_password = admin['Item']['password']
-    db_salt = admin['Item']['salt']
+    db_hashed_password = admin['password']
+    db_salt = admin['salt']
 
     hashed_password = hash_password(admin_password, db_salt)
 
@@ -191,6 +315,23 @@ def update_current_poll(event, context):
             'statusCode': 400,
             'errorMessage': 'need value must be smaller or equal than max value!'
         }
+    
+    # check if max value is smaller than the number of the current participants
+    if (update_properties['max'] != None)
+        # query participants
+        try:
+            participants = query_participants(current_poll_id)
+        except Exception:
+            return {
+                'statusCode': 500,
+                'errorMessage': 'Database error!'
+            }
+
+        if len(participants) > update_properties['max']:
+            return { 
+                'statusCode': 400,
+                'errorMessage': 'There are more participants than the max value!'
+            }
 
     # prepare the expressions for the update query
     update_expression = "SET "
@@ -230,33 +371,12 @@ def update_current_poll(event, context):
         }
 
     # update the current poll
-    polls_table = dynamodb.Table('fp.polls')
-
     try:
-        polls_table.update_item(
-            Key={
-                'id': current_poll_id
-            },
-            UpdateExpression=update_expression,
-            # check if new end new and dt are bigger than start, and if there is no new end check if the new dt is smaller than the old end
-            # check if need is smaller or equal to max
-            ConditionExpression='(:end = :none OR :end > #start) AND (:dt = :none OR (:dt > #start AND (:end <> :none OR :dt <= #end))) AND (:need = :none OR :need <= #max) AND (:max = :none OR :max >= #need)',
-            ExpressionAttributeValues=expression_attributes,
-            ExpressionAttributeNames=expression_names
-        )
-    except ClientError as e:
-        if e.response['Error']['Code'] == "ConditionalCheckFailedException":
-            return { 
-                'statusCode': 400,
-                'errorMessage': e.response['Error']['Message'] + '!'
-            }
-        
+        update_status = update_item_polls(current_poll_id, update_expression, expression_attributes, expression_names)
+    except Exception:
         return {
             'statusCode': 500,
             'errorMessage': 'Database error!'
         }
 
-    return {
-        'statusCode': 200,
-        'statusMessage': 'The current poll is successfully updated!'
-    }
+    return update_status

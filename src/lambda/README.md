@@ -81,4 +81,5 @@ query - fp.participants
 **update_current_poll lambda policies:**\
 get_item - fp.config\
 get_item - fp.admins\
+query - fp.participants\
 update_item - fp.polls

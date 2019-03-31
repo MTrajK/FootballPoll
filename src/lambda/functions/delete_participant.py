@@ -4,7 +4,7 @@ import time
 dynamodb = boto3.resource('dynamodb')
 
 def get_current_poll_id(second_attempt = False):
-    """Tries 2 times to access the config table and take the current poll id.
+    """Tries 2 times to access the config table and takes the current poll id.
 
     Parameters:
         second_attempt: Flag for the second attempt.
@@ -30,6 +30,47 @@ def get_current_poll_id(second_attempt = False):
         return get_current_poll_id(True)
         
     return int(response['Item']['value'])
+
+def delete_item_participants(poll_id, participant_id, second_attempt = False):
+    """Tries 2 time to delete the participant, if the first attempt failed tries again.
+
+    Parameters:
+        poll_id: Current poll id.
+        participant_id: Id of the participant that need to be deleted.
+        second_attempt: Flag for the second attempt.
+
+    Returns:
+        Status of deleting.
+    """
+
+    participants_table = dynamodb.Table('fp.participants')
+
+    try:
+        response = participants_table.delete_item(
+            Key={
+                'poll': poll_id,
+                'added': participant_id
+            },
+            ReturnValues='ALL_OLD'
+        )
+    except Exception:
+        if second_attempt:
+            raise Exception('Database error!')
+
+        # tries again if the first attempt failed
+        time.sleep(1)
+        return delete_item_participants(poll_id, participant_id, True)
+    
+    if 'Attributes' not in response:
+        return {
+            'statusCode': 400,
+            'errorMessage': 'Participant ' + str(participant_id) + ' doesn\'t exist in the current poll!'
+        }
+
+    return {
+        'statusCode': 200,
+        'statusMessage': 'Participant ' + str(participant_id) + ' is successfully deleted!'
+    }
 
 def delete_participant(event, context):
     """Deletes a participant from the current poll.
@@ -62,29 +103,12 @@ def delete_participant(event, context):
         }
 
     # delete the participant
-    participants_table = dynamodb.Table('fp.participants')
-
     try:
-        response = participants_table.delete_item(
-            Key={
-                'poll': current_poll_id,
-                'added': participant_id
-            },
-            ReturnValues='ALL_OLD'
-        )
+        delete_status = delete_item_participants(current_poll_id, participant_id)
     except Exception:
         return {
             'statusCode': 500,
             'errorMessage': 'Database error!'
         }
 
-    if 'Attributes' not in response:
-        return {
-            'statusCode': 400,
-            'errorMessage': 'Participant ' + str(participant_id) + ' doesn\'t exist in the current poll!'
-        }
-
-    return {
-        'statusCode': 200,
-        'statusMessage': 'Participant ' + str(participant_id) + ' is successfully deleted!'
-    }
+    return delete_status

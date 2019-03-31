@@ -5,7 +5,7 @@ from boto3.dynamodb.conditions import Key
 dynamodb = boto3.resource('dynamodb')
 
 def get_current_poll_id(second_attempt = False):
-    """Tries 2 times to access the config table and take the current poll id.
+    """Tries 2 times to access the config table and takes the current poll id.
 
     Parameters:
         second_attempt: Flag for the second attempt.
@@ -122,6 +122,7 @@ def query_participants(poll_id, last_evaluated_key = None, second_attempt = Fals
     """Query the participants table and returns all results for given poll, if the first attempt failed or has unprocessed keys tries again.
 
     Parameters:
+        poll_id: Current poll id.
         last_evaluated_key: Last evaluated key, if some data is not read.
         second_attempt: Flag for the second attempt.
 

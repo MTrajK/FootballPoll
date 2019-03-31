@@ -8,6 +8,7 @@ def query_participants(poll_id, last_evaluated_key = None, second_attempt = Fals
     """Query the participants table and returns all results for given poll, if the first attempt failed or has unprocessed keys tries again.
 
     Parameters:
+        poll_id: Poll id.
         last_evaluated_key: Last evaluated key, if some data is not read.
         second_attempt: Flag for the second attempt.
 

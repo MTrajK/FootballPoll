@@ -6,7 +6,7 @@ from boto3.dynamodb.conditions import Key
 dynamodb = boto3.resource('dynamodb')
 
 def get_current_poll_id():
-    """Tries to access the config table and take the current poll id, tries until the query succeeded.
+    """Tries to access the config table and takes the current poll id, tries until the query succeeded.
 
     Returns:
         Current poll id.
@@ -29,6 +29,9 @@ def get_current_poll_id():
 
 def get_item_polls(poll_id):
     """Tries to access the polls table and take the current poll, tries until the query succeeded.
+
+    Parameters:
+        poll_id: Current poll id.
 
     Returns:
         Current poll item.
@@ -53,6 +56,7 @@ def query_participants(poll_id, last_evaluated_key = None):
     """Query the participants table and returns all results for given poll, tries until the query succeeded.
 
     Parameters:
+        poll_id: Current poll id.
         last_evaluated_key: Last evaluated key, if some data is not read.
 
     Returns:
@@ -67,11 +71,13 @@ def query_participants(poll_id, last_evaluated_key = None):
         if last_evaluated_key:
             response = participants_table.query(
                 KeyConditionExpression=Key('poll').eq(poll_id),
+                ConsistentRead=True,
                 ExclusiveStartKey=last_evaluated_key
             )
         else:
             response = participants_table.query(
-                KeyConditionExpression=Key('poll').eq(poll_id)
+                KeyConditionExpression=Key('poll').eq(poll_id),
+                ConsistentRead=True
             )
     except Exception:
         # tries again

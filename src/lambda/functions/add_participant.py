@@ -7,7 +7,7 @@ from boto3.dynamodb.conditions import Key
 dynamodb = boto3.resource('dynamodb')
 
 def get_current_poll_id(second_attempt = False):
-    """Tries 2 times to access the config table and take the current poll id.
+    """Tries 2 times to access the config table and takes the current poll id.
 
     Parameters:
         second_attempt: Flag for the second attempt.
@@ -83,6 +83,65 @@ def query_participants(poll_id, last_evaluated_key = None, second_attempt = Fals
         result.append(second_result)
     
     return result
+
+def get_item_polls_max(poll_id, second_attempt = False):
+    """Tries 2 times to access the polls table and takes the max attribute.
+
+    Parameters:
+        poll_id: Current poll id.
+        second_attempt: Flag for the second attempt.
+
+    Returns:
+        Max attribute from the current poll.
+    """
+
+    polls_table = dynamodb.Table('fp.polls')
+
+    try:
+        response = polls_table.get_item(
+            Key={
+                'id': poll_id
+            }
+        )
+    except Exception:
+        if second_attempt:
+            raise Exception('Database error!')
+
+        # tries again if the first attempt failed
+        time.sleep(1)
+        return get_item_polls_max(poll_id, True)
+
+    return response['Item']['max']
+
+def put_item_participants(item, second_attempt = False):
+    """Tries 2 times to put the participant in the participants table.
+
+    Parameters:
+        item: Item with attributes of the participants table (poll, added, person, friend).
+        second_attempt: Flag for the second attempt.
+
+    Returns:
+        Max attribute from the current poll.
+    """
+
+    participants_table = dynamodb.Table('fp.participants')
+    
+    try:
+        participants_table.put_item(
+            Item=item
+        )
+    except Exception:
+        if second_attempt:
+            raise Exception('Database error!')
+
+        # tries again if the first attempt failed
+        time.sleep(1)
+        return put_item_participants(item, True)
+
+    return {
+        'statusCode': 200,
+        'statusMessage': 'Participant ' + item['person'] + (' (' + item['friend'] + ')' if item['friend'] != '/' else '') + ' is successfully added!'
+    }
 
 def add_participant(event, context):
     """Adds a participant into the current poll.
@@ -184,24 +243,17 @@ def add_participant(event, context):
     # add the participant
     added = int(datetime.datetime.now().timestamp() * 1000)
 
-    participants_table = dynamodb.Table('fp.participants')
-
     try:
-        participants_table.put_item(
-            Item={
-                'poll': current_poll_id,
-                'added': added,
-                'person': person,
-                'friend': friend
-            }
-        )
+        put_status = put_item_participants(Item={
+            'poll': current_poll_id,
+            'added': added,
+            'person': person,
+            'friend': friend
+        })
     except Exception:
         return {
             'statusCode': 500,
             'errorMessage': 'Database error!'
         }
 
-    return {
-        'statusCode': 200,
-        'statusMessage': 'Participant ' + person + (' (' + friend + ')' if friend != '/' else '') + ' is successfully added!'
-    }
+    return put_status

@@ -65,7 +65,7 @@ All unit tests are located in [tests](https://github.com/MTrajK/FootballPoll/blo
 
 - **[get_site_data](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/functions/get_site_data.py)** - Returns all data needed to start the web site (current poll info, current poll participants, all persons - for stats, 3 polls older than the current). (*REST **GET** method*)
 
-    **Lambda policies/permisions (used DynamoDB operation - table):**
+    **Lambda policies/permisions (used DynamoDB operation - table):**\
     get_item - fp.config\
     batch_get_item - fp.polls\
     query - fp.participants\

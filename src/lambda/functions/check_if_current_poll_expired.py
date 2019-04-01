@@ -149,7 +149,7 @@ def batch_write_item_persons(item):
                 time.sleep(1)
                 batch_write_item_persons(response['UnprocessedItems'])
 
-def update_items_persons(persons):
+def update_item_persons(persons):
     """Tries to update persons, tries until the query succeeded.
 
     Parameters:
@@ -177,10 +177,10 @@ def update_items_persons(persons):
         except Exception:
             # tries again
             time.sleep(1)
-            update_items_persons(persons)
+            update_item_persons(persons)
         else:
             # ignores only the updated person
-            update_items_persons(persons[1:])
+            update_item_persons(persons[1:])
 
 def put_item_polls(item):
     """Tries to add the new poll until the query succeeded.
@@ -309,7 +309,7 @@ def check_if_current_poll_expired(event, context):
 
     # update persons (if there are persons that need to be updated)
     if len(old_persons) > 0:
-        update_items_persons(old_persons)
+        update_item_persons(old_persons)
 
     # add new poll
     new_poll_id = current_poll_id + 1

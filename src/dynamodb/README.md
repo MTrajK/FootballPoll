@@ -25,12 +25,14 @@ Database will be composed of 5 tables:\
     *Attributes*: password (string), salt (string)\
     *RCU*: 1\
     *WCU*: 1
+
 2. **Config**\
     *Table name*: fp.config\
     *Partition key*: id (string)\
     *Attributes*: value (string)\
     *RCU*: 1\
     *WCU*: 1
+
 3. **Participants**\
     *Table name*: fp.participants\
     *Partition key*: poll (number)\
@@ -38,12 +40,14 @@ Database will be composed of 5 tables:\
     *Attributes*: person (string), friend (string)\
     *RCU*: 2\
     *WCU*: 2
+
 4. **Persons**\
     *Table name*: fp.persons\
     *Partition key*: name (string)\
     *Attributes*: polls (number), friends (number)\
     *RCU*: 2\
     *WCU*: 2
+
 5. **Polls**\
     *Table name*: fp.polls\
     *Partition key*: id (number)\

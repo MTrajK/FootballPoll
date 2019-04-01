@@ -34,6 +34,35 @@ def get_current_poll_id(second_attempt = False):
         
     return int(response['Item']['value'])
 
+def get_item_polls_max(poll_id, second_attempt = False):
+    """Tries 2 times to access the polls table and takes the max attribute.
+
+    Parameters:
+        poll_id: Current poll id.
+        second_attempt: Flag for the second attempt.
+
+    Returns:
+        Max attribute from the current poll.
+    """
+
+    polls_table = dynamodb.Table('fp.polls')
+
+    try:
+        response = polls_table.get_item(
+            Key={
+                'id': poll_id
+            }
+        )
+    except Exception:
+        if second_attempt:
+            raise Exception('Database error!')
+
+        # tries again if the first attempt failed
+        time.sleep(1)
+        return get_item_polls_max(poll_id, True)
+
+    return response['Item']['max']
+
 def query_participants(poll_id, last_evaluated_key = None, second_attempt = False):
     """Query the participants table and returns all results for given poll, if the first attempt failed or has unprocessed keys tries again.
 
@@ -83,35 +112,6 @@ def query_participants(poll_id, last_evaluated_key = None, second_attempt = Fals
         result.append(second_result)
     
     return result
-
-def get_item_polls_max(poll_id, second_attempt = False):
-    """Tries 2 times to access the polls table and takes the max attribute.
-
-    Parameters:
-        poll_id: Current poll id.
-        second_attempt: Flag for the second attempt.
-
-    Returns:
-        Max attribute from the current poll.
-    """
-
-    polls_table = dynamodb.Table('fp.polls')
-
-    try:
-        response = polls_table.get_item(
-            Key={
-                'id': poll_id
-            }
-        )
-    except Exception:
-        if second_attempt:
-            raise Exception('Database error!')
-
-        # tries again if the first attempt failed
-        time.sleep(1)
-        return get_item_polls_max(poll_id, True)
-
-    return response['Item']['max']
 
 def put_item_participants(item, second_attempt = False):
     """Tries 2 times to put the participant in the participants table.
@@ -187,9 +187,9 @@ def add_participant(event, context):
             'errorMessage': 'Too long friend name!'
         }
 
-    # person allowed characters - LETTERS (mac cyrilic, eng latin), digits, whitespace between characters
+    # person allowed characters - lower letters (mac cyrilic, eng latin), digits, whitespace between characters
     mac_alphabet = 'абвгдѓежзѕијклљмнњопрстќуфхцчџш'
-    search_not_allowed = '[^a-zA-Z0-9 ' + mac_alphabet + mac_alphabet.upper() + ' ]'
+    search_not_allowed = '[^a-z0-9 ' + mac_alphabet + ' ]'
 
     if re.search(search_not_allowed, person):
         return {
@@ -197,7 +197,7 @@ def add_participant(event, context):
             'errorMessage': 'person value contains not allowed characters!'
         }
 
-    # friend allowed characters - LETTERS (mac cyrilic, eng latin), digits, +, whitespace between characters
+    # friend allowed characters - lower letters (mac cyrilic, eng latin), digits, +, whitespace between characters
     search_not_allowed = search_not_allowed[:-1] + '+]'
     
     if (friend != '/') and re.search(search_not_allowed, friend):

@@ -77,47 +77,7 @@ def batch_get_item_polls(keys, second_attempt = False):
             result.append(second_result)
         
     return result
-
-def scan_persons(last_evaluated_key = None, second_attempt = False):
-    """Scans the persons table and returns all results, if the first attempt failed or has unprocessed keys tries again.
-
-    Parameters:
-        last_evaluated_key: Last evaluated key, if some data is not read.
-        second_attempt: Flag for the second attempt.
-
-    Returns:
-        List with persons.
-    """
-
-    result = []
-
-    persons_table = dynamodb.Table('fp.persons')
-
-    try:
-        response = persons_table.scan(ExclusiveStartKey=last_evaluated_key) if last_evaluated_key else persons_table.scan()
-    except Exception:
-        if second_attempt:
-            raise Exception('Database error!')
-        
-        # tries again if the first attempt failed
-        time.sleep(1)
-        return scan_persons(last_evaluated_key, True)
-
-    if 'Items' in response:
-        result = response['Items']
-
-    if (not second_attempt) and ('LastEvaluatedKey' in response):
-        # tries again if there are unprocessed keys
-        try:
-            time.sleep(1)
-            second_result = scan_persons(response['LastEvaluatedKey'], True)
-        except Exception:
-            raise Exception('Database error!')
-            
-        result.append(second_result)
     
-    return result
-
 def query_participants(poll_id, last_evaluated_key = None, second_attempt = False):
     """Query the participants table and returns all results for given poll, if the first attempt failed or has unprocessed keys tries again.
 
@@ -162,6 +122,46 @@ def query_participants(poll_id, last_evaluated_key = None, second_attempt = Fals
         try:
             time.sleep(1)
             second_result = query_participants(poll_id, response['LastEvaluatedKey'], True)
+        except Exception:
+            raise Exception('Database error!')
+            
+        result.append(second_result)
+    
+    return result
+
+def scan_persons(last_evaluated_key = None, second_attempt = False):
+    """Scans the persons table and returns all results, if the first attempt failed or has unprocessed keys tries again.
+
+    Parameters:
+        last_evaluated_key: Last evaluated key, if some data is not read.
+        second_attempt: Flag for the second attempt.
+
+    Returns:
+        List with persons.
+    """
+
+    result = []
+
+    persons_table = dynamodb.Table('fp.persons')
+
+    try:
+        response = persons_table.scan(ExclusiveStartKey=last_evaluated_key) if last_evaluated_key else persons_table.scan()
+    except Exception:
+        if second_attempt:
+            raise Exception('Database error!')
+        
+        # tries again if the first attempt failed
+        time.sleep(1)
+        return scan_persons(last_evaluated_key, True)
+
+    if 'Items' in response:
+        result = response['Items']
+
+    if (not second_attempt) and ('LastEvaluatedKey' in response):
+        # tries again if there are unprocessed keys
+        try:
+            time.sleep(1)
+            second_result = scan_persons(response['LastEvaluatedKey'], True)
         except Exception:
             raise Exception('Database error!')
             

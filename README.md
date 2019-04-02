@@ -1,6 +1,6 @@
 # Football Poll
 
-A serverless application which uses the Amazon Web Services as the backend and it's hosted on Github pages.\
+A serverless application which uses the Amazon Web Services as the backend and it's hosted on GitHub pages.\
 Inspired by [Doodle](https://doodle.com), this application is recreating the poll after it ends (the new poll last one week and the event time and day are the same as the previous poll, only the admin can change this).\
 This application is saving the old polls and everyone can access them, also there is a simple statistic: how many events participates each player and how many friends invited each player.
 
@@ -9,6 +9,8 @@ This application is saving the old polls and everyone can access them, also ther
 ## Project Structure
 
 The project is composed of 3 parts: database, functions and web site.
+
+![Project architecture](https://raw.githubusercontent.com/MTrajK/FootballPoll/master/images/architecture.png "Project architecture")
 
 ### Database (Amazon DynamoDB)
 
@@ -23,7 +25,7 @@ More info about the lambdas in the [README file](https://github.com/MTrajK/Footb
 ### Web site
 
 Located in [src/site](https://github.com/MTrajK/FootballPoll/blob/master/src/site/) directory.\
-The web site is hosted on github, from the gh-pages branch.
+The web site is hosted on GitHub, from the gh-pages branch.
 
 ## Tech/frameworks
 

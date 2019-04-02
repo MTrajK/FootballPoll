@@ -1,20 +1,44 @@
-# FootballPoll
+# Football Poll
 
-**TODO: Create GitHub page using the gh-pages branch (copy src/site in that branch)**
+A serverless application which uses the Amazon Web Services as the backend and it's hosted on Github pages.\
+Inspired by [Doodle](https://doodle.com), this application is recreating the poll after it ends (the new poll last one week and the event time and day are the same as the previous poll, only the admin can change this).\
+This application is saving the old polls and everyone can access them, also there is a simple statistic: how many events participates each player and how many friends invited each player.
 
-## Amazon DynamoDB
+![Official banner](https://raw.githubusercontent.com/MTrajK/FootballPoll/master/images/banner.png "Official banner")
+
+## Project Structure
+
+The project is composed of 3 parts: database, functions and web site.
+
+### Database (Amazon DynamoDB)
 
 Located in [src/dynamodb](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/) directory.\
 More info about the database in the [README file](https://github.com/MTrajK/FootballPoll/blob/master/src/dynamodb/README.md).
 
-## AWS Lambda
+### Functions (AWS Lambda)
 
 Located in [src/lambda](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/) directory.\
 More info about the lambdas in the [README file](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/README.md).
 
-## Amazon Pricings
+### Web site
 
-Pricings only for services used in this application, EU-Central-1 region (Frankfurt).
+Located in [src/site](https://github.com/MTrajK/FootballPoll/blob/master/src/site/) directory.\
+The web site is hosted on github, from the gh-pages branch.
+
+## Tech/frameworks
+
+- [DynamoDB](https://aws.amazon.com/dynamodb/) - Fast and flexible NoSQL database service for any scale
+- [Python 3.7](https://www.python.org) - An interpreted, high-level, general-purpose programming language
+- [Boto 3]() - AWS SDK for Python
+- [Vue.js](https://vuejs.org/) - JavaScript framework
+- [Materialize.css](http://materializecss.com/) - Front-end framework based on Material Design
+- [Axios.js](https://github.com/axios/axios) - Promise based HTTP client
+- [Roboto fonts](https://fonts.google.com/specimen/Roboto) - Official Roboto fonts from Google
+- [Material design icons](https://material.io/tools/icons/) - Official Material Design icons from Google
+
+## Amazon Pricing
+
+Only for the services used in this application, EU-Central-1 region (Frankfurt).
 
 ### API Gateway
 

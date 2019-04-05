@@ -12,12 +12,12 @@ Here you can read how to create and fill the database, more about the goals of t
 Main goals for this NoSQL implementation:
 
 1. **Minimum resurces used** (AWS Always-Free Tier, without additional money/resources - available 25GB of storage, 25 WCU, 25 RCU, enough to handle up to 200M requests per month)
-2. **Fast response** (less than 10ms response, don't scan the tables, using hashtable approach, only search with the partition keys)
+2. **Fast response** (less than 10ms response, you shouldn't "scan" the tables, only search with the partition keys using hashtable approach)
 
 ## Database structure
 
-Database will be composed of 5 tables:\
-(**fp** is short from the app name - FootbalPoll, that will be a namespace for all tables used in this application. We'll need this because in DynamoDB all tables are located in same workspace.)
+Database is composed of 5 tables:\
+(**fp** is short from the app name - FootbalPoll, that is a namespace for all tables used in this application. We need this because in DynamoDB all tables are located in the same workspace.)
 
 1. **Admins**\
     *Table name*: fp.admins\
@@ -55,7 +55,7 @@ Database will be composed of 5 tables:\
     *RCU*: 3\
     *WCU*: 1
 
-Don't be confused with the relational databases, this db is not designed for relations, it is designed for fast queries (to optimize write/read capacity units)!
+This db is not designed for relations, it is designed for fast queries (to optimize write/read capacity units), so don't think of it as a relational database!
 
 Simple comparasion between dynamodb and relational databases:
 

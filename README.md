@@ -1,8 +1,8 @@
 # Football Poll
 
 A serverless application which uses the Amazon Web Services as the backend and it's hosted on GitHub pages.\
-Inspired by [Doodle](https://doodle.com), this application is recreating the poll after it ends (the new poll last one week and the event time and day are the same as the previous poll, only the admin can change this).\
-This application is saving the old polls and everyone can access them, also there is a simple statistic: how many events participates each player and how many friends invited each player.
+Inspired by [Doodle](https://doodle.com), this application is recreating the poll after it ends (the new poll lasts one week and the event day and time are the same as in the previous poll, only the admin can change this).\
+This application is saving the old polls and everyone can access them, also there is a simple statistic: in how many events has each player participated and how many friends has each player invited.
 
 ![Official banner](https://raw.githubusercontent.com/MTrajK/FootballPoll/master/images/banner.png "Official banner")
 
@@ -31,7 +31,7 @@ The web site is hosted on GitHub, from the gh-pages branch.
 
 - [DynamoDB](https://aws.amazon.com/dynamodb/) - Fast and flexible NoSQL database service for any scale
 - [Python 3.7](https://www.python.org) - An interpreted, high-level, general-purpose programming language
-- [Boto 3]() - AWS SDK for Python
+- [Boto 3](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html) - AWS SDK for Python
 - [Vue.js](https://vuejs.org/) - JavaScript framework
 - [Materialize.css](http://materializecss.com/) - Front-end framework based on Material Design
 - [Axios.js](https://github.com/axios/axios) - Promise based HTTP client

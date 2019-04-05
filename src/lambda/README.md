@@ -27,7 +27,7 @@ All unit tests are located in [tests](https://github.com/MTrajK/FootballPoll/blo
     ```
 
 - **[delete_participant](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/functions/delete_participant.py)** - Deletes a participant from the current poll. (*REST **DELETE** method*)
-    
+
     **Lambda policies/permisions (used DynamoDB operation - table):**\
     get_item - fp.config\
     delete_item - fp.participants
@@ -39,7 +39,7 @@ All unit tests are located in [tests](https://github.com/MTrajK/FootballPoll/blo
     }
     ```
 
-- **[get_old_polls](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/functions/get_old_polls.py)** - Returns at most 5 polls, older than the oldest poll on the web site. (*REST **GET** method*)
+- **[get_old_polls](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/functions/get_old_polls.py)** - Returns 5 polls at most, older than the oldest poll on the web site. (*REST **GET** method*)
 
     **Lambda policies/permisions (used DynamoDB operation - table):**\
     batch_get_item - fp.polls
@@ -51,7 +51,7 @@ All unit tests are located in [tests](https://github.com/MTrajK/FootballPoll/blo
     }
     ```
 
-- **[get_poll_participants](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/functions/get_old_polls.py)** - Returns all participants for the wanted poll.(*REST **GET** method*)
+- **[get_poll_participants](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/functions/get_old_polls.py)** - Returns all participants of the chosen poll. (*REST **GET** method*)
 
     **Lambda policies/permisions (used DynamoDB operation - table):**\
     query - fp.participants

@@ -58,6 +58,7 @@ main {
     color: #9e9e9e;
     background-color: #ffffff;
     margin-top: 25px;
+    margin-bottom: 25px;
 }
 
 .button-white:hover {
@@ -110,6 +111,46 @@ input[type=text]:not(.browser-default):focus:not([readonly]) + label {
 .timepicker-tick.active, .timepicker-tick:hover, .datepicker-day-button:focus {
     background-color: rgba(124, 179, 66, 0.25);
 }
+
+.stats-title {
+    margin-top: 35px;
+    margin-bottom: 35px;
+}
+
+.gold {
+    font-size: 1.6rem;
+    margin-bottom: 10px;
+}
+
+.silver {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+}
+
+.bronze {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+.gold .material-icons {
+    color: #ffd700;
+    font-size: 3.4rem;
+}
+
+.silver .material-icons {
+    color: #c0c0c0;
+    font-size: 2.7rem;
+}
+
+.bronze .material-icons {
+    color: #cd7f32;
+    font-size: 2.2rem;
+}
+
+.gold .material-icons, .silver .material-icons, .bronze .material-icons {
+    vertical-align: bottom;
+}
+
 
 /* MAIN */
 

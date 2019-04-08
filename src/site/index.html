@@ -49,10 +49,10 @@
         <div class="nav-wrapper container">
           <img class="brand-logo left" src="img/logo.svg" alt="Football Poll logo" title="Football Poll">
           <ul id="navbar" class="right hide-on-small-and-down">
-            <li><a href="#poll_info">POLL INFO</a></li>
-            <li><a href="#poll_participants">POLL PARTICIPANTS</a></li>
+            <li><a href="#poll-info">POLL INFO</a></li>
+            <li><a href="#poll-participants">POLL PARTICIPANTS</a></li>
             <li><a href="#stats">STATS</a></li>
-            <li><a href="#old_polls">OLD POLLS</a></li>
+            <li><a href="#old-polls">OLD POLLS</a></li>
           </ul>
         </div>
       </nav>
@@ -61,14 +61,73 @@
 
     <main>
       <!-- POLL INFO -->
-      <div id="poll_info" class="scrollspy">
+      <div id="poll-info" class="scrollspy green-background">
         <div class="section no-pad-bot">
           <div class="container">
             <div class="row">
-              <div class="col s12 center">
-                <h5 class="white-text">Податоците за пратките се добиваат од сервисот за следење пратки на</h5>
-                <h5 class="white-text"><a href="https://www.posta.com.mk/" target="_blank">А.Д.
-                    Македонска Пошта</a></h5>
+              <div class="col s12">
+
+                <div id="poll-info-text" class="row center white-text">
+                  <div>
+                    <h2><i><b>Фудбал-INSCALE</b></i></h2>
+                  </div>
+                  <div>
+                    <h6>Note: <span>Something as note</span></h6>
+                    <h6>Time: <span>20:45</span></h6>
+                    <h6>Day: <span>Thursday (11.04.2019)</span></h6>
+                    <h6>Location: <a href="https://www.google.com" target="_blank">Location</a></h6>
+                    <h6>Need: 12 players</h6>
+                  </div>
+                  <div>
+                    <a class="waves-effect waves-dark button-white btn"><i class="material-icons left">edit</i>edit</a>
+                  </div>
+                </div>
+
+                <!-- REMOVE THE HIDE CLASS -->
+                <div id="poll-info-edit" class="row hide">
+
+                  <div class="input-field col s12 l6 offset-xl2 xl4">
+                    <input id="title-input" type="text">
+                    <label for="title-input">Title</label>
+                  </div>
+                  <div class="input-field col s12 l6 xl4">
+                    <input id="note-input" type="text">
+                    <label for="note-input">Note</label>
+                  </div>
+                  <div class="input-field col s12 l6 offset-xl2 xl4">
+                    <input id="loc-desc-input" type="text">
+                    <label for="loc-desc-input">Location description</label>
+                  </div>
+                  <div class="input-field col s12 l6 xl4">
+                    <input id="loc-url-input" type="text">
+                    <label for="loc-url-input">Location URL</label>
+                  </div>
+                  <div class="input-field col s12 l6 offset-xl2 xl4">
+                    <input type="text" id="time-input" class="timepicker">
+                    <label for="time-input">Time</label>
+                  </div>
+                  <div class="input-field col s12 l6 xl4">
+                    <input type="text" id="day-input" class="datepicker">
+                    <label for="day-input">Day</label>
+                  </div>
+                  <div class="input-field col s12 l6 offset-xl2 xl4">
+                    <input id="need-input" type="text">
+                    <label for="need-input">Need players</label>
+                  </div>
+                  <div class="input-field col s12 l6 xl4">
+                    <input id="max-input" type="text">
+                    <label for="max-input">Max players</label>
+                  </div>
+                  <div class="input-field col s12 l6 offset-l3 offset-xl4 xl4">
+                    <input type="text" id="end-date-input" class="datepicker">
+                    <label for="end-date-input">End date</label>
+                  </div>
+                  <div class="col s12 center">
+                    <a class="waves-effect waves-dark button-white btn"><i class="material-icons left">save</i>save</a>
+                  </div>
+                  
+                </div>
+
               </div>
             </div>
           </div>
@@ -77,14 +136,12 @@
       <!-- POLL INFO -->
 
       <!-- POLL PARTICIPANTS -->
-      <div id="poll_participants" class="scrollspy">
+      <div id="poll-participants" class="scrollspy">
         <div class="section no-pad-bot">
           <div class="container">
             <div class="row">
               <div class="col s12 center">
-                <h5 class="white-text">Податоците за пратките се добиваат од сервисот за следење пратки на</h5>
-                <h5 class="white-text"><a href="https://www.posta.com.mk/" target="_blank">А.Д.
-                    Македонска Пошта</a></h5>
+
               </div>
             </div>
           </div>
@@ -93,14 +150,12 @@
       <!-- POLL PARTICIPANTS -->
 
       <!-- STATS -->
-      <div id="stats" class="scrollspy">
+      <div id="stats" class="scrollspy green-background">
         <div class="section no-pad-bot">
           <div class="container">
             <div class="row">
               <div class="col s12 center">
-                <h5 class="white-text">Податоците за пратките се добиваат од сервисот за следење пратки на</h5>
-                <h5 class="white-text"><a href="https://www.posta.com.mk/" target="_blank">А.Д.
-                    Македонска Пошта</a></h5>
+
               </div>
             </div>
           </div>
@@ -109,14 +164,12 @@
       <!-- STATS -->
 
       <!-- OLD POLLS -->
-      <div id="old_polls" class="scrollspy">
+      <div id="old-polls" class="scrollspy">
         <div class="section no-pad-bot">
           <div class="container">
             <div class="row">
               <div class="col s12 center">
-                <h5 class="white-text">Податоците за пратките се добиваат од сервисот за следење пратки на</h5>
-                <h5 class="white-text"><a href="https://www.posta.com.mk/" target="_blank">А.Д.
-                    Македонска Пошта</a></h5>
+
               </div>
             </div>
           </div>
@@ -130,9 +183,15 @@
       <div class="section no-padding">
         <div class="container">
           <div class="row">
-            <div class="col s12 center">
-              <p class="footer-text">Направено од <a href="https://www.linkedin.com/in/mtrajk/"
-                  target="_blank">Мето Трајковски</a></p>
+            <div class="col s12">
+              <div class="left">
+                <p class="footer-text">&copy; 2019 <a href="https://github.com/MTrajK/FootballPoll/"
+                    target="_blank">FootballPoll</a></p>
+              </div>
+              <div class="right">
+                <p class="footer-text"><a href="https://github.com/MTrajK/FootballPoll/blob/master/LICENSE"
+                    target="_blank">Apache 2.0 License</a></p>
+              </div>
             </div>
           </div>
         </div>
@@ -141,10 +200,10 @@
     <!-- FOOTER -->
 
     <!-- SPINNER -->
-    <div id="spinner" class="spinner-overlay">
+    <div id="main-spinner" class="spinner-overlay">
       <img class="spinner-logo" src="img/logo.svg">
       <div class="preloader-wrapper active spinner">
-        <div class="spinner-layer spinner-yellow-only">
+        <div class="spinner-layer spinner-green-only">
           <div class="circle-clipper left">
             <div class="circle"></div>
           </div>

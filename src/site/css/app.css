@@ -7,19 +7,7 @@ body {
     background-color: #fafafa;
 }
 
-#app {
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
-}
-
-main {
-    flex: 1 0 auto;
-}
-
-body.spinner-loading {
-    overflow: hidden;
-}
+/* NAVBAR */
 
 .brand-logo {
     width: 44px;
@@ -34,7 +22,7 @@ nav ul a {
 }
 
 nav ul a:hover, nav ul a.active {
-    color: #fbc02d;
+    color: #7cb342;
     background-color: white;
 }
 
@@ -43,21 +31,92 @@ nav ul a.active::after {
     margin-left: -15px;
     width: calc(100% + 30px);
     height: 3px;
-    background: #fbc02d;
+    background: #7cb342;
     display: block;
     content: '';
 }
 
+/* NAVBAR */
+
+/* MAIN */
+
+#app {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+.green-background {
+    background-color: rgba(124, 179, 66, 0.5);
+}
+
+.button-white {
+    color: #9e9e9e;
+    background-color: #ffffff;
+    margin-top: 25px;
+}
+
+.button-white:hover {
+    background-color: #f2f2f2;
+}
+
+.button-white:focus {
+    background-color: #e6e6e6;
+}
+
+.input-field > label {
+    font-size: 1.2rem;
+}
+
+input[type=text]:not(.browser-default) {
+    border-bottom: 1px solid white;
+    color: #50565d;
+}
+
+input[type=text]:not(.browser-default) + label {
+    color: white;
+}
+
+input[type=text]:not(.browser-default):focus:not([readonly]) {
+    border-bottom: 1px solid #7cb342;
+    -webkit-box-shadow: 0 1px 0 0 #7cb342;
+    box-shadow: 0 1px 0 0 #7cb342;
+}
+
+input[type=text]:not(.browser-default):focus:not([readonly]) + label {
+    color: #7cb342;
+}
+
+.timepicker-digital-display, .datepicker-date-display, .datepicker-table td.is-selected, .month-next:focus, .month-prev:focus {
+    background-color: #7cb342;
+}
+
+.timepicker-close, .datepicker-cancel, .datepicker-done, .datepicker-table td.is-today, .dropdown-content li > span {
+    color: #7cb342;
+}
+
+.timepicker-canvas-bg, .timepicker-canvas-bearing {
+    fill: #7cb342;
+}
+
+.timepicker-canvas line {
+    stroke: #7cb342;
+}
+
+.timepicker-tick.active, .timepicker-tick:hover, .datepicker-day-button:focus {
+    background-color: rgba(124, 179, 66, 0.25);
+}
+
+/* MAIN */
+
+/* FOOTER */
+
 nav ul a:focus, nav ul a:focus.active {
-    background-color: #fffde7;
-}
-
-.my-yellow {
-    color: #fbc02d;
-}
-
-.material-icons {
-    color: #fbc02d;
+    background-color: #f1f8e9;
 }
 
 .page-footer {
@@ -71,26 +130,20 @@ nav ul a:focus, nav ul a:focus.active {
     color: #50565d;
 }
 
-.name-text {
-    color: #fbc02d;
-    margin-top: 0;
-}
-
-.fp-button {
-    background-color: #fbc02d;
-    margin-top: 25px;
-}
-
-.fp-button:hover {
-    background-color: #fcd470;
-}
-
-.fp-button:focus {
-    background-color: #e0a104;
+.footer-text a {
+    color: #9ccc65;
 }
 
 .page-footer .row {
     margin-bottom: 0;
+}
+
+/* FOOTER */
+
+/* SPINNER */
+
+body.spinner-loading {
+    overflow: hidden;
 }
 
 .spinner-overlay {
@@ -105,15 +158,19 @@ nav ul a:focus, nav ul a:focus.active {
     z-index: 1005;
 }
 
-.spinner {
-    position: fixed;
-    width: 96px;
-    height: 96px;
-    top: calc(50% - 48px);
-    left: calc(50% - 48px);
+.spinner-green-only {
+    border-color: #7cb342;
 }
 
-.spinner-logo {
+#main-spinner .spinner {
+    position: fixed;
+    width: 112px;
+    height: 112px;
+    top: calc(50% - 56px);
+    left: calc(50% - 56px);
+}
+
+#main-spinner .spinner-logo {
     position: fixed;
     width: 64px;
     height: 64px;
@@ -121,9 +178,13 @@ nav ul a:focus, nav ul a:focus.active {
     left: calc(50% - 32px);
 }
 
-.spinner-yellow-only {
-    border-color: #fbc02d;
+#main-spinner .circle-clipper .circle {
+    border-width: 4px;
 }
+
+/* SPINNER */
+
+/* MEDIA */
 
 @media only screen and (max-width: 390px) {
    
@@ -171,3 +232,5 @@ nav ul a:focus, nav ul a:focus.active {
 @media only screen and (min-width: 2001px) and (max-width: 2561px) { 
     
 }
+
+/* MEDIA */

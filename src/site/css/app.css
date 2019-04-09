@@ -198,6 +198,7 @@ input[type=text]:not(.browser-default):focus:not([readonly]) + label,
 }
 
 .secondary-content .material-icons {
+    vertical-align: middle;
     padding: 1px 3px;
     color: #d32f2f;
     cursor: pointer;

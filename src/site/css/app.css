@@ -197,6 +197,14 @@ input[type=text]:not(.browser-default):focus:not([readonly]) + label,
     color: #ffffff;
 }
 
+.secondary-content {
+    display: none;
+}
+
+.collection li.collection-item:not(.active):hover .secondary-content {
+    display: inline-block;
+}
+
 .secondary-content .material-icons {
     vertical-align: middle;
     padding: 1px 3px;

@@ -73,6 +73,10 @@ main {
     background-color: #e6e6e6;
 }
 
+.waves-effect.waves-my-green .waves-ripple {
+    background-color: rgba(124, 179, 66, 0.35);
+}
+
 .button-green {
     color: #ffffff;
     background-color: #7cb342;
@@ -146,28 +150,31 @@ input[type=text]:not(.browser-default):focus:not([readonly]) + label,
 }
 
 .silver {
-    font-size: 1.4rem;
+    font-size: 1.45rem;
     margin-bottom: 15px;
 }
 
 .bronze {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     margin-bottom: 20px;
 }
 
 .gold .material-icons {
     color: #ffd700;
     font-size: 3.4rem;
+    text-shadow: 0 0 .85rem #ffd700;
 }
 
 .silver .material-icons {
     color: #c0c0c0;
     font-size: 2.7rem;
+    text-shadow: 0 0 .675rem #c0c0c0;
 }
 
 .bronze .material-icons {
     color: #cd7f32;
     font-size: 2.2rem;
+    text-shadow: 0 0 .55rem #cd7f32;
 }
 
 .gold .material-icons, .silver .material-icons, .bronze .material-icons {

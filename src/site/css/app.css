@@ -92,20 +92,47 @@ main {
     background-color: #96cd5c;
 }
 
-.input-field > label {
+.my-padding {
+    padding: 10px 24px 27px 24px;
+    margin-bottom: 60px;
+    margin-top: 20px;
+}
+
+.z-depth-2-half {
+    -webkit-box-shadow: 0 6px 11px 1px rgba(0, 0, 0, 0.14), 0 1px 12px 1px rgba(0, 0, 0, 0.12), 0 3px 3px -2px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 11px 1px rgba(0, 0, 0, 0.14), 0 1px 12px 1px rgba(0, 0, 0, 0.12), 0 3px 3px -2px rgba(0, 0, 0, 0.2);
+}
+
+.row.no-margin-bot {
+    margin-bottom: 0;
+}
+
+.my-floating-button {
+    position: absolute;
+    margin: 0;
+    left: calc(50% - 28px);
+}
+
+.info-input-field.input-field > label,
+.add-input-field.input-field > label {
     font-size: 1.2rem;
 }
 
-input[type=text]:not(.browser-default) {
+.info-input-field input[type=text]:not(.browser-default) {
     border-bottom: 1px solid #ffffff;
+}
+
+.info-input-field input[type=text]:not(.browser-default),
+.add-input-field input[type=text]:not(.browser-default) {
     color: #50565d;
 }
 
-input[type=text]:not(.browser-default) + label {
+.info-input-field input[type=text]:not(.browser-default) + label {
     color: #ffffff;
 }
 
-input[type=text]:not(.browser-default):focus:not([readonly]) {
+.info-input-field input[type=text]:not(.browser-default):focus:not([readonly]),
+.add-input-field input[type=text]:not(.browser-default):focus:not([readonly]) {
     border-bottom: 1px solid #7cb342;
     -webkit-box-shadow: 0 1px 0 0 #7cb342;
     box-shadow: 0 1px 0 0 #7cb342;
@@ -117,7 +144,8 @@ input[type=text]:not(.browser-default):focus:not([readonly]) {
     background-color: #7cb342;
 }
 
-input[type=text]:not(.browser-default):focus:not([readonly]) + label,
+.info-input-field input[type=text]:not(.browser-default):focus:not([readonly]) + label,
+.add-input-field input[type=text]:not(.browser-default):focus:not([readonly]) ~ label,
 .timepicker-close, .datepicker-cancel, 
 .datepicker-done, .datepicker-table td.is-today, 
 .dropdown-content li > span, .green-header, 

@@ -32,6 +32,17 @@ new Vue({
             var dateInstances = M.Datepicker.init(dateElems, {
                 'format': 'dddd (dd.mm.yyyy)'
             });
+
+            var autocompleteElems = document.querySelectorAll('.autocomplete');
+            var autocompleteInstances = M.Autocomplete.init(autocompleteElems, {
+                data: {
+                    'abcd': null,
+                    'meto': null,
+                    'hehehe': null,
+                    'uaaa': null,
+                    'asdasd': null
+                }
+            });
         })
     },
     watch: {

@@ -23,7 +23,7 @@ nav ul a {
 
 nav ul a:hover, nav ul a.active {
     color: #7cb342;
-    background-color: white;
+    background-color: #ffffff;
 }
 
 nav ul a.active::after {
@@ -52,6 +52,10 @@ main {
 
 .green-background {
     background-color: rgba(124, 179, 66, 0.5);
+}
+
+#poll-info-text h6 {
+    font-size: 1.4rem;
 }
 
 .button-white {
@@ -89,12 +93,12 @@ main {
 }
 
 input[type=text]:not(.browser-default) {
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid #ffffff;
     color: #50565d;
 }
 
 input[type=text]:not(.browser-default) + label {
-    color: white;
+    color: #ffffff;
 }
 
 input[type=text]:not(.browser-default):focus:not([readonly]) {
@@ -103,15 +107,19 @@ input[type=text]:not(.browser-default):focus:not([readonly]) {
     box-shadow: 0 1px 0 0 #7cb342;
 }
 
-input[type=text]:not(.browser-default):focus:not([readonly]) + label {
-    color: #7cb342;
-}
-
-.timepicker-digital-display, .datepicker-date-display, .datepicker-table td.is-selected, .month-next:focus, .month-prev:focus {
+.timepicker-digital-display, .datepicker-date-display, 
+.datepicker-table td.is-selected, .month-next:focus, 
+.month-prev:focus, .my-green {
     background-color: #7cb342;
 }
 
-.timepicker-close, .datepicker-cancel, .datepicker-done, .datepicker-table td.is-today, .dropdown-content li > span, .green-header, .location-url {
+input[type=text]:not(.browser-default):focus:not([readonly]) + label,
+.timepicker-close, .datepicker-cancel, 
+.datepicker-done, .datepicker-table td.is-today, 
+.dropdown-content li > span, .green-header, 
+.location-url, .collection a.collection-item, 
+.collection li.collection-item,
+.collection li.collection-header {
     color: #7cb342;
 }
 
@@ -168,13 +176,36 @@ input[type=text]:not(.browser-default):focus:not([readonly]) + label {
 
 .collection a.collection-item {
     cursor: pointer;
-    color: #7cb342;
 }
 
-.collection a.collection-item:not(.active):hover {
+.collection a.collection-item:not(.active):hover,
+.collection li.collection-item:not(.active):hover {
     background-color: #f2f2f2;
 }
 
+.my-badge {
+    padding: 2px 6px;
+    margin-left: 10px;
+    text-align: center;
+    color: #ffffff;
+    border-radius: 3px;
+}
+
+.total-badge {
+    float: right;
+    background: #ffc77d;
+    color: #ffffff;
+}
+
+.secondary-content .material-icons {
+    padding: 1px 3px;
+    color: #d32f2f;
+    cursor: pointer;
+}
+
+.secondary-content .material-icons:hover {
+    color: #f44336;
+}
 
 /* MAIN */
 
@@ -219,7 +250,7 @@ body.spinner-loading {
     bottom: 0;
     height: 100%;
     width: 100%;
-    background-color: white;
+    background-color: #ffffff;
     z-index: 1005;
 }
 

@@ -60,10 +60,7 @@ def parse_file():
             
             added = start
 
-            for i in range(3, 15):
-                if row[i] == '':
-                    continue
-
+            for i in range(3, len(row)):
                 polls = 0
                 added += milliseconds_in_hour
                 person = row[i]

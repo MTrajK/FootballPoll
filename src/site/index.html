@@ -67,7 +67,8 @@
             <div class="row">
               <div class="col s12">
 
-                <div id="poll-info-text" class="row center white-text">
+                <!-- REMOVE THE HIDE CLASS -->
+                <div id="poll-info-text" class="row center white-text hide">
                   <div class="col s12">
                     <h2><i><b>Фудбал-INSCALE</b></i></h2>
                   </div>
@@ -79,13 +80,13 @@
                     </h6>
                   </div>
                   <div class="col s12">
-                    <a id="edit-info-button" class="waves-effect waves-my-green button-white btn"><i class="material-icons left">edit</i>edit
+                    <a id="edit-info-button" class="waves-effect waves-my-green button-white btn"><i
+                        class="material-icons left">edit</i>edit
                       info</a>
                   </div>
                 </div>
 
-                <!-- REMOVE THE HIDE CLASS -->
-                <div id="poll-info-edit" class="row hide">
+                <div id="poll-info-edit" class="row">
 
                   <div class="input-field info-input-field col s12 l6 offset-xl1 xl5">
                     <input id="title-input" type="text">
@@ -124,7 +125,8 @@
                     <label for="end-date-input">End date</label>
                   </div>
                   <div class="col s12 center">
-                    <a id="save-info-button" class="waves-effect waves-my-green button-white btn"><i class="material-icons left">save</i>save
+                    <a id="save-info-button" class="waves-effect waves-my-green button-white btn modal-trigger"
+                      href="#save-info-modal"><i class="material-icons left">save</i>save
                       info</a>
                   </div>
 
@@ -156,7 +158,9 @@
                           <label for="friend-input">Friend</label>
                         </div>
                       </div>
-                      <a id="add-participant-button" class="btn-floating btn-large waves-effect waves-light button-green waves-light my-floating-button z-depth-2-half"><i class="material-icons">add</i></a>
+                      <a id="add-participant-button"
+                        class="btn-floating btn-large waves-effect waves-light button-green waves-light my-floating-button z-depth-2-half"><i
+                          class="material-icons">add</i></a>
                     </div>
                   </div>
                   <div class="col s12 l10 offset-l1 xl8 offset-xl2">
@@ -219,8 +223,8 @@
                     </div>
                   </div>
                   <div class="col s12 center">
-                    <a id="all-players-button" class="waves-effect waves-my-green button-white btn"><i
-                        class="material-icons left">bar_chart</i>all players</a>
+                    <a id="all-stats-button" class="waves-effect waves-my-green button-white btn modal-trigger"
+                      href="#show-stats-modal"><i class="material-icons left">bar_chart</i>all stats</a>
                   </div>
                 </div>
               </div>
@@ -242,12 +246,9 @@
                 <div class="row">
                   <div class="col s12 l10 offset-l1 xl8 offset-xl2">
                     <div class="collection z-depth-1">
-                      <a class="collection-item waves-effect waves-my-green"><span
-                          class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span></a>
-                      <a class="collection-item waves-effect waves-my-green"><span
-                          class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span></a>
-                      <a class="collection-item waves-effect waves-my-green"><span
-                          class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span></a>
+                      <a class="collection-item waves-effect waves-my-green modal-trigger" href="#show-poll-modal"><span class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span></a>
+                      <a class="collection-item waves-effect waves-my-green modal-trigger" href="#show-poll-modal"><span class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span></a>
+                      <a class="collection-item waves-effect waves-my-green modal-trigger" href="#show-poll-modal"><span class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span></a>
                     </div>
                   </div>
                   <div class="col s12 center">
@@ -283,6 +284,79 @@
       </div>
     </footer>
     <!-- FOOTER -->
+
+    <!-- MODALS -->
+    <!-- SAVE INFO MODAL -->
+    <div id="save-info-modal" class="modal">
+      <div class="modal-content">
+        <div class="row no-margin-bot">
+          <div class="col s12 my-green-text">
+            <h5>Enter admin's credentials to save the poll info</h5>
+          </div>
+          <div class="input-field add-input-field col s12 m6">
+            <input id="save-info-admin-name" type="text" maxlength="60">
+            <label id="save-info-admin-name-label" for="save-info-admin-name">Name</label>
+          </div>
+          <div class="input-field add-input-field col s12 m6">
+            <input id="save-info-admin-password" type="password" maxlength="60">
+            <label id="save-info-admin-password-label" for="save-info-admin-password">Password</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a class="modal-close waves-effect waves-my-green my-green-text btn-flat">Cancel</a>
+        <a class="waves-effect waves-my-green my-green-text btn-flat">Save</a>
+      </div>
+    </div>
+    <!-- SAVE INFO MODAL -->
+    <!-- SHOW STATS MODAL -->
+    <div id="show-stats-modal" class="modal">
+      <div class="modal-content">
+        <div class="row no-margin-bot">
+          <div class="col s12 m6">
+            <h5 class="my-green-text">Played Games</h5>
+            <ol>
+              <li>Name Namevski - 15</li>
+              <li>Name Namevski - 15</li>
+              <li>Name Namevski - 15</li>
+              <li>Name Namevski - 15</li>
+              <li>Name Namevski - 15</li>
+              <li>Name Namevski - 15</li>
+            </ol>
+          </div>
+          <div class="col s12 m6">
+            <h5 class="my-green-text">Invited Friends</h5>
+            <ol>
+              <li>Name Namevski - 15</li>
+              <li>Name Namevski - 15</li>
+              <li>Name Namevski - 15</li>
+              <li>Name Namevski - 15</li>
+              <li>Name Namevski - 15</li>
+              <li>Name Namevski - 15</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a class="modal-close waves-effect waves-my-green my-green-text btn-flat">Cancel</a>
+      </div>
+    </div>
+    <!-- SHOW STATS MODAL -->
+    <!-- SHOW POLL MODAL -->
+    <div id="show-poll-modal" class="modal">
+      <div class="modal-content">
+        <div class="row no-margin-bot">
+          <div class="col s12 my-green-text">
+            <h5>Poll info</h5>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a class="modal-close waves-effect waves-my-green my-green-text btn-flat">Cancel</a>
+      </div>
+    </div>
+    <!-- SHOW POLL MODAL -->
+    <!-- MODALS -->
 
     <!-- SPINNER -->
     <div id="main-spinner" class="spinner-overlay">

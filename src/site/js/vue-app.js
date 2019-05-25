@@ -43,6 +43,15 @@ new Vue({
                     'asdasd': null
                 }
             });
+
+            var saveInfoModal = document.querySelector('#save-info-modal');
+            var saveInfoModalInstance = M.Modal.init(saveInfoModal);
+
+            var showStatsModal = document.querySelector('#show-stats-modal');
+            var showStatsModalInstance = M.Modal.init(showStatsModal);
+
+            var showPollModal = document.querySelector('#show-poll-modal');
+            var showPollModalInstance = M.Modal.init(showPollModal);
         })
     },
     watch: {

@@ -67,8 +67,7 @@
             <div class="row">
               <div class="col s12">
 
-                <!-- REMOVE THE HIDE CLASS -->
-                <div id="poll-info-text" class="row center white-text hide">
+                <div id="poll-info-text" class="row center white-text">
                   <div class="col s12">
                     <h2><i><b>Фудбал-INSCALE</b></i></h2>
                   </div>
@@ -86,7 +85,8 @@
                   </div>
                 </div>
 
-                <div id="poll-info-edit" class="row">
+                <!-- REMOVE THE HIDE CLASS -->
+                <div id="poll-info-edit" class="row hide">
 
                   <div class="input-field info-input-field col s12 l6 offset-xl1 xl5">
                     <input id="title-input" type="text">
@@ -246,9 +246,12 @@
                 <div class="row">
                   <div class="col s12 l10 offset-l1 xl8 offset-xl2">
                     <div class="collection z-depth-1">
-                      <a class="collection-item waves-effect waves-my-green modal-trigger" href="#show-poll-modal"><span class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span></a>
-                      <a class="collection-item waves-effect waves-my-green modal-trigger" href="#show-poll-modal"><span class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span></a>
-                      <a class="collection-item waves-effect waves-my-green modal-trigger" href="#show-poll-modal"><span class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span></a>
+                      <a class="collection-item waves-effect waves-my-green modal-trigger" href="#show-poll-modal"><span
+                          class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span></a>
+                      <a class="collection-item waves-effect waves-my-green modal-trigger" href="#show-poll-modal"><span
+                          class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span></a>
+                      <a class="collection-item waves-effect waves-my-green modal-trigger" href="#show-poll-modal"><span
+                          class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span></a>
                     </div>
                   </div>
                   <div class="col s12 center">
@@ -290,8 +293,8 @@
     <div id="save-info-modal" class="modal">
       <div class="modal-content">
         <div class="row no-margin-bot">
-          <div class="col s12 my-green-text">
-            <h5>Enter admin's credentials to save the poll info</h5>
+          <div class="col s12">
+            <h5 class="my-green-text">Enter admin's credentials to save the poll info</h5>
           </div>
           <div class="input-field add-input-field col s12 m6">
             <input id="save-info-admin-name" type="text" maxlength="60">
@@ -304,8 +307,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <a class="modal-close waves-effect waves-my-green my-green-text btn-flat">Cancel</a>
-        <a class="waves-effect waves-my-green my-green-text btn-flat">Save</a>
+        <a class="modal-close waves-effect waves-my-green my-green-text btn-flat">cancel</a>
+        <a class="waves-effect waves-my-green my-green-text btn-flat">save</a>
       </div>
     </div>
     <!-- SAVE INFO MODAL -->
@@ -315,44 +318,71 @@
         <div class="row no-margin-bot">
           <div class="col s12 m6">
             <h5 class="my-green-text">Played Games</h5>
-            <ol>
-              <li>Name Namevski - 15</li>
-              <li>Name Namevski - 15</li>
-              <li>Name Namevski - 15</li>
-              <li>Name Namevski - 15</li>
-              <li>Name Namevski - 15</li>
-              <li>Name Namevski - 15</li>
+            <ol class="custom-ol">
+              <li> <span>Name Namevski</span> - <span>15</span> </li>
+              <li> <span>Name Namevski</span> - <span>15</span> </li>
+              <li> <span>Name Namevski</span> - <span>15</span> </li>
+              <li> <span>Name Namevski</span> - <span>15</span> </li>
+              <li> <span>Name Namevski</span> - <span>15</span> </li>
+              <li> <span>Name Namevski</span> - <span>15</span> </li>
             </ol>
           </div>
           <div class="col s12 m6">
             <h5 class="my-green-text">Invited Friends</h5>
-            <ol>
-              <li>Name Namevski - 15</li>
-              <li>Name Namevski - 15</li>
-              <li>Name Namevski - 15</li>
-              <li>Name Namevski - 15</li>
-              <li>Name Namevski - 15</li>
-              <li>Name Namevski - 15</li>
+            <ol class="custom-ol">
+              <li> <span>Name Namevski</span> - <span>15</span> </li>
+              <li> <span>Name Namevski</span> - <span>15</span> </li>
+              <li> <span>Name Namevski</span> - <span>15</span> </li>
+              <li> <span>Name Namevski</span> - <span>15</span> </li>
+              <li> <span>Name Namevski</span> - <span>15</span> </li>
+              <li> <span>Name Namevski</span> - <span>15</span> </li>
             </ol>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <a class="modal-close waves-effect waves-my-green my-green-text btn-flat">Cancel</a>
+        <a class="modal-close waves-effect waves-my-green my-green-text btn-flat">close</a>
       </div>
     </div>
     <!-- SHOW STATS MODAL -->
     <!-- SHOW POLL MODAL -->
     <div id="show-poll-modal" class="modal">
       <div class="modal-content">
+        <div class="row">
+          <div class="col s12 poll-info-modal-text">
+            <h5 class="my-green-text">Poll info</h5>
+            <h6>Note: <span>Something as note</span></h6>
+            <h6>Time: <span>20:45</span></h6>
+            <h6>Day: <span>Thursday (11.04.2019)</span></h6>
+            <h6>Location: <a href="https://www.google.com" target="_blank" class="location-url">Location</a></h6>
+          </div>
+        </div>
         <div class="row no-margin-bot">
-          <div class="col s12 my-green-text">
-            <h5>Poll info</h5>
+          <div class="col s12">
+            <h5 class="my-green-text">Poll participants</h5>
+            <ul class="collection with-header z-depth-1">
+              <li class="collection-header">
+                <h5>Players <span class="my-badge my-green">Friends</span> <span
+                    class="my-badge total-badge">8/12</span></h5>
+              </li>
+              <li class="collection-item">
+                <div>Alvin <span class="my-badge my-green">+1</span></div>
+              </li>
+              <li class="collection-item">
+                <div>Alvin</div>
+              </li>
+              <li class="collection-item">
+                <div>Alvin</div>
+              </li>
+              <li class="collection-item">
+                <div>Alvin <span class="my-badge my-green">Miki</span> </div>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <a class="modal-close waves-effect waves-my-green my-green-text btn-flat">Cancel</a>
+        <a class="modal-close waves-effect waves-my-green my-green-text btn-flat">close</a>
       </div>
     </div>
     <!-- SHOW POLL MODAL -->

@@ -124,7 +124,8 @@ main {
 
 .info-input-field input[type=text]:not(.browser-default),
 .add-input-field input[type=text]:not(.browser-default),
-.add-input-field input[type=password]:not(.browser-default) {
+.add-input-field input[type=password]:not(.browser-default),
+.poll-info-modal-text {
     color: #50565d;
 }
 
@@ -253,6 +254,26 @@ main {
 
 .secondary-content .material-icons:hover {
     color: #f44336;
+}
+
+.custom-ol {
+    margin: 15px 0 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: my-counter;
+}
+
+.custom-ol li {
+    counter-increment: my-counter;
+    color: #50565d;
+    margin-top: 5px;
+}
+
+.custom-ol li::before {
+    content: counter(my-counter) ".";
+    margin-right: 10px;
+    color: #7cb342;
+    font-weight: bold;
 }
 
 /* MAIN */

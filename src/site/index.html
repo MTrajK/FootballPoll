@@ -164,25 +164,25 @@
                     </div>
                   </div>
                   <div class="col s12 l10 offset-l1 xl8 offset-xl2">
-                    <ul class="collection hover-colection with-header z-depth-1">
+                    <ul class="collection with-header z-depth-1">
                       <li class="collection-header">
                         <h5>Players <span class="my-badge my-green">Friends</span> <span
                             class="my-badge total-badge">8/12</span></h5>
                       </li>
-                      <li class="collection-item">
+                      <li class="collection-item hover-item">
                         <div>Alvin <span class="my-badge my-green">+1</span> <a
                             class="secondary-content waves-effect waves-red"> <i class="material-icons">delete</i></a>
                         </div>
                       </li>
-                      <li class="collection-item">
+                      <li class="collection-item hover-item">
                         <div>Alvin <a class="secondary-content waves-effect waves-red"> <i
                               class="material-icons">delete</i></a></div>
                       </li>
-                      <li class="collection-item">
+                      <li class="collection-item hover-item">
                         <div>Alvin <a class="secondary-content waves-effect waves-red"> <i
                               class="material-icons">delete</i></a></div>
                       </li>
-                      <li class="collection-item">
+                      <li class="collection-item hover-item">
                         <div>Alvin <span class="my-badge my-green">Miki</span> <a
                             class="secondary-content waves-effect waves-red"><i class="material-icons">delete</i></a>
                         </div>
@@ -245,18 +245,34 @@
               <div class="col s12">
                 <div class="row">
                   <div class="col s12 l10 offset-l1 xl8 offset-xl2">
-                    <div class="collection hover-colection z-depth-1">
-                      <a class="collection-item waves-effect waves-my-green modal-trigger" href="#show-poll-modal"><span
-                          class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span></a>
-                      <a class="collection-item waves-effect waves-my-green modal-trigger" href="#show-poll-modal"><span
-                          class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span></a>
-                      <a class="collection-item waves-effect waves-my-green modal-trigger" href="#show-poll-modal"><span
-                          class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span></a>
+                    <div class="collection z-depth-1">
+                      <a class="collection-item hover-item waves-effect waves-my-green modal-trigger"
+                        href="#show-poll-modal">
+                        <span class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span>
+                      </a>
+                      <a class="collection-item hover-item waves-effect waves-my-green modal-trigger"
+                        href="#show-poll-modal">
+                        <span class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span>
+                      </a>
+                      <a class="collection-item hover-item waves-effect waves-my-green modal-trigger"
+                        href="#show-poll-modal">
+                        <span class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span>
+                      </a>
+                      
+                      <!-- LOADING SPINNER -->
+                      <!-- REMOVE THE HIDE CLASS -->
+                      <a class="collection-item no-hover-item hide">
+                        <div class="progress custom-progress">
+                          <div class="indeterminate"></div>
+                        </div>
+                      </a>
+                      <!-- LOADING SPINNER -->
                     </div>
                   </div>
                   <div class="col s12 center">
-                    <a id="load-more-button" class="waves-effect waves-light button-green btn"><i
-                        class="material-icons left">expand_more</i>load more</a>
+                    <a id="load-more-button" class="waves-effect waves-light button-green btn">
+                      <i class="material-icons left">expand_more</i>load more
+                    </a>
                   </div>
                 </div>
               </div>
@@ -387,7 +403,7 @@
     <!-- SHOW POLL MODAL -->
     <!-- MODALS -->
 
-    <!-- SPINNER -->
+    <!-- MAIN SPINNER -->
     <div id="main-spinner" class="spinner-overlay">
       <img class="spinner-logo" src="img/logo.svg">
       <div class="preloader-wrapper active spinner">
@@ -404,7 +420,7 @@
         </div>
       </div>
     </div>
-    <!-- SPINNER -->
+    <!-- MAIN SPINNER -->
 
   </div>
 

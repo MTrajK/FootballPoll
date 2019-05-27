@@ -218,9 +218,14 @@ main {
     cursor: pointer;
 }
 
-.collection.hover-colection a.collection-item:not(.active):hover,
-.collection.hover-colection li.collection-item:not(.active):hover {
+.collection a.collection-item.hover-item:not(.active):hover,
+.collection li.collection-item.hover-item:not(.active):hover {
     background-color: #f2f2f2;
+}
+
+.collection a.collection-item.no-hover-item:not(.active):hover {
+    background-color: #fff;
+    cursor: progress;
 }
 
 .my-badge {
@@ -349,6 +354,15 @@ body.spinner-loading {
 
 #main-spinner .circle-clipper .circle {
     border-width: 4px;
+}
+
+.progress.custom-progress {
+    margin: 10px auto;
+    background-color: rgba(124, 179, 66, 0.35);
+}
+
+.progress.custom-progress .indeterminate{
+    background-color: #7cb342;
 }
 
 /* SPINNER */

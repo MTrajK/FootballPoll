@@ -177,6 +177,11 @@ main {
     margin-bottom: 35px;
 }
 
+#poll-participants {
+    display:block;
+    position:relative;
+}
+
 .gold {
     font-size: 1.6rem;
     margin-bottom: 10px;
@@ -321,19 +326,44 @@ body.spinner-loading {
 }
 
 .spinner-overlay {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     height: 100%;
     width: 100%;
-    background-color: #ffffff;
     z-index: 1005;
+    background-color: rgba(250, 250, 250, 0.75);
+    cursor: progress;
+}
+
+#update-poll-spinner.spinner-overlay {
+    z-index: 996;
+    top: -20px;
+    bottom: -20px;
+    height: calc(100% + 40px);
+}
+
+#save-info-spinner.spinner-overlay {
+    border-radius: 2px;
+}
+
+#main-spinner.spinner-overlay {
+    position: fixed;
+    background-color: #ffffff;
 }
 
 .spinner-green-only {
     border-color: #7cb342;
+}
+
+.spinner {
+    position: absolute;
+    width: 84px;
+    height: 84px;
+    top: calc(50% - 42px);
+    left: calc(50% - 42px);
 }
 
 #main-spinner .spinner {
@@ -344,12 +374,24 @@ body.spinner-loading {
     left: calc(50% - 56px);
 }
 
+.spinner-logo {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    top: calc(50% - 24px);
+    left: calc(50% - 24px);
+}
+
 #main-spinner .spinner-logo {
     position: fixed;
     width: 64px;
     height: 64px;
     top: calc(50% - 32px);
     left: calc(50% - 32px);
+}
+
+.circle-clipper .circle {
+    border-width: 3px;
 }
 
 #main-spinner .circle-clipper .circle {

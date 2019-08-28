@@ -1,4 +1,4 @@
-Date,Start,End,Participant 1,Participant 2,Participant 3,Participant 4,Participant 5,Participant 6,Participant 7,Participant 8,Participant 9,Participant 10,Participant 11,Participant 12
+Date,Start,End,Participant 1,Participant 2,Participant 3,Participant 4,Participant 5,Participant 6,Participant 7,Participant 8,Participant 9,Participant 10,Participant 11,Participant 12,Participant 13,Participant 14
 2018/11/22,2018/11/16,2018/11/23,Мето,Radic,Dimitar,Gercho,Иван,Marjan,Marjan (Goce),Marjan (Ivan),Иван (Аце),Srdjan (Aco),Srdjan (Robe),Иван (Никола)
 2018/11/29,2018/11/23,2018/11/30,Gjorgi,Stevan,Мето,Vili,Викса,Gercho,Викса (Дамјан),Marjan (Goce),Srdjan (Aco),Мето (Никола),Мето (Иван),Marjan
 2018/12/06,2018/11/30,2018/12/07,Мето,Gjorgi,Викса,Srdjan,Enes,Bujo,Radic,Marjan (Goce),Gjorgi (+1),Srdjan (+1),Radic (Nikola),Radic (Tino)
@@ -15,9 +15,21 @@ Date,Start,End,Participant 1,Participant 2,Participant 3,Participant 4,Participa
 2019/03/28,2019/03/22,2019/03/29,Мето,Radic,Никола,Викса,Mitko,Zlatko,Srdjan (+1),Dimitar,Gercho,Stevan,Bojan,Vili
 2019/04/04,2019/03/29,2019/04/05,Vili,Gjorgi,Gercho,Никола,Викса,Stevan,Radic (Ivan),Никола (Аце),Gjorgi (+1),Gjorgi (+2),Bojan,Викса (Нино)
 2019/04/11,2019/04/05,2019/04/12,Marjan,Srdjan,Bujo,Bojan,Никола,Викса,Stevan,Gercho,Mitko,Gjorgi,Radic,Мето
-2019/04/18,2019/04/12,2019/04/19,Radic,Mitko,Stevan (Petar),Dimitar,Srdjan,Stevan,Bojan,Enes,Bujo,Gercho,Gjorgi,Викса
+2019/04/18,2019/04/12,2019/04/19,Radic,Mitko,Stevan (Petar),Dimitar,Srdjan,Stevan,Bojan,Enes,Radic,Gercho,Gjorgi,Викса
 2019/05/02,2019/04/26,2019/05/03,Srdjan (Ivan),Srdjan (Komsho),Stevan (Tochakot),Srdjan (Robe),Srdjan (Aco),Викса (+1),Stevan (Petar),Mitko,Stevan,Radic,Викса,Мето
 2019/05/09,2019/05/03,2019/05/10,Stevan (Petar),Викса (+1),Srdjan (+1),Srdjan (+2),Mitko,Stevan,Bojan,Dimitar,Srdjan,Gercho,Radic,Викса
-2019/05/16,2019/05/10,2019/05/17,Stevan (Petar),Gjorgi (+1),Stevan,Gjorgi (+2),Radic (Ivan),Srdjan (Robert),Srdjan (Aco),Bojan,Gjorgi,Dimitar,Radic,Мето
-2019/05/23,2019/05/17,2019/05/24,Мето,Gjorgi,Radic,Bojan,Stevan,Gjorgi (+1),Radic (+1),Stevan (+1),Gjorgi (+2),Srdjan (Robe),Srdjan (+2),Stevan (Tino)
-2019/05/30,2019/05/24,2019/05/31
+2019/05/16,2019/05/10,2019/05/17,Stevan (Petar),Gjorgi (+1),Stevan,Gjorgi (+2),Radic (Ivan),Srdjan (Robert),Srdjan (Aco),Bojan,Srdjan,Gjorgi,Dimitar,Radic,Мето
+2019/05/23,2019/05/17,2019/05/24,Мето,Gjorgi,Radic,Bojan,Stevan,Gjorgi (+1),Radic (+1),Stevan (+1),Gjorgi (+2),Srdjan (Robe),Srdjan (+1),Stevan (Tino)
+2019/05/30,2019/05/24,2019/05/31,Gjorgi,Srdjan,Vili,Radic,Dimitar,Gercho,Stevan,Nikola Kicev,Stevan (+1 Petar),Gjorgi (+1),Gjorgi (+2)
+2019/06/06,2019/05/31,2019/06/07,Gjorgi (Hristijan),Srdjan (Robe),Bojan,Gercho,Stevan (+1 Petar),Gjorgi (Rade),Blagoja,Stevan,Srdjan,Mitko,Gjorgi,Radic
+2019/06/20,2019/06/14,2019/06/21,Мето,Mitko,Nikola Kicev,Srdjan,Blagoja,Stevan,Stevan (+1 Petar),Dimitar,Stevan +2 (Tino),Stevan +3 (Tocak),Мето (+1),Radic (+1)
+2019/06/27,2019/06/21,2019/06/28,Мето,Srdjan,Gjorgi,Mitko,Stevan,Stevan (+1 Petar),Gjorgi (Rade),Gjorgi (Jovan),Srdjan (+1),Stevan (+2 Tocakot),Мето (+1),Stevan (+3 Hristijan)
+2019/07/04,2019/06/28,2019/07/05,Мето,Srdjan,Radic,Mitko,Stevan,Stevan (+1 Petar),Srdjan (Aco),Blagoja,Radic (+1),Stevan (+2 Tocakot),Bojan,Nikola Kicev
+2019/07/11,2019/07/05,2019/07/12,Мето,Mitko,Blagoja,Gjorgi,Srdjan,Gercho,Bojan,Nikola Kicev,Goran T,Marjan,Stevan,Radic
+2019/07/18,2019/07/12,2019/07/19,Bujo,Radic,Blagoja,Мето,Robert,Aleksandar Nedevski,Bojan,Goran T,Marjan,Nikola Kicev,Stevan,Radic (+1 Ivan)
+2019/07/25,2019/07/19,2019/07/26,Мето,Srdjan,Blagoja,Gjorgi,Marjan,Stevan,Bojan,Radic,Gjorgi (+1),Gjorgi (+2),Stevan (+1 Filip),Radic (Ivan)
+2019/08/01,2019/07/26,2019/08/02,Мето,Mitko,Srdjan (+2),Marjan,Goran T,Stevan,Radic,Stevan (+1 Petar),Srdjan (+1),Mitko (+1),Stevan (+2 Tino),Goran T (+1 Risto)
+2019/08/08,2019/08/02,2019/08/09,Мето,Stevan,Gjorgi,Blagoja,Srdjan (+2),Marjan,Mitko,Radic,Srdjan (+1),Stevan (+1 Petar),Gjorgi (+1 Rade),Bojan
+2019/08/15,2019/08/09,2019/08/16,Мето,Marjan,Tasko,Nikola Kicev,Srdjan (+2),Goran T,Stevan (+1 Petar),Gjorgi,Srdjan (+1 Aco),Stevan (+2 Tino),Srdjan (+3 Jane),Marjan (+1 Ivan)
+2019/08/22,2019/08/16,2019/08/23,Мето,Radic,Srdjan (+1),Blagoja,Stevan,Gjorgi,Marjan,Marjan (Goce),Мето (Никола),Tasko,Marjan (Igor),Radic (Ivan)
+2019/08/29,2019/08/23,2019/08/30

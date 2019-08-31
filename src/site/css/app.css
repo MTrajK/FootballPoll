@@ -456,4 +456,21 @@ body.spinner-loading {
     }
 }
 
+@media only screen and (min-width: 601px) and (max-width: 992px) {
+    #toast-container {
+      left: auto;
+      right: 5%;
+      bottom: 7%;
+    }
+}
+  
+@media only screen and (min-width: 993px) {
+    #toast-container {
+        top: auto;
+        left: auto;
+        right: 5%;
+        bottom: 7%;
+    }
+}
+
 /* MEDIA */

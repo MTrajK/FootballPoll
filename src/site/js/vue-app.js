@@ -75,25 +75,34 @@ var app = new Vue({
                 UIComponents.saveInfoModal.saveInfoModalInstance.close(); 
                 thisApp.savingPollInfo = false;
                 UIComponents.saveInfoModal.saveInfoModalInstance.options.dismissible = true;
+                M.toast({html: 'The poll info is successfully updated!'});
             }, 5000);
         },
         addPollParticipant: function () {
             this.updatingPollParticipants = true;
 
             var thisApp = this;
-            setTimeout(function(){ thisApp.updatingPollParticipants = false; }, 5000);
+            setTimeout(function(){ 
+                thisApp.updatingPollParticipants = false;
+                M.toast({html: 'The participant is successfully added!'});
+            }, 5000);
         },
         deletePollParticipant: function () {
             this.updatingPollParticipants = true;
 
             var thisApp = this;
-            setTimeout(function(){ thisApp.updatingPollParticipants = false; }, 5000);
+            setTimeout(function(){ 
+                thisApp.updatingPollParticipants = false;
+                M.toast({html: 'The participant is successfully deleted!'});
+            }, 5000);
         },
         loadOldPolls: function () {
             this.loadingOldPolls = true;
 
             var thisApp = this;
-            setTimeout(function(){ thisApp.loadingOldPolls = false; }, 5000);
+            setTimeout(function(){ 
+                thisApp.loadingOldPolls = false; 
+            }, 5000);
         },
         loadOldPollInfo: function () {
             this.loadingOldPollInfo = true;

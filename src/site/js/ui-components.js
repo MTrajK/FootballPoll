@@ -1,6 +1,6 @@
 (function (global) {
 
-    global.MaterializeComponents = {
+    global.UIComponents = {
         
     };
     

@@ -77,6 +77,7 @@ def parse_file():
                     friend = row[i][findBracket + 1 : -1]
 
                 person = ' '.join(person.lower().split())
+                friend = ' '.join(friend.lower().split())
 
                 participants.append({
                     'poll': poll,

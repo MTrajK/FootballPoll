@@ -22,7 +22,7 @@ Date,Start,End,Participant 1,Participant 2,Participant 3,Participant 4,Participa
 2019/05/23,2019/05/17,2019/05/24,Мето,Gjorgi,Radic,Bojan,Stevan,Gjorgi (+1),Radic (+1),Stevan (+1),Gjorgi (+2),Srdjan (Robe),Srdjan (+1),Stevan (Tino)
 2019/05/30,2019/05/24,2019/05/31,Gjorgi,Srdjan,Vili,Radic,Dimitar,Gercho,Stevan,Nikola Kicev,Stevan (+1 Petar),Gjorgi (+1),Gjorgi (+2)
 2019/06/06,2019/05/31,2019/06/07,Gjorgi (Hristijan),Srdjan (Robe),Bojan,Gercho,Stevan (+1 Petar),Gjorgi (Rade),Blagoja,Stevan,Srdjan,Mitko,Gjorgi,Radic
-2019/06/20,2019/06/14,2019/06/21,Мето,Mitko,Nikola Kicev,Srdjan,Blagoja,Stevan,Stevan (+1 Petar),Dimitar,Stevan +2 (Tino),Stevan +3 (Tocak),Мето (+1),Radic (+1)
+2019/06/20,2019/06/14,2019/06/21,Мето,Mitko,Nikola Kicev,Srdjan,Blagoja,Stevan,Stevan (+1 Petar),Dimitar,Stevan (+2 Tino),Stevan (+3 Tocak),Мето (+1),Radic (+1)
 2019/06/27,2019/06/21,2019/06/28,Мето,Srdjan,Gjorgi,Mitko,Stevan,Stevan (+1 Petar),Gjorgi (Rade),Gjorgi (Jovan),Srdjan (+1),Stevan (+2 Tocakot),Мето (+1),Stevan (+3 Hristijan)
 2019/07/04,2019/06/28,2019/07/05,Мето,Srdjan,Radic,Mitko,Stevan,Stevan (+1 Petar),Srdjan (Aco),Blagoja,Radic (+1),Stevan (+2 Tocakot),Bojan,Nikola Kicev
 2019/07/11,2019/07/05,2019/07/12,Мето,Mitko,Blagoja,Gjorgi,Srdjan,Gercho,Bojan,Nikola Kicev,Goran T,Marjan,Stevan,Radic
@@ -32,4 +32,5 @@ Date,Start,End,Participant 1,Participant 2,Participant 3,Participant 4,Participa
 2019/08/08,2019/08/02,2019/08/09,Мето,Stevan,Gjorgi,Blagoja,Srdjan (+2),Marjan,Mitko,Radic,Srdjan (+1),Stevan (+1 Petar),Gjorgi (+1 Rade),Bojan
 2019/08/15,2019/08/09,2019/08/16,Мето,Marjan,Tasko,Nikola Kicev,Srdjan (+2),Goran T,Stevan (+1 Petar),Gjorgi,Srdjan (+1 Aco),Stevan (+2 Tino),Srdjan (+3 Jane),Marjan (+1 Ivan)
 2019/08/22,2019/08/16,2019/08/23,Мето,Radic,Srdjan (+1),Blagoja,Stevan,Gjorgi,Marjan,Marjan (Goce),Мето (Никола),Tasko,Marjan (Igor),Radic (Ivan)
-2019/08/29,2019/08/23,2019/08/30
+2019/08/29,2019/08/23,2019/08/30,Мето,Gercho,Marjan,Blagoja,Marjan (+1),Radic,Stevan,Stevan (+1 Petar),Мето (Никола),Srdjan (+1),Srdjan (Robe),Srdjan (Aco)
+2019/09/05,2019/08/30,2019/09/06

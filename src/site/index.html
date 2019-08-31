@@ -67,7 +67,7 @@
             <div class="row">
               <div class="col s12">
 
-                <div id="poll-info-text" class="row center white-text">
+                <div id="poll-info-text" class="row center white-text" v-if="showPollInfo">
                   <div class="col s12">
                     <h2><i><b>Фудбал-INSCALE</b></i></h2>
                   </div>
@@ -79,14 +79,12 @@
                     </h6>
                   </div>
                   <div class="col s12">
-                    <a id="edit-info-button" class="waves-effect waves-my-green button-white btn"><i
-                        class="material-icons left">edit</i>edit
-                      info</a>
+                    <a id="edit-info-button" class="waves-effect waves-my-green button-white btn"
+                      @click="editPollInfo"><i class="material-icons left">edit</i>edit info</a>
                   </div>
                 </div>
 
-                <!-- REMOVE THE HIDE CLASS -->
-                <div id="poll-info-edit" class="row hide">
+                <div id="poll-info-edit" class="row" v-if="!showPollInfo">
 
                   <div class="input-field info-input-field col s12 m6 offset-l1 l5 offset-xl2 xl4">
                     <input id="title-input" type="text">
@@ -125,9 +123,11 @@
                     <label for="end-date-input">End date</label>
                   </div>
                   <div class="col s12 center">
-                    <a id="save-info-button" class="waves-effect waves-my-green button-white btn modal-trigger"
-                      href="#save-info-modal"><i class="material-icons left">save</i>save
-                      info</a>
+                    <button class="waves-effect waves-my-green button-white btn btn-font"
+                      @click="cancelEditingPollInfo"><i class="material-icons left">clear</i>cancel</button>
+                    <a id="save-info-button"
+                      class="waves-effect waves-my-green button-white btn modal-trigger left-margin-btn"
+                      href="#save-info-modal"><i class="material-icons left">save</i>save info</a>
                   </div>
 
                 </div>
@@ -159,8 +159,8 @@
                         </div>
                       </div>
                       <a id="add-participant-button"
-                        class="btn-floating btn-large waves-effect waves-light button-green waves-light my-floating-button z-depth-2-half"><i
-                          class="material-icons">add</i></a>
+                        class="btn-floating btn-large waves-effect waves-light button-green waves-light my-floating-button z-depth-2-half"
+                        @click="addPollParticipant"><i class="material-icons">add</i></a>
                     </div>
                   </div>
                   <div class="col s12 l10 offset-l1 xl8 offset-xl2">
@@ -171,21 +171,22 @@
                       </li>
                       <li class="collection-item hover-item">
                         <div>Alvin <span class="my-badge my-green">+1</span> <a
-                            class="secondary-content waves-effect waves-red"> <i class="material-icons">delete</i></a>
+                            class="secondary-content waves-effect waves-red" @click="deletePollParticipant"> <i
+                              class="material-icons">delete</i></a>
                         </div>
                       </li>
                       <li class="collection-item hover-item">
-                        <div>Alvin <a class="secondary-content waves-effect waves-red"> <i
-                              class="material-icons">delete</i></a></div>
+                        <div>Alvin <a class="secondary-content waves-effect waves-red" @click="deletePollParticipant">
+                            <i class="material-icons">delete</i></a></div>
                       </li>
                       <li class="collection-item hover-item">
-                        <div>Alvin <a class="secondary-content waves-effect waves-red"> <i
-                              class="material-icons">delete</i></a></div>
+                        <div>Alvin <a class="secondary-content waves-effect waves-red" @click="deletePollParticipant">
+                            <i class="material-icons">delete</i></a></div>
                       </li>
                       <li class="collection-item hover-item">
                         <div>Alvin <span class="my-badge my-green">Miki</span> <a
-                            class="secondary-content waves-effect waves-red"><i class="material-icons">delete</i></a>
-                        </div>
+                            class="secondary-content waves-effect waves-red" @click="deletePollParticipant"><i
+                              class="material-icons">delete</i></a></div>
                       </li>
                     </ul>
                   </div>
@@ -196,8 +197,7 @@
         </div>
 
         <!-- UPDATE POLL SPINNER -->
-        <!-- REMOVE THE HIDE CLASS -->
-        <div id="update-poll-spinner" class="spinner-overlay hide">
+        <div id="update-poll-spinner" class="spinner-overlay" v-if="updatingPollParticipants">
           <img class="spinner-logo" src="img/logo.svg">
           <div class="preloader-wrapper active spinner">
             <div class="spinner-layer spinner-green-only">
@@ -267,21 +267,20 @@
                   <div class="col s12 l10 offset-l1 xl8 offset-xl2">
                     <div class="collection z-depth-1">
                       <a class="collection-item hover-item waves-effect waves-my-green modal-trigger"
-                        href="#show-poll-modal">
+                        href="#show-old-poll-modal" @click="loadOldPollInfo">
                         <span class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span>
                       </a>
                       <a class="collection-item hover-item waves-effect waves-my-green modal-trigger"
-                        href="#show-poll-modal">
+                        href="#show-old-poll-modal" @click="loadOldPollInfo">
                         <span class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span>
                       </a>
                       <a class="collection-item hover-item waves-effect waves-my-green modal-trigger"
-                        href="#show-poll-modal">
+                        href="#show-old-poll-modal" @click="loadOldPollInfo">
                         <span class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span>
                       </a>
 
                       <!-- LOADING SPINNER -->
-                      <!-- REMOVE THE HIDE CLASS -->
-                      <a class="collection-item no-hover-item hide">
+                      <a class="collection-item no-hover-item" v-if="loadingOldPolls">
                         <div class="progress custom-progress">
                           <div class="indeterminate"></div>
                         </div>
@@ -289,8 +288,8 @@
                       <!-- LOADING SPINNER -->
                     </div>
                   </div>
-                  <div class="col s12 center">
-                    <a id="load-more-button" class="waves-effect waves-light button-green btn">
+                  <div class="col s12 center" v-if="!loadingOldPolls">
+                    <a id="load-more-button" class="waves-effect waves-light button-green btn" @click="loadOldPolls">
                       <i class="material-icons left">expand_more</i>load more
                     </a>
                   </div>
@@ -344,12 +343,11 @@
       </div>
       <div class="modal-footer">
         <a class="modal-close waves-effect waves-my-green my-green-text btn-flat">cancel</a>
-        <a class="waves-effect waves-my-green my-green-text btn-flat">save</a>
+        <a class="waves-effect waves-my-green my-green-text btn-flat" @click="savePollInfo">save</a>
       </div>
 
       <!-- SAVE INFO SPINNER -->
-      <!-- REMOVE THE HIDE CLASS -->
-      <div id="save-info-spinner" class="spinner-overlay hide">
+      <div id="save-info-spinner" class="spinner-overlay" v-if="savingPollInfo">
         <img class="spinner-logo" src="img/logo.svg">
         <div class="preloader-wrapper active spinner">
           <div class="spinner-layer spinner-green-only">
@@ -401,9 +399,9 @@
       </div>
     </div>
     <!-- SHOW STATS MODAL -->
-    <!-- SHOW POLL MODAL -->
-    <div id="show-poll-modal" class="modal">
-      <div class="modal-content">
+    <!-- SHOW OLD POLL MODAL -->
+    <div id="show-old-poll-modal" class="modal">
+      <div class="modal-content" v-if="!loadingOldPollInfo">
         <div class="row">
           <div class="col s12 poll-info-modal-text center">
             <h5 class="my-green-text"><i><b>Фудбал-INSCALE</b></i></h5>
@@ -413,7 +411,7 @@
             <h6>Location: <a href="https://www.google.com" target="_blank" class="location-url">Location</a></h6>
           </div>
         </div>
-        <div class="row no-margin-bot">
+        <div class="row no-margin-bot" v-if="!loadingOldPollInfo">
           <div class="col s12">
             <ul class="collection with-header z-depth-1">
               <li class="collection-header">
@@ -436,15 +434,38 @@
           </div>
         </div>
       </div>
-      <div class="modal-footer">
+      <div class="modal-footer" v-if="!loadingOldPollInfo">
         <a class="modal-close waves-effect waves-my-green my-green-text btn-flat">close</a>
       </div>
+
+      <!-- SHOW OLD POLL SPINNER -->
+      <div class="modal-content" v-if="loadingOldPollInfo">
+        <div class="row">
+          <div class="col s12 loading-old-poll-spinner">
+            <img class="spinner-logo" src="img/logo.svg">
+            <div class="preloader-wrapper active spinner">
+              <div class="spinner-layer spinner-green-only">
+                <div class="circle-clipper left">
+                  <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                  <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                  <div class="circle"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- SHOW OLD POLL SPINNER -->
     </div>
-    <!-- SHOW POLL MODAL -->
+    <!-- SHOW OLD POLL MODAL -->
     <!-- MODALS -->
 
     <!-- MAIN SPINNER -->
-    <div id="main-spinner" class="spinner-overlay">
+    <div id="main-spinner" class="spinner-overlay" v-if="showMainSpinner">
       <img class="spinner-logo" src="img/logo.svg">
       <div class="preloader-wrapper active spinner">
         <div class="spinner-layer spinner-green-only">

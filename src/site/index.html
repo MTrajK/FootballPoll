@@ -41,6 +41,25 @@
 
 <body class="spinner-loading">
 
+  <!-- MAIN SPINNER -->
+  <div id="main-spinner" class="spinner-overlay">
+    <img class="spinner-logo" src="img/logo.svg">
+    <div class="preloader-wrapper active spinner">
+      <div class="spinner-layer spinner-green-only">
+        <div class="circle-clipper left">
+          <div class="circle"></div>
+        </div>
+        <div class="gap-patch">
+          <div class="circle"></div>
+        </div>
+        <div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- MAIN SPINNER -->
+
   <div id="app">
 
     <!-- NAVBAR -->
@@ -464,26 +483,8 @@
     <!-- SHOW OLD POLL MODAL -->
     <!-- MODALS -->
 
-    <!-- MAIN SPINNER -->
-    <div id="main-spinner" class="spinner-overlay" v-if="showMainSpinner">
-      <img class="spinner-logo" src="img/logo.svg">
-      <div class="preloader-wrapper active spinner">
-        <div class="spinner-layer spinner-green-only">
-          <div class="circle-clipper left">
-            <div class="circle"></div>
-          </div>
-          <div class="gap-patch">
-            <div class="circle"></div>
-          </div>
-          <div class="circle-clipper right">
-            <div class="circle"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- MAIN SPINNER -->
-
   </div>
+
 
   <!--<script src="js/materialize.min.js"></script>-->
   <script src="js/materialize.js"></script> <!-- Delete this, this is only for debugging -->

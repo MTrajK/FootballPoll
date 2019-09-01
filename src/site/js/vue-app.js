@@ -1,7 +1,6 @@
 var app = new Vue({
     el: '#app',
     data: {
-        showMainSpinner: true,
         showPollInfo: true,
         savingPollInfo: false,
         updatingPollParticipants: false,
@@ -22,7 +21,9 @@ var app = new Vue({
             M.ScrollSpy.init(scrollspy);
 
             // remove the main spinner after all of the content is loaded
-            thisApp.showMainSpinner = false;
+            // DON'T USE VUE FOR THE MAIN SPINNER!
+            var mainSpinner = document.querySelector('#main-spinner');
+            mainSpinner.parentNode.removeChild(mainSpinner);
 
             var body = document.querySelector('body');
             body.classList.remove("spinner-loading");

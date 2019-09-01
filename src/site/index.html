@@ -86,7 +86,7 @@
             <div class="row">
               <div class="col s12">
 
-                <div id="poll-info-text" class="row center white-text" v-if="showPollInfo">
+                <div id="poll-info-text" class="row center white-text" v-if="UIBindings.showPollInfo">
                   <div class="col s12">
                     <h2><i><b>Фудбал-INSCALE</b></i></h2>
                   </div>
@@ -103,7 +103,7 @@
                   </div>
                 </div>
 
-                <div id="poll-info-edit" class="row" v-if="!showPollInfo">
+                <div id="poll-info-edit" class="row" v-if="!UIBindings.showPollInfo">
 
                   <div class="input-field info-input-field col s12 m6 offset-l1 l5 offset-xl2 xl4">
                     <input id="title-input" type="text">
@@ -216,7 +216,7 @@
         </div>
 
         <!-- UPDATE POLL SPINNER -->
-        <div id="update-poll-spinner" class="spinner-overlay" v-if="updatingPollParticipants">
+        <div id="update-poll-spinner" class="spinner-overlay" v-if="UIBindings.updatingPollParticipants">
           <img class="spinner-logo" src="img/logo.svg">
           <div class="preloader-wrapper active spinner">
             <div class="spinner-layer spinner-green-only">
@@ -299,7 +299,7 @@
                       </a>
 
                       <!-- LOADING SPINNER -->
-                      <a class="collection-item no-hover-item" v-if="loadingOldPolls">
+                      <a class="collection-item no-hover-item" v-if="UIBindings.loadingOldPolls">
                         <div class="progress custom-progress">
                           <div class="indeterminate"></div>
                         </div>
@@ -307,7 +307,7 @@
                       <!-- LOADING SPINNER -->
                     </div>
                   </div>
-                  <div class="col s12 center" v-if="!loadingOldPolls">
+                  <div class="col s12 center" v-if="!UIBindings.loadingOldPolls">
                     <a id="load-more-button" class="waves-effect waves-light button-green btn" @click="loadOldPolls">
                       <i class="material-icons left">expand_more</i>load more
                     </a>
@@ -366,7 +366,7 @@
       </div>
 
       <!-- SAVE INFO SPINNER -->
-      <div id="save-info-spinner" class="spinner-overlay" v-if="savingPollInfo">
+      <div id="save-info-spinner" class="spinner-overlay" v-if="UIBindings.savingPollInfo">
         <img class="spinner-logo" src="img/logo.svg">
         <div class="preloader-wrapper active spinner">
           <div class="spinner-layer spinner-green-only">
@@ -420,7 +420,7 @@
     <!-- SHOW STATS MODAL -->
     <!-- SHOW OLD POLL MODAL -->
     <div id="show-old-poll-modal" class="modal">
-      <div class="modal-content" v-if="!loadingOldPollInfo">
+      <div class="modal-content" v-if="UIBindings.showOldPollInfo">
         <div class="row">
           <div class="col s12 poll-info-modal-text center">
             <h5 class="my-green-text"><i><b>Фудбал-INSCALE</b></i></h5>
@@ -430,7 +430,7 @@
             <h6>Location: <a href="https://www.google.com" target="_blank" class="location-url">Location</a></h6>
           </div>
         </div>
-        <div class="row no-margin-bot" v-if="!loadingOldPollInfo">
+        <div class="row no-margin-bot" v-if="UIBindings.showOldPollInfo">
           <div class="col s12">
             <ul class="collection with-header z-depth-1">
               <li class="collection-header">
@@ -453,12 +453,12 @@
           </div>
         </div>
       </div>
-      <div class="modal-footer" v-if="!loadingOldPollInfo">
+      <div class="modal-footer" v-if="UIBindings.showOldPollInfo">
         <a class="modal-close waves-effect waves-my-green my-green-text btn-flat">close</a>
       </div>
 
       <!-- SHOW OLD POLL SPINNER -->
-      <div class="modal-content" v-if="loadingOldPollInfo">
+      <div class="modal-content" v-if="UIBindings.loadingOldPollInfo">
         <div class="row">
           <div class="col s12 loading-old-poll-spinner">
             <img class="spinner-logo" src="img/logo.svg">

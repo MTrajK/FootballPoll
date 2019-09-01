@@ -1,11 +1,45 @@
 var app = new Vue({
     el: '#app',
     data: {
-        showPollInfo: true,
-        savingPollInfo: false,
-        updatingPollParticipants: false,
-        loadingOldPolls: false,
-        loadingOldPollInfo: false,
+        UIBindings: {
+            showPollInfo: true,
+            savingPollInfo: false,
+            updatingPollParticipants: false,
+            loadingOldPolls: false,
+            loadingOldPollInfo: false,
+            showOldPollInfo: false,
+        },
+        currentPoll: {
+            info: {
+
+            },
+            editedInfo: {
+
+            },
+            participants: [],
+        },
+        allNames: {
+            newNames: [],
+            oldNames: [],
+        },
+        participantsStats: {
+            playedGames: [],
+            invitedFriends: [],
+        },
+        oldPolls: [
+            /*
+            {
+                info: {
+
+                },
+                participants: [],
+            }
+            */
+        ],
+        oldPollIdx: undefined,
+        /* Use something like this for old poll renderning
+            <h6 v-if="UIBindings.showOldPollInfo">{{oldPolls[oldPollIdx].Title}}</h6>
+        */
     },
     mounted: function () {
         /**
@@ -51,7 +85,11 @@ var app = new Vue({
 
             UIComponents.saveInfoModal.saveInfoModalInstance = M.Modal.init(thisApp.$el.querySelector('#save-info-modal'));
             UIComponents.showStatsModal.showStatsModalInstance = M.Modal.init(thisApp.$el.querySelector('#show-stats-modal'));
-            UIComponents.showOldPollModal.showOldPollModalInstance = M.Modal.init(thisApp.$el.querySelector('#show-old-poll-modal'));
+            UIComponents.showOldPollModal.showOldPollModalInstance = M.Modal.init(thisApp.$el.querySelector('#show-old-poll-modal'), {
+                onCloseEnd: function () {
+                    thisApp.UIBindings.showOldPollInfo = false;
+                }
+            });
         })
     },
     watch: {
@@ -67,51 +105,52 @@ var app = new Vue({
         ******************************/
 
         savePollInfo: function () {
-            this.savingPollInfo = true;
+            this.UIBindings.savingPollInfo = true;
             UIComponents.saveInfoModal.saveInfoModalInstance.options.dismissible = false;
 
             var thisApp = this;
             setTimeout(function(){
-                thisApp.showPollInfo = true;
+                thisApp.UIBindings.showPollInfo = true;
                 UIComponents.saveInfoModal.saveInfoModalInstance.close(); 
-                thisApp.savingPollInfo = false;
+                thisApp.UIBindings.savingPollInfo = false;
                 UIComponents.saveInfoModal.saveInfoModalInstance.options.dismissible = true;
                 M.toast({html: 'The poll info is successfully updated!'});
             }, 5000);
         },
         addPollParticipant: function () {
-            this.updatingPollParticipants = true;
+            this.UIBindings.updatingPollParticipants = true;
 
             var thisApp = this;
             setTimeout(function(){ 
-                thisApp.updatingPollParticipants = false;
+                thisApp.UIBindings.updatingPollParticipants = false;
                 M.toast({html: 'The participant is successfully added!'});
             }, 5000);
         },
         deletePollParticipant: function () {
-            this.updatingPollParticipants = true;
+            this.UIBindings.updatingPollParticipants = true;
 
             var thisApp = this;
             setTimeout(function(){ 
-                thisApp.updatingPollParticipants = false;
+                thisApp.UIBindings.updatingPollParticipants = false;
                 M.toast({html: 'The participant is successfully deleted!'});
             }, 5000);
         },
         loadOldPolls: function () {
-            this.loadingOldPolls = true;
+            this.UIBindings.loadingOldPolls = true;
 
             var thisApp = this;
             setTimeout(function(){ 
-                thisApp.loadingOldPolls = false; 
+                thisApp.UIBindings.loadingOldPolls = false; 
             }, 5000);
         },
         loadOldPollInfo: function () {
-            this.loadingOldPollInfo = true;
+            this.UIBindings.loadingOldPollInfo = true;
             UIComponents.showOldPollModal.showOldPollModalInstance.options.dismissible = false;
 
             var thisApp = this;
             setTimeout(function(){ 
-                thisApp.loadingOldPollInfo = false; 
+                thisApp.UIBindings.showOldPollInfo = true;
+                thisApp.UIBindings.loadingOldPollInfo = false;
                 UIComponents.showOldPollModal.showOldPollModalInstance.options.dismissible = true;
             }, 5000);
         },
@@ -122,10 +161,10 @@ var app = new Vue({
         ******************************/
 
         editPollInfo: function () {
-            this.showPollInfo = false;
+            this.UIBindings.showPollInfo = false;
         },
         cancelEditingPollInfo: function () {
-            this.showPollInfo = true;
+            this.UIBindings.showPollInfo = true;
         },
     }
 });

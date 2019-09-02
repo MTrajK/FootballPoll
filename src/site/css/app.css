@@ -160,6 +160,10 @@ main {
     color: #7cb342;
 }
 
+.datepicker-table td.is-selected {
+    color: #fff;
+}
+
 .timepicker-canvas-bg, .timepicker-canvas-bearing {
     fill: #7cb342;
 }
@@ -296,6 +300,11 @@ main {
 
 .modal {
     max-width: 850px;
+}
+
+.wrong-credentials {
+    margin-top: 0px;
+    color: #B71C1C;
 }
 
 /* MAIN */

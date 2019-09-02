@@ -131,7 +131,7 @@
                     <label for="max-input">Max players</label>
                   </div>
                   <div class="input-field info-input-field col s12 m6 offset-l1 l5 offset-xl2 xl4">
-                    <input type="text" id="time-input" class="timepicker">
+                    <input type="text" id="time-input" class="timepicker" v-model="currentPoll.editedInfo.time">
                     <label for="time-input">Time</label>
                   </div>
                   <div class="input-field info-input-field col s12 m6 l5 xl4">
@@ -170,11 +170,12 @@
                     <div class="card-panel my-padding">
                       <div class="row no-margin-bot">
                         <div class="input-field add-input-field col s12 m6">
-                          <input id="name-autocomplete" type="text" class="autocomplete">
+                          <input id="name-autocomplete" type="text" class="autocomplete"
+                            v-model="addPollParticipantForm.playerName">
                           <label for="name-autocomplete">Player</label>
                         </div>
                         <div class="input-field add-input-field col s12 m6">
-                          <input id="friend-input" type="text">
+                          <input id="friend-input" type="text" v-model="addPollParticipantForm.friendName">
                           <label for="friend-input">Friend</label>
                         </div>
                       </div>
@@ -358,6 +359,9 @@
           <div class="input-field add-input-field col s12 m6">
             <input id="save-info-admin-password" type="password" maxlength="60" v-model="adminCredentials.password">
             <label id="save-info-admin-password-label" for="save-info-admin-password">Password</label>
+          </div>
+          <div class="col s12 center" v-if="UIBindings.wrongAdminCredentials">
+            <p class="wrong-credentials">Wrong credentials!</p>
           </div>
         </div>
       </div>

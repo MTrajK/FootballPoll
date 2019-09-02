@@ -73,7 +73,80 @@
                   "locDesc": "ОУ Блаже Конески Аеродром"
                 }
               ],
-              "participants": [],
+              "participants": [
+                {
+                  "poll": 34,
+                  "friend": "/",
+                  "added": 1566514800000,
+                  "person": "мето"
+                },
+                {
+                  "poll": 34,
+                  "friend": "/",
+                  "added": 1566518400000,
+                  "person": "gercho"
+                },
+                {
+                  "poll": 34,
+                  "friend": "/",
+                  "added": 1566522000000,
+                  "person": "marjan"
+                },
+                {
+                  "poll": 34,
+                  "friend": "/",
+                  "added": 1566525600000,
+                  "person": "blagoja"
+                },
+                {
+                  "poll": 34,
+                  "friend": "+1",
+                  "added": 1566529200000,
+                  "person": "marjan"
+                },
+                {
+                  "poll": 34,
+                  "friend": "/",
+                  "added": 1566532800000,
+                  "person": "radic"
+                },
+                {
+                  "poll": 34,
+                  "friend": "/",
+                  "added": 1566536400000,
+                  "person": "stevan"
+                },
+                {
+                  "poll": 34,
+                  "friend": "+1 petar",
+                  "added": 1566540000000,
+                  "person": "stevan"
+                },
+                {
+                  "poll": 34,
+                  "friend": "никола",
+                  "added": 1566543600000,
+                  "person": "мето"
+                },
+                {
+                  "poll": 34,
+                  "friend": "+1",
+                  "added": 1566547200000,
+                  "person": "srdjan"
+                },
+                {
+                  "poll": 34,
+                  "friend": "robe",
+                  "added": 1566550800000,
+                  "person": "srdjan"
+                },
+                {
+                  "poll": 34,
+                  "friend": "aco",
+                  "added": 1566554400000,
+                  "person": "srdjan"
+                }
+              ],
               "persons": [
                 {
                   "polls": 15,
@@ -258,8 +331,6 @@
       locationURL: parsedResult.currentPoll.info.locationURL,
       needPlayers: parsedResult.currentPoll.info.needPlayers,
       maxPlayers: parsedResult.currentPoll.info.maxPlayers,
-      dayTime: parsedResult.currentPoll.info.dayTime,
-      endDate: parsedResult.currentPoll.info.endDate,
     };
 
     callback(parsedResult);

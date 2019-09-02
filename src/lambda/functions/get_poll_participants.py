@@ -60,14 +60,14 @@ def get_poll_participants(event, context):
         List of all participants from the wanted poll.
     """
 
-    if 'poll_id' not in event:
+    if ('queryStringParameters' not in event) or ('poll_id' not in event['queryStringParameters']):
         return {
             'statusCode': 400,
             'errorMessage': 'poll_id parameter doesn\'t exist in the API call!'
         }
         
     try:
-        poll_id = int(event['poll_id'])
+        poll_id = int(event['queryStringParameters']['poll_id'])
     except:
         return {
             'statusCode': 400,

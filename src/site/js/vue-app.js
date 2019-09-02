@@ -8,10 +8,15 @@ var app = new Vue({
             loadingOldPolls: false,
             loadingOldPollInfo: false,
             showOldPollInfo: false,
+            wrongAdminCredentials: false,
         },
         adminCredentials: {
-            name: "",
-            password: "",
+            name: '',
+            password: '',
+        },
+        addPollParticipantForm: {
+            playerName: '',
+            friendName: '',
         },
         currentPoll: {
             info: {
@@ -33,8 +38,7 @@ var app = new Vue({
                 locationURL: undefined,
                 needPlayers: undefined,
                 maxPlayers: undefined,
-                dayTime: undefined,
-                endDate: undefined,
+                time: undefined,
             },
             participants: [],
         },
@@ -80,15 +84,18 @@ var app = new Vue({
             // Init time/date pickers
             UIComponents.pickers.timePicker = M.Timepicker.init(
                 document.querySelector('#time-input'), {
-                'twelveHour': false
+                'twelveHour': false,
+                'autoClose': true
             });
             UIComponents.pickers.dayPicker = M.Datepicker.init(
                 document.querySelector('#day-input'), {
-                'format': 'dddd (dd.mm.yyyy)'
+                'format': 'dddd (dd.mm.yyyy)',
+                'autoClose': true
             });
             UIComponents.pickers.endDatePicker = M.Datepicker.init(
                 document.querySelector('#end-date-input'), {
-                'format': 'dddd (dd.mm.yyyy)'
+                'format': 'dddd (dd.mm.yyyy)',
+                'autoClose': true
             });
 
             // Init modals
@@ -108,11 +115,22 @@ var app = new Vue({
 
                 };
 
+                
+                // update pickers
+                UIComponents.pickers.dayPicker.setDate(new Date(thisApp.currentPoll.info.dayTime));
+                UIComponents.pickers.dayPicker._finishSelection();
+
+                UIComponents.pickers.endDatePicker.setDate(new Date(thisApp.currentPoll.info.endDate));
+                UIComponents.pickers.endDatePicker._finishSelection();
+
+                thisApp.currentPoll.editedInfo.time = thisApp.formatTime(thisApp.currentPoll.info.dayTime);
+                UIComponents.pickers.timePicker._updateTimeFromInput();
+
                 // Remove the main spinner after all of the content is loaded
                 // DON'T USE VUE FOR THE MAIN SPINNER!
                 var mainSpinner = document.querySelector('#main-spinner');
                 mainSpinner.parentNode.removeChild(mainSpinner);
-                document.querySelector('body').classList.remove("spinner-loading");
+                document.querySelector('body').classList.remove('spinner-loading');
             });
 
         })
@@ -124,7 +142,7 @@ var app = new Vue({
         currentPollShowNote: function () {
             var note = this.currentPoll.info.note;
             
-            return (note != undefined) && (note != "");
+            return (note != undefined) && (note != '');
         },
         currentPollTime: function () {
             return this.formatTime(this.currentPoll.info.dayTime);
@@ -223,7 +241,7 @@ var app = new Vue({
         },
         formatDayDate: function (milliseconds) {
             var date = new Date(milliseconds);
-            var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getDay()];
+            var weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][date.getDay()];
             var formattedDate = this.formatDate(milliseconds);
 
             return `${weekday} (${formattedDate})`;

@@ -15,7 +15,7 @@ var app = new Vue({
             password: '',
         },
         addPollParticipantForm: {
-            playerName: '',
+            personName: '',
             friendName: '',
         },
         currentPoll: {
@@ -245,6 +245,17 @@ var app = new Vue({
             var formattedDate = this.formatDate(milliseconds);
 
             return `${weekday} (${formattedDate})`;
+        },
+        capitalizeFirstLetters: function (name) {
+            var splitted = name.split(/\s+/);
+
+            for (var i=0; i<splitted.length; i++)
+                splitted[i] = splitted[i][0].toUpperCase() + splitted[i].slice(1);
+            
+            return splitted.join(' ');
+        },
+        showFriendName: function (name) {
+            return name != '';
         },
     }
 });

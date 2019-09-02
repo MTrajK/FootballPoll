@@ -171,7 +171,7 @@
                       <div class="row no-margin-bot">
                         <div class="input-field add-input-field col s12 m6">
                           <input id="name-autocomplete" type="text" class="autocomplete"
-                            v-model="addPollParticipantForm.playerName">
+                            v-model="addPollParticipantForm.personName">
                           <label for="name-autocomplete">Player</label>
                         </div>
                         <div class="input-field add-input-field col s12 m6">
@@ -187,27 +187,15 @@
                   <div class="col s12 l10 offset-l1 xl8 offset-xl2">
                     <ul class="collection with-header z-depth-1">
                       <li class="collection-header">
-                        <h5>Players <span class="my-badge my-green">Friends</span> <span
-                            class="my-badge total-badge">8/12</span></h5>
+                        <h5>Players 
+                          <span class="my-badge my-green">Friends</span> 
+                          <span class="my-badge total-badge">{{currentPoll.participants.length}}/{{currentPoll.info.needPlayers}}</span></h5>
                       </li>
-                      <li class="collection-item hover-item">
-                        <div>Alvin <span class="my-badge my-green">+1</span> <a
-                            class="secondary-content waves-effect waves-red" @click="deletePollParticipant"> <i
-                              class="material-icons">delete</i></a>
+                      <li class="collection-item hover-item" v-for="(participant, index) in currentPoll.participants">
+                        <div> {{capitalizeFirstLetters(participant.personName)}} 
+                          <span class="my-badge my-green" v-if="showFriendName(participant.friendName)">{{capitalizeFirstLetters(participant.friendName)}}</span> 
+                          <a class="secondary-content waves-effect waves-red" @click="deletePollParticipant"> <i class="material-icons">delete</i></a>
                         </div>
-                      </li>
-                      <li class="collection-item hover-item">
-                        <div>Alvin <a class="secondary-content waves-effect waves-red" @click="deletePollParticipant">
-                            <i class="material-icons">delete</i></a></div>
-                      </li>
-                      <li class="collection-item hover-item">
-                        <div>Alvin <a class="secondary-content waves-effect waves-red" @click="deletePollParticipant">
-                            <i class="material-icons">delete</i></a></div>
-                      </li>
-                      <li class="collection-item hover-item">
-                        <div>Alvin <span class="my-badge my-green">Miki</span> <a
-                            class="secondary-content waves-effect waves-red" @click="deletePollParticipant"><i
-                              class="material-icons">delete</i></a></div>
                       </li>
                     </ul>
                   </div>

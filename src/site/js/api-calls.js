@@ -321,8 +321,8 @@
       }
     }
 
-    if (parsedResult.currentPoll.info.note == "/")
-      parsedResult.currentPoll.info.note = "";
+    if (parsedResult.currentPoll.info.note == '/')
+      parsedResult.currentPoll.info.note = '';
     // create a deep copy/clone of that object (or use JSON.parse(JSON.stringify(object)))
     parsedResult.currentPoll.editedInfo = {
       title: parsedResult.currentPoll.info.title,
@@ -332,6 +332,13 @@
       needPlayers: parsedResult.currentPoll.info.needPlayers,
       maxPlayers: parsedResult.currentPoll.info.maxPlayers,
     };
+
+    var participants = jsonResult.body.participants;
+    participants.sort((a, b) => (a.added - b.added));
+    parsedResult.currentPoll.participants = participants.map((a) => ({ 
+      personName: a.person,
+      friendName: (a.friend == '/') ? '' : a.friend
+    }));
 
     callback(parsedResult);
   };

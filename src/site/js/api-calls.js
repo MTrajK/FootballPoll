@@ -17,7 +17,7 @@
         update_current_poll: https://v0u768t0yk.execute-api.eu-central-1.amazonaws.com/v1/update-current-poll
     */
 
-    var getSiteData = function () {
+    var getSiteData = function (callback) {
         var result = `
         {
             "statusCode": 200,
@@ -221,7 +221,7 @@
         `;
         var jsonResult = JSON.parse(result);
 
-        return jsonResult;
+        callback(jsonResult);
     };
 
     global.API = 

@@ -1,15 +1,17 @@
 (function (global) {
 
     global.UIComponents = {
-        saveInfoModal: {
-            saveInfoModalInstance: undefined
+        modals: {
+            saveInfoModal: undefined,
+            showOldPollModal: undefined,
+            showStatsModal: undefined,
         },
-        showOldPollModal: {
-            showOldPollModalInstance: undefined
-        }, 
-        showStatsModal: {
-            showStatsModalInstance: undefined
-        }
+        pickers: {
+            timePicker: undefined,
+            dayPicker: undefined,
+            endDatePicker: undefined,
+        },
+        nameAutocomplete: undefined,
     };
     
 }(this));

@@ -26,54 +26,37 @@ var app = new Vue({
             playedGames: [],
             invitedFriends: [],
         },
-        oldPolls: [
-            /*
-            {
-                info: {
-
-                },
-                participants: [],
-            }
+        oldPolls: {
+            /* Use something like this for old poll renderning
+                <h6 v-if="UIBindings.showOldPollInfo">{{oldPolls.polls[oldPolls.oldPollIdx].Title}}</h6>
             */
-        ],
-        oldPollIdx: undefined,
-        /* Use something like this for old poll renderning
-            <h6 v-if="UIBindings.showOldPollInfo">{{oldPolls[oldPollIdx].Title}}</h6>
-        */
+            oldestPollId: undefined,
+            selectedPollIdx: undefined,
+            polls: [
+                /*
+                {
+                    info: {
+
+                    },
+                    participants: [],
+                }
+                */
+            ],
+        },
     },
     mounted: function () {
         /**
-        * init ui components and create the data needed for the app
+        * init ui components and get the data needed for the app
         */
         this.$nextTick(function () {
             var thisApp = this;
 
-            /*
-                TODO: MAKE THESE THINGS AS UI COMPONENTS
-            */
-            var scrollspy = document.querySelectorAll('.scrollspy');
-            M.ScrollSpy.init(scrollspy);
+            // Init scrolspy
+            M.ScrollSpy.init(document.querySelectorAll('.scrollspy'));
 
-            // remove the main spinner after all of the content is loaded
-            // DON'T USE VUE FOR THE MAIN SPINNER!
-            var mainSpinner = document.querySelector('#main-spinner');
-            mainSpinner.parentNode.removeChild(mainSpinner);
-
-            var body = document.querySelector('body');
-            body.classList.remove("spinner-loading");
-
-            var timeElems = document.querySelectorAll('.timepicker');
-            var timeInstances = M.Timepicker.init(timeElems, {
-                'twelveHour': false
-            });
-
-            var dateElems = document.querySelectorAll('.datepicker');
-            var dateInstances = M.Datepicker.init(dateElems, {
-                'format': 'dddd (dd.mm.yyyy)'
-            });
-
-            var autocompleteElems = document.querySelectorAll('.autocomplete');
-            var autocompleteInstances = M.Autocomplete.init(autocompleteElems, {
+            // Init autocomplete for names
+            UIComponents.nameAutocomplete = M.Autocomplete.init(
+                document.querySelector('#name-autocomplete'), {
                 data: {
                     'abcd': null,
                     'meto': null,
@@ -83,13 +66,48 @@ var app = new Vue({
                 }
             });
 
-            UIComponents.saveInfoModal.saveInfoModalInstance = M.Modal.init(thisApp.$el.querySelector('#save-info-modal'));
-            UIComponents.showStatsModal.showStatsModalInstance = M.Modal.init(thisApp.$el.querySelector('#show-stats-modal'));
-            UIComponents.showOldPollModal.showOldPollModalInstance = M.Modal.init(thisApp.$el.querySelector('#show-old-poll-modal'), {
+            // Init time/date pickers
+            UIComponents.pickers.timePicker = M.Timepicker.init(
+                document.querySelector('#time-input'), {
+                'twelveHour': false
+            });
+
+            UIComponents.pickers.dayPicker = M.Datepicker.init(
+                document.querySelector('#day-input'), {
+                'format': 'dddd (dd.mm.yyyy)'
+            });
+
+            UIComponents.pickers.endDatePicker = M.Datepicker.init(
+                document.querySelector('#end-date-input'), {
+                'format': 'dddd (dd.mm.yyyy)'
+            });
+
+            // Init modals
+            UIComponents.modals.saveInfoModal = M.Modal.init(thisApp.$el.querySelector('#save-info-modal'));
+            UIComponents.modals.showStatsModal = M.Modal.init(thisApp.$el.querySelector('#show-stats-modal'));
+            UIComponents.modals.showOldPollModal = M.Modal.init(thisApp.$el.querySelector('#show-old-poll-modal'), {
                 onCloseEnd: function () {
                     thisApp.UIBindings.showOldPollInfo = false;
                 }
             });
+
+            // Get site data
+            API.getSiteData(function (results) {
+                thisApp.currentPoll = {
+
+                };
+
+                thisApp.allNames = {
+
+                };
+
+                // Remove the main spinner after all of the content is loaded
+                // DON'T USE VUE FOR THE MAIN SPINNER!
+                var mainSpinner = document.querySelector('#main-spinner');
+                mainSpinner.parentNode.removeChild(mainSpinner);
+                document.querySelector('body').classList.remove("spinner-loading");
+            });
+
         })
     },
     watch: {
@@ -106,14 +124,14 @@ var app = new Vue({
 
         savePollInfo: function () {
             this.UIBindings.savingPollInfo = true;
-            UIComponents.saveInfoModal.saveInfoModalInstance.options.dismissible = false;
+            UIComponents.modals.saveInfoModal.options.dismissible = false;
 
             var thisApp = this;
             setTimeout(function(){
                 thisApp.UIBindings.showPollInfo = true;
-                UIComponents.saveInfoModal.saveInfoModalInstance.close(); 
+                UIComponents.modals.saveInfoModal.close(); 
                 thisApp.UIBindings.savingPollInfo = false;
-                UIComponents.saveInfoModal.saveInfoModalInstance.options.dismissible = true;
+                UIComponents.modals.saveInfoModal.options.dismissible = true;
                 M.toast({html: 'The poll info is successfully updated!'});
             }, 5000);
         },
@@ -145,13 +163,13 @@ var app = new Vue({
         },
         loadOldPollInfo: function () {
             this.UIBindings.loadingOldPollInfo = true;
-            UIComponents.showOldPollModal.showOldPollModalInstance.options.dismissible = false;
+            UIComponents.modals.showOldPollModal.options.dismissible = false;
 
             var thisApp = this;
             setTimeout(function(){ 
                 thisApp.UIBindings.showOldPollInfo = true;
                 thisApp.UIBindings.loadingOldPollInfo = false;
-                UIComponents.showOldPollModal.showOldPollModalInstance.options.dismissible = true;
+                UIComponents.modals.showOldPollModal.options.dismissible = true;
             }, 5000);
         },
 
@@ -165,6 +183,33 @@ var app = new Vue({
         },
         cancelEditingPollInfo: function () {
             this.UIBindings.showPollInfo = true;
+        },
+        formatDate: function (milliseconds) {
+            var date = new Date(milliseconds);
+            var day = `${date.getDate()}`;
+            var month = `${date.getMonth() + 1}`;
+            var year = date.getFullYear();
+
+            if (day < 10)
+                day = `0${day}`;
+            if (month < 10)
+                month = `0${month}`;
+
+            return `${day}.${month}.${year}`;
+        },
+        formatTime: function (milliseconds) {
+            var date = new Date(milliseconds);
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+
+            return `${hours}:${minutes}`;
+        },
+        formatDayDate: function (milliseconds) {
+            var date = new Date(milliseconds);
+            var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getDay()];
+            var formattedDate = this.formatDate(milliseconds);
+
+            return `${weekday} (${formattedDate})`;
         },
     }
 });

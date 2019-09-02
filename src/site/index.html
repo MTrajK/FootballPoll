@@ -86,7 +86,7 @@
             <div class="row">
               <div class="col s12">
 
-                <div id="poll-info-text" class="row center white-text" v-if="UIBindings.showPollInfo">
+                <div id="poll-info-text" class="row center white-text" v-show="UIBindings.showPollInfo">
                   <div class="col s12">
                     <h2><i><b>Фудбал-INSCALE</b></i></h2>
                   </div>
@@ -103,7 +103,7 @@
                   </div>
                 </div>
 
-                <div id="poll-info-edit" class="row" v-if="!UIBindings.showPollInfo">
+                <div id="poll-info-edit" class="row" v-show="!UIBindings.showPollInfo">
 
                   <div class="input-field info-input-field col s12 m6 offset-l1 l5 offset-xl2 xl4">
                     <input id="title-input" type="text">

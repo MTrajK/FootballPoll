@@ -9,12 +9,32 @@ var app = new Vue({
             loadingOldPollInfo: false,
             showOldPollInfo: false,
         },
+        adminCredentials: {
+            name: "",
+            password: "",
+        },
         currentPoll: {
             info: {
-
+                title: undefined,
+                note: undefined,
+                locationDescription: undefined,
+                locationURL: undefined,
+                needPlayers: undefined,
+                maxPlayers: undefined,
+                dayTime: undefined,
+                endDate: undefined,
+                startDate: undefined,
+                pollId: undefined,
             },
             editedInfo: {
-
+                title: undefined,
+                note: undefined,
+                locationDescription: undefined,
+                locationURL: undefined,
+                needPlayers: undefined,
+                maxPlayers: undefined,
+                dayTime: undefined,
+                endDate: undefined,
             },
             participants: [],
         },
@@ -55,37 +75,26 @@ var app = new Vue({
             M.ScrollSpy.init(document.querySelectorAll('.scrollspy'));
 
             // Init autocomplete for names
-            UIComponents.nameAutocomplete = M.Autocomplete.init(
-                document.querySelector('#name-autocomplete'), {
-                data: {
-                    'abcd': null,
-                    'meto': null,
-                    'hehehe': null,
-                    'uaaa': null,
-                    'asdasd': null
-                }
-            });
+            UIComponents.nameAutocomplete = M.Autocomplete.init(document.querySelector('#name-autocomplete'));
 
             // Init time/date pickers
             UIComponents.pickers.timePicker = M.Timepicker.init(
                 document.querySelector('#time-input'), {
                 'twelveHour': false
             });
-
             UIComponents.pickers.dayPicker = M.Datepicker.init(
                 document.querySelector('#day-input'), {
                 'format': 'dddd (dd.mm.yyyy)'
             });
-
             UIComponents.pickers.endDatePicker = M.Datepicker.init(
                 document.querySelector('#end-date-input'), {
                 'format': 'dddd (dd.mm.yyyy)'
             });
 
             // Init modals
-            UIComponents.modals.saveInfoModal = M.Modal.init(thisApp.$el.querySelector('#save-info-modal'));
-            UIComponents.modals.showStatsModal = M.Modal.init(thisApp.$el.querySelector('#show-stats-modal'));
-            UIComponents.modals.showOldPollModal = M.Modal.init(thisApp.$el.querySelector('#show-old-poll-modal'), {
+            UIComponents.modals.saveInfoModal = M.Modal.init(document.querySelector('#save-info-modal'));
+            UIComponents.modals.showStatsModal = M.Modal.init(document.querySelector('#show-stats-modal'));
+            UIComponents.modals.showOldPollModal = M.Modal.init(document.querySelector('#show-old-poll-modal'), {
                 onCloseEnd: function () {
                     thisApp.UIBindings.showOldPollInfo = false;
                 }
@@ -93,9 +102,7 @@ var app = new Vue({
 
             // Get site data
             API.getSiteData(function (results) {
-                thisApp.currentPoll = {
-
-                };
+                thisApp.currentPoll = results.currentPoll;
 
                 thisApp.allNames = {
 
@@ -111,10 +118,20 @@ var app = new Vue({
         })
     },
     watch: {
-
+        
     },
     computed: {
-
+        currentPollShowNote: function () {
+            var note = this.currentPoll.info.note;
+            
+            return (note != undefined) && (note != "");
+        },
+        currentPollTime: function () {
+            return this.formatTime(this.currentPoll.info.dayTime);
+        }, 
+        currentPollDayDate: function () {
+            return this.formatDayDate(this.currentPoll.info.dayTime);
+        },
     },
     methods: {
 

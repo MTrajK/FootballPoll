@@ -298,9 +298,18 @@
         info: {},
         editedInfo: {},
         participants: [],
-      }
+      },
+      allNames: {
+        newNames: [],
+        oldNames: [],
+      },
+      participantsStats: {
+        playedGames: [],
+        invitedFriends: [],
+      },
     };
 
+    // current poll info
     var currentPoll = jsonResult.body.current_poll;
     var allPolls = jsonResult.body.polls;
     for (var i = 0; i < allPolls.length; i++) {
@@ -320,9 +329,10 @@
         break;
       }
     }
-
     if (parsedResult.currentPoll.info.note == '/')
       parsedResult.currentPoll.info.note = '';
+
+    // current poll editing info
     // create a deep copy/clone of that object (or use JSON.parse(JSON.stringify(object)))
     parsedResult.currentPoll.editedInfo = {
       title: parsedResult.currentPoll.info.title,
@@ -333,12 +343,44 @@
       maxPlayers: parsedResult.currentPoll.info.maxPlayers,
     };
 
+    // current poll participants
     var participants = jsonResult.body.participants;
-    participants.sort((a, b) => (a.added - b.added));
+    participants.sort();
     parsedResult.currentPoll.participants = participants.map((a) => ({ 
       personName: a.person,
       friendName: (a.friend == '/') ? '' : a.friend
     }));
+
+    // all names
+    var newNames = {};
+    var oldNames = {};
+    jsonResult.body.participants.forEach((a) => (newNames[a.person] = null)); // remove duplicates
+    jsonResult.body.persons.forEach((a) => (oldNames[a.name] = null));
+    parsedResult.allNames = {
+      newNames: newNames,
+      oldNames: oldNames,
+    };
+
+    // stats
+    var playedGames = [];
+    var invitedFriends = [];
+    jsonResult.body.persons.forEach((a) => {
+      var polls = parseInt(a.polls);
+      if (polls > 0)
+        playedGames.push({name: a.name, polls: polls});
+
+      var friends = parseInt(a.friends);
+      if (friends > 0)
+      invitedFriends.push({name: a.name, friends: friends});
+    });
+    playedGames.sort((a, b) => (b.polls - a.polls));
+    invitedFriends.sort((a, b) => (b.friends - a.friends));
+    parsedResult.participantsStats = {
+      playedGames: playedGames,
+      invitedFriends: invitedFriends,
+    };
+
+
 
     callback(parsedResult);
   };

@@ -176,6 +176,10 @@ main {
     background-color: rgba(124, 179, 66, 0.25);
 }
 
+.autocomplete-content.dropdown-content {
+    max-height: 350px;
+}
+
 .left-margin-btn {
     margin-left: 25px;
 }
@@ -424,9 +428,8 @@ body.spinner-loading {
     background-color: #7cb342;
 }
 
-.loading-old-poll-spinner {
-    height: 200px;
-    cursor: progress;
+.stats-height {
+    max-height: 450px;
 }
 
 /* SPINNER */

@@ -79,7 +79,12 @@ var app = new Vue({
             M.ScrollSpy.init(document.querySelectorAll('.scrollspy'));
 
             // Init autocomplete for names
-            UIComponents.nameAutocomplete = M.Autocomplete.init(document.querySelector('#name-autocomplete'));
+            UIComponents.nameAutocomplete = M.Autocomplete.init(document.querySelector('#name-autocomplete'), {
+                onAutocomplete: function () {
+                    // bug in materialize or vue, bind manually this value...
+                    thisApp.addPollParticipantForm.personName = UIComponents.nameAutocomplete.el.value;
+                }
+            });
 
             // Init time/date pickers
             UIComponents.pickers.timePicker = M.Timepicker.init(
@@ -110,11 +115,12 @@ var app = new Vue({
             // Get site data
             API.getSiteData(function (results) {
                 thisApp.currentPoll = results.currentPoll;
+                thisApp.allNames = results.allNames;
+                thisApp.participantsStats = results.participantsStats;
 
-                thisApp.allNames = {
-
-                };
-
+                // update autocomplete
+                var mergedNames = {...thisApp.allNames.oldNames, ...thisApp.allNames.newNames};
+                UIComponents.nameAutocomplete.updateData(mergedNames);
                 
                 // update pickers
                 UIComponents.pickers.dayPicker.setDate(new Date(thisApp.currentPoll.info.dayTime));

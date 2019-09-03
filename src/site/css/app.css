@@ -259,7 +259,6 @@ main {
 
 .total-badge {
     float: right;
-    background: #ffc77d;
     color: #ffffff;
 }
 
@@ -308,7 +307,7 @@ main {
 
 .wrong-credentials {
     margin-top: 0px;
-    color: #B71C1C;
+    color: #e53935;
 }
 
 /* MAIN */

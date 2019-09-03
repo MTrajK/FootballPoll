@@ -189,8 +189,10 @@
                       <li class="collection-header">
                         <h5>Players
                           <span class="my-badge my-green">Friends</span>
-                          <span
-                            class="my-badge total-badge">{{currentPoll.participants.length}}/{{currentPoll.info.needPlayers}}</span>
+                          <span class="my-badge total-badge" 
+                            v-bind:style="calculateColor(currentPoll.participants.length,currentPoll.info.needPlayers,currentPoll.info.maxPlayers)">
+                            {{currentPoll.participants.length}}/{{currentPoll.info.needPlayers}}
+                          </span>
                         </h5>
                       </li>
                       <li class="collection-item hover-item" v-for="(participant, index) in currentPoll.participants">
@@ -430,7 +432,8 @@
               <li class="collection-header">
                 <h5>Players 
                   <span class="my-badge my-green">Friends</span> 
-                  <span class="my-badge total-badge">
+                  <span class="my-badge total-badge"
+                    v-bind:style="calculateColor(oldPolls.polls[oldPolls.selectedPollIdx].participants.length,oldPolls.polls[oldPolls.selectedPollIdx].info.needPlayers,oldPolls.polls[oldPolls.selectedPollIdx].info.maxPlayers)">
                     {{oldPolls.polls[oldPolls.selectedPollIdx].participants.length}}/{{oldPolls.polls[oldPolls.selectedPollIdx].info.needPlayers}}
                   </span>
                 </h5>

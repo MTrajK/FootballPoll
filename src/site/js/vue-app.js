@@ -248,7 +248,7 @@ var app = new Vue({
             var date = new Date(milliseconds);
             if (date.toDateString() === 'Invalid Date')
                 return '';
-                
+
             var weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][date.getDay()];
             var formattedDate = this.formatDate(milliseconds);
 
@@ -278,6 +278,27 @@ var app = new Vue({
         },
         checkIfGrt: function (number, comapreWith) {
             return number > comapreWith;
+        },
+        calculateColor: function (total, need, max) {
+            if ((need === undefined) || (max === undefined) || (total > max))
+                return {};
+
+            var red = [229, 57, 53]; // #e53935
+            var green = [124, 179, 66]; // #7cb342
+
+            var percentage = total / need;
+            if (total > need) {
+                percentage = 1 - (total - need)/(max - need)*0.5;
+            }
+
+            var newColor = '#';
+            for (var i = 0; i < 3; i++) {
+                newColor += Math.round(red[i] + (green[i] - red[i]) * percentage).toString(16);
+            }
+            
+            return {
+                backgroundColor: newColor
+            };
         },
     }
 });

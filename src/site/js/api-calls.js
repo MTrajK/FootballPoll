@@ -17,6 +17,26 @@
       update_current_poll: https://v0u768t0yk.execute-api.eu-central-1.amazonaws.com/v1/update-current-poll
   */
 
+  var parsePoll = function (poll) {
+    var parsed = {
+      title: poll.title,
+      note: poll.note,
+      locationDescription: poll.locDesc,
+      locationURL: poll.locUrl,
+      needPlayers: parseInt(poll.need),
+      maxPlayers: parseInt(poll.max),
+      dayTime: parseInt(poll.dt),
+      endDate: parseInt(poll.end),
+      startDate: parseInt(poll.start),
+      pollId: parseInt(poll.id),
+    };
+
+    if (parsed.note == '/')
+      parsed.note = '';
+
+    return parsed;
+  };
+
   var getSiteData = function (callback) {
     var result = `
         {
@@ -307,30 +327,27 @@
         playedGames: [],
         invitedFriends: [],
       },
+      oldPolls: {
+        oldestPollId: undefined,
+        selectedPollIdx: undefined,
+        polls: [],
+      },
     };
 
     // current poll info
+    var oldPolls = [];
     var currentPoll = jsonResult.body.current_poll;
     var allPolls = jsonResult.body.polls;
     for (var i = 0; i < allPolls.length; i++) {
       if (allPolls[i].id == currentPoll) {
-        parsedResult.currentPoll.info = {
-          title: allPolls[i].title,
-          note: allPolls[i].note,
-          locationDescription: allPolls[i].locDesc,
-          locationURL: allPolls[i].locUrl,
-          needPlayers: parseInt(allPolls[i].need),
-          maxPlayers: parseInt(allPolls[i].max),
-          dayTime: parseInt(allPolls[i].dt),
-          endDate: parseInt(allPolls[i].end),
-          startDate: parseInt(allPolls[i].start),
-          pollId: parseInt(allPolls[i].id),
-        }
-        break;
+        parsedResult.currentPoll.info = parsePoll(allPolls[i]);
+      } else {
+        oldPolls.push({
+          info: parsePoll(allPolls[i]),
+          participants: undefined,
+        })
       }
     }
-    if (parsedResult.currentPoll.info.note == '/')
-      parsedResult.currentPoll.info.note = '';
 
     // current poll editing info
     // create a deep copy/clone of that object (or use JSON.parse(JSON.stringify(object)))
@@ -345,8 +362,8 @@
 
     // current poll participants
     var participants = jsonResult.body.participants;
-    participants.sort();
-    parsedResult.currentPoll.participants = participants.map((a) => ({ 
+    participants.sort((a, b) => (a.added - b.added));
+    parsedResult.currentPoll.participants = participants.map((a) => ({
       personName: a.person,
       friendName: (a.friend == '/') ? '' : a.friend
     }));
@@ -367,11 +384,11 @@
     jsonResult.body.persons.forEach((a) => {
       var polls = parseInt(a.polls);
       if (polls > 0)
-        playedGames.push({name: a.name, polls: polls});
+        playedGames.push({ name: a.name, polls: polls });
 
       var friends = parseInt(a.friends);
       if (friends > 0)
-      invitedFriends.push({name: a.name, friends: friends});
+        invitedFriends.push({ name: a.name, friends: friends });
     });
     playedGames.sort((a, b) => (b.polls - a.polls));
     invitedFriends.sort((a, b) => (b.friends - a.friends));
@@ -380,14 +397,112 @@
       invitedFriends: invitedFriends,
     };
 
-
+    // old polls
+    oldPolls.sort((a, b) => (b.info.pollId - a.info.pollId));
+    parsedResult.oldPolls.polls = oldPolls;
+    parsedResult.oldPolls.oldestPollId = oldPolls[oldPolls.length - 1].info.pollId;
 
     callback(parsedResult);
+  };
+
+  var getPollParticipants = function (pollId, callback) {
+    var result = `
+      {
+        "statusCode": 200,
+        "body": {
+          "participants": [
+            {
+              "poll": 34,
+              "friend": "/",
+              "added": 1566514800000,
+              "person": "мето"
+            },
+            {
+              "poll": 34,
+              "friend": "/",
+              "added": 1566518400000,
+              "person": "gercho"
+            },
+            {
+              "poll": 34,
+              "friend": "/",
+              "added": 1566522000000,
+              "person": "marjan"
+            },
+            {
+              "poll": 34,
+              "friend": "/",
+              "added": 1566525600000,
+              "person": "blagoja"
+            },
+            {
+              "poll": 34,
+              "friend": "+1",
+              "added": 1566529200000,
+              "person": "marjan"
+            },
+            {
+              "poll": 34,
+              "friend": "/",
+              "added": 1566532800000,
+              "person": "radic"
+            },
+            {
+              "poll": 34,
+              "friend": "/",
+              "added": 1566536400000,
+              "person": "stevan"
+            },
+            {
+              "poll": 34,
+              "friend": "+1 petar",
+              "added": 1566540000000,
+              "person": "stevan"
+            },
+            {
+              "poll": 34,
+              "friend": "никола",
+              "added": 1566543600000,
+              "person": "мето"
+            },
+            {
+              "poll": 34,
+              "friend": "+1",
+              "added": 1566547200000,
+              "person": "srdjan"
+            },
+            {
+              "poll": 34,
+              "friend": "robe",
+              "added": 1566550800000,
+              "person": "srdjan"
+            },
+            {
+              "poll": 34,
+              "friend": "aco",
+              "added": 1566554400000,
+              "person": "srdjan"
+            }
+          ]
+        }
+      }
+    `
+    var jsonResult = JSON.parse(result);
+    var participants = jsonResult.body.participants;
+    participants.sort((a, b) => (a.added - b.added));
+    var parsedResult = participants.map((a) => ({
+      personName: a.person,
+      friendName: (a.friend == '/') ? '' : a.friend
+    }));
+
+    // callback(parsedResult)
+    setTimeout(() => callback(parsedResult), 5000);
   };
 
   global.API =
     {
       getSiteData: getSiteData,
+      getPollParticipants: getPollParticipants,
     };
 
 }(this));

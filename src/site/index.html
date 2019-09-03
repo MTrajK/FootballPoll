@@ -91,9 +91,9 @@
                     <h2><i><b>{{currentPoll.info.title}}</b></i></h2>
                   </div>
                   <div class="col s12">
-                    <h6 v-if="currentPollShowNote">Note: <span>{{currentPoll.info.note}}</span></h6>
-                    <h6>Time: <span>{{currentPollTime}}</span></h6>
-                    <h6>Day: <span>{{currentPollDayDate}}</span></h6>
+                    <h6 v-if="showPollNote(currentPoll.info.note)">Note: <span>{{currentPoll.info.note}}</span></h6>
+                    <h6>Time: <span>{{formatTime(currentPoll.info.dayTime)}}</span></h6>
+                    <h6>Day: <span>{{formatDayDate(currentPoll.info.dayTime)}}</span></h6>
                     <h6>Location: <a v-bind:href="currentPoll.info.locationURL" target="_blank"
                         class="location-url">{{currentPoll.info.locationDescription}}</a>
                     </h6>
@@ -239,27 +239,27 @@
                 <div class="row">
                   <div class="col s12 l6 offset-xl2 xl4 center white-text">
                     <h4 class="header-title">Played Games</h4>
-                    <div class="gold" v-if="participantsStats.playedGames.length>0"><i class="material-icons">star</i>
+                    <div class="gold" v-if="checkIfGrt(participantsStats.playedGames.length,0)"><i class="material-icons">star</i>
                       <span>{{capitalizeFirstLetters(participantsStats.playedGames[0].name)}}</span> -
                       <span>{{participantsStats.playedGames[0].polls}}</span></div>
-                    <div class="silver" v-if="participantsStats.playedGames.length>1"><i class="material-icons">star</i>
+                    <div class="silver" v-if="checkIfGrt(participantsStats.playedGames.length,1)"><i class="material-icons">star</i>
                       <span>{{capitalizeFirstLetters(participantsStats.playedGames[1].name)}}</span> -
                       <span>{{participantsStats.playedGames[1].polls}}</span></div>
-                    <div class="bronze" v-if="participantsStats.playedGames.length>2"><i class="material-icons">star</i>
+                    <div class="bronze" v-if="checkIfGrt(participantsStats.playedGames.length,2)"><i class="material-icons">star</i>
                       <span>{{capitalizeFirstLetters(participantsStats.playedGames[2].name)}}</span> -
                       <span>{{participantsStats.playedGames[2].polls}}</span></div>
                   </div>
                   <div class="col s12 l6 xl4 center white-text">
                     <h4 class="header-title">Invited Friends</h4>
-                    <div class="gold" v-if="participantsStats.invitedFriends.length>0"><i
+                    <div class="gold" v-if="checkIfGrt(participantsStats.invitedFriends.length,0)"><i
                         class="material-icons">star</i>
                       <span>{{capitalizeFirstLetters(participantsStats.invitedFriends[0].name)}}</span> -
                       <span>{{participantsStats.invitedFriends[0].friends}}</span></div>
-                    <div class="silver" v-if="participantsStats.invitedFriends.length>1"><i
+                    <div class="silver" v-if="checkIfGrt(participantsStats.invitedFriends.length,1)"><i
                         class="material-icons">star</i>
                       <span>{{capitalizeFirstLetters(participantsStats.invitedFriends[1].name)}}</span> -
                       <span>{{participantsStats.invitedFriends[1].friends}}</span></div>
-                    <div class="bronze" v-if="participantsStats.invitedFriends.length>2"><i
+                    <div class="bronze" v-if="checkIfGrt(participantsStats.invitedFriends.length,2)"><i
                         class="material-icons">star</i>
                       <span>{{capitalizeFirstLetters(participantsStats.invitedFriends[2].name)}}</span> -
                       <span>{{participantsStats.invitedFriends[2].friends}}</span></div>
@@ -289,16 +289,10 @@
                   <div class="col s12 l10 offset-l1 xl8 offset-xl2">
                     <div class="collection z-depth-1">
                       <a class="collection-item hover-item waves-effect waves-my-green modal-trigger"
-                        href="#show-old-poll-modal" @click="loadOldPollInfo">
-                        <span class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span>
-                      </a>
-                      <a class="collection-item hover-item waves-effect waves-my-green modal-trigger"
-                        href="#show-old-poll-modal" @click="loadOldPollInfo">
-                        <span class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span>
-                      </a>
-                      <a class="collection-item hover-item waves-effect waves-my-green modal-trigger"
-                        href="#show-old-poll-modal" @click="loadOldPollInfo">
-                        <span class="left">Фудбал-INSCALE</span><span class="right">20:45 01.04.2019</span>
+                        href="#show-old-poll-modal" @click="loadOldPollInfo(index)"
+                        v-for="(poll, index) in oldPolls.polls">
+                        <span class="left">{{poll.info.title}}</span>
+                        <span class="right">{{formatTimeDate(poll.info.dayTime)}}</span>
                       </a>
 
                       <!-- LOADING SPINNER -->
@@ -421,31 +415,30 @@
       <div class="modal-content" v-if="UIBindings.showOldPollInfo">
         <div class="row">
           <div class="col s12 poll-info-modal-text center">
-            <h5 class="my-green-text"><i><b>Фудбал-INSCALE</b></i></h5>
-            <h6>Note: <span>Something as note</span></h6>
-            <h6>Time: <span>20:45</span></h6>
-            <h6>Day: <span>Thursday (11.04.2019)</span></h6>
-            <h6>Location: <a href="https://www.google.com" target="_blank" class="location-url">Location</a></h6>
+            <h5 class="my-green-text"><i><b>{{oldPolls.polls[oldPolls.selectedPollIdx].info.title}}</b></i></h5>
+            <h6 v-if="showPollNote(oldPolls.polls[oldPolls.selectedPollIdx].info.note)">Note:
+              <span>{{oldPolls.polls[oldPolls.selectedPollIdx].info.note}}</span></h6>
+            <h6>Time: <span>{{formatTime(oldPolls.polls[oldPolls.selectedPollIdx].info.dayTime)}}</span></h6>
+            <h6>Day: <span>{{formatDayDate(oldPolls.polls[oldPolls.selectedPollIdx].info.dayTime)}}</span></h6>
+            <h6>Location: <a v-bind:href="oldPolls.polls[oldPolls.selectedPollIdx].info.locationURL" target="_blank"
+                class="location-url">{{oldPolls.polls[oldPolls.selectedPollIdx].info.locationDescription}}</a></h6>
           </div>
         </div>
         <div class="row no-margin-bot" v-if="UIBindings.showOldPollInfo">
           <div class="col s12">
             <ul class="collection with-header z-depth-1">
               <li class="collection-header">
-                <h5>Players <span class="my-badge my-green">Friends</span> <span
-                    class="my-badge total-badge">8/12</span></h5>
+                <h5>Players 
+                  <span class="my-badge my-green">Friends</span> 
+                  <span class="my-badge total-badge">
+                    {{oldPolls.polls[oldPolls.selectedPollIdx].participants.length}}/{{oldPolls.polls[oldPolls.selectedPollIdx].info.needPlayers}}
+                  </span>
+                </h5>
               </li>
-              <li class="collection-item">
-                <div>Alvin <span class="my-badge my-green">+1</span></div>
-              </li>
-              <li class="collection-item">
-                <div>Alvin</div>
-              </li>
-              <li class="collection-item">
-                <div>Alvin</div>
-              </li>
-              <li class="collection-item">
-                <div>Alvin <span class="my-badge my-green">Miki</span> </div>
+              <li class="collection-item" v-for="participant in oldPolls.polls[oldPolls.selectedPollIdx].participants">
+                <div> {{capitalizeFirstLetters(participant.personName)}} 
+                  <span class="my-badge my-green" v-if="showFriendName(participant.friendName)">{{capitalizeFirstLetters(participant.friendName)}}</span>
+                </div>
               </li>
             </ul>
           </div>

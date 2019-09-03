@@ -51,9 +51,6 @@ var app = new Vue({
             invitedFriends: [],
         },
         oldPolls: {
-            /* Use something like this for old poll renderning
-                <h6 v-if="UIBindings.showOldPollInfo">{{oldPolls.polls[oldPolls.oldPollIdx].Title}}</h6>
-            */
             oldestPollId: undefined,
             selectedPollIdx: undefined,
             polls: [
@@ -117,6 +114,7 @@ var app = new Vue({
                 thisApp.currentPoll = results.currentPoll;
                 thisApp.allNames = results.allNames;
                 thisApp.participantsStats = results.participantsStats;
+                thisApp.oldPolls = results.oldPolls;
 
                 // update autocomplete
                 var mergedNames = {...thisApp.allNames.oldNames, ...thisApp.allNames.newNames};
@@ -145,17 +143,7 @@ var app = new Vue({
         
     },
     computed: {
-        currentPollShowNote: function () {
-            var note = this.currentPoll.info.note;
-            
-            return (note != undefined) && (note != '');
-        },
-        currentPollTime: function () {
-            return this.formatTime(this.currentPoll.info.dayTime);
-        }, 
-        currentPollDayDate: function () {
-            return this.formatDayDate(this.currentPoll.info.dayTime);
-        },
+
     },
     methods: {
 
@@ -202,16 +190,21 @@ var app = new Vue({
                 thisApp.UIBindings.loadingOldPolls = false; 
             }, 5000);
         },
-        loadOldPollInfo: function () {
+        loadOldPollInfo: function (selectedPollIdx) {
             this.UIBindings.loadingOldPollInfo = true;
             UIComponents.modals.showOldPollModal.options.dismissible = false;
 
-            var thisApp = this;
-            setTimeout(function(){ 
-                thisApp.UIBindings.showOldPollInfo = true;
-                thisApp.UIBindings.loadingOldPollInfo = false;
-                UIComponents.modals.showOldPollModal.options.dismissible = true;
-            }, 5000);
+            this.oldPolls.selectedPollIdx = selectedPollIdx;
+
+            if (this.oldPolls.polls[selectedPollIdx].participants === undefined) {
+                var thisApp = this;
+                API.getPollParticipants(this.oldPolls.polls[selectedPollIdx].info.pollId, function (participants) {
+                    thisApp.oldPolls.polls[selectedPollIdx].participants = participants;
+                    thisApp.loadedOldPollInfo();
+                });
+            } else {
+                this.loadedOldPollInfo();
+            }
         },
 
 
@@ -227,6 +220,9 @@ var app = new Vue({
         },
         formatDate: function (milliseconds) {
             var date = new Date(milliseconds);
+            if (date.toDateString() === 'Invalid Date')
+                return '';
+
             var day = `${date.getDate()}`;
             var month = `${date.getMonth() + 1}`;
             var year = date.getFullYear();
@@ -240,17 +236,26 @@ var app = new Vue({
         },
         formatTime: function (milliseconds) {
             var date = new Date(milliseconds);
+            if (date.toDateString() === 'Invalid Date')
+                return '';
+
             var hours = date.getHours();
             var minutes = date.getMinutes();
-
+            
             return `${hours}:${minutes}`;
         },
         formatDayDate: function (milliseconds) {
             var date = new Date(milliseconds);
+            if (date.toDateString() === 'Invalid Date')
+                return '';
+                
             var weekday = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][date.getDay()];
             var formattedDate = this.formatDate(milliseconds);
 
             return `${weekday} (${formattedDate})`;
+        },
+        formatTimeDate: function (milliseconds) {
+            return `${this.formatTime(milliseconds)} ${this.formatDate(milliseconds)}`;
         },
         capitalizeFirstLetters: function (name) {
             var splitted = name.split(/\s+/);
@@ -261,7 +266,18 @@ var app = new Vue({
             return splitted.join(' ');
         },
         showFriendName: function (name) {
-            return name != '';
+            return name !== '';
+        },
+        loadedOldPollInfo: function () {
+            this.UIBindings.showOldPollInfo = true;
+            this.UIBindings.loadingOldPollInfo = false;
+            UIComponents.modals.showOldPollModal.options.dismissible = true;
+        },
+        showPollNote: function (pollNote) {
+            return (pollNote !== undefined) && (pollNote !== '');
+        },
+        checkIfGrt: function (number, comapreWith) {
+            return number > comapreWith;
         },
     }
 });

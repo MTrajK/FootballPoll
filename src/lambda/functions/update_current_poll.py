@@ -1,6 +1,7 @@
 import boto3
 import hashlib
 import time
+import json
 from botocore.exceptions import ClientError
 from boto3.dynamodb.conditions import Key
         
@@ -171,7 +172,7 @@ def update_item_polls(poll_id, update_expression, expression_attributes, express
         if e.response['Error']['Code'] == "ConditionalCheckFailedException":
             return { 
                 'statusCode': 400,
-                'errorMessage': e.response['Error']['Message'] + '!'
+                'body': json.dumps({'errorMessage': e.response['Error']['Message'] + '!'})
             }
 
         if second_attempt:
@@ -183,7 +184,7 @@ def update_item_polls(poll_id, update_expression, expression_attributes, express
     
     return {
         'statusCode': 200,
-        'statusMessage': 'The current poll is successfully updated!'
+        'body': json.dumps({'statusMessage': 'The current poll is successfully updated!'})
     }
 
 def update_current_poll(event, context):
@@ -197,7 +198,7 @@ def update_current_poll(event, context):
     if ('admin_name' not in event) or ('admin_password' not in event):
         return {
             'statusCode': 403,
-            'errorMessage': 'Access denied, missing admin_name and/or admin_password!'
+            'body': json.dumps({'errorMessage': 'Access denied, missing admin_name and/or admin_password!'})
         }
     
     admin_name = event['admin_name']
@@ -208,13 +209,13 @@ def update_current_poll(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'errorMessage': 'Database error!'
+            'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
     if admin == None:
         return {
             'statusCode': 403,
-            'errorMessage': 'Access denied, wrong credentials!'
+            'body': json.dumps({'errorMessage': 'Access denied, wrong credentials!'})
         }
     
     db_hashed_password = admin['password']
@@ -225,7 +226,7 @@ def update_current_poll(event, context):
     if db_hashed_password != hashed_password:
         return {
             'statusCode': 403,
-            'errorMessage': 'Access denied, wrong credentials!'
+            'body': json.dumps({'errorMessage': 'Access denied, wrong credentials!'})
         }
 
     # check properties for updating
@@ -243,32 +244,32 @@ def update_current_poll(event, context):
     if not found:
         return {
             'statusCode': 400,
-            'errorMessage': 'Nothing to update!'
+            'body': json.dumps({'errorMessage': 'Nothing to update!'})
         }
 
     # check string lengths
     if (update_properties['title'] != None) and (len(update_properties['title']) > 50):
         return { 
             'statusCode': 400,
-            'errorMessage': 'Too long title!'
+            'body': json.dumps({'errorMessage': 'Too long title!'})
         }
 
     if (update_properties['note'] != None) and (len(update_properties['note']) > 100):
         return { 
             'statusCode': 400,
-            'errorMessage': 'Too long note!'
+            'body': json.dumps({'errorMessage': 'Too long note!'})
         }
     
     if (update_properties['locUrl'] != None) and (len(update_properties['locUrl']) > 100):
         return { 
             'statusCode': 400,
-            'errorMessage': 'Too long locUrl!'
+            'body': json.dumps({'errorMessage': 'Too long locUrl!'})
         }
     
     if (update_properties['locDesc'] != None) and (len(update_properties['locDesc']) > 50):
         return { 
             'statusCode': 400,
-            'errorMessage': 'Too long locDesc!'
+            'body': json.dumps({'errorMessage': 'Too long locDesc!'})
         }
     
     for prop in ['max', 'need', 'end', 'dt']:
@@ -278,46 +279,46 @@ def update_current_poll(event, context):
             except:
                 return {
                     'statusCode': 400,
-                    'errorMessage': prop + ' value is not an integer number!'
+                    'body': json.dumps({'errorMessage': prop + ' value is not an integer number!'})
                 }
 
     # check int values
     if (update_properties['dt'] != None) and (update_properties['dt'] < 0):
         return { 
             'statusCode': 400,
-            'errorMessage': 'dt value shouldn\'t be negative!'
+            'body': json.dumps({'errorMessage': 'dt value shouldn\'t be negative!'})
         }
 
     if (update_properties['end'] != None) and (update_properties['end'] < 0):
         return { 
             'statusCode': 400,
-            'errorMessage': 'end value shouldn\'t be negative!'
+            'body': json.dumps({'errorMessage': 'end value shouldn\'t be negative!'})
         }
 
     if (update_properties['need'] != None) and (update_properties['need'] < 1):
         return { 
             'statusCode': 400,
-            'errorMessage': 'need value should be bigger than 1!'
+            'body': json.dumps({'errorMessage': 'need value should be bigger than 1!'})
         }
 
     if (update_properties['max'] != None) and (update_properties['max'] < 1):
         return { 
             'statusCode': 400,
-            'errorMessage': 'max value should be bigger than 1!'
+            'body': json.dumps({'errorMessage': 'max value should be bigger than 1!'})
         }
 
     # check if end is smaller than dt
     if (update_properties['end'] != None) and (update_properties['dt'] != None) and (update_properties['dt'] > update_properties['end']):
         return { 
             'statusCode': 400,
-            'errorMessage': 'dt value must be smaller or equal than end value!'
+            'body': json.dumps({'errorMessage': 'dt value must be smaller or equal than end value!'})
         }
 
     # check if max is smaller than need
     if (update_properties['need'] != None) and (update_properties['max'] != None) and (update_properties['need'] > update_properties['max']):
         return { 
             'statusCode': 400,
-            'errorMessage': 'need value must be smaller or equal than max value!'
+            'body': json.dumps({'errorMessage': 'need value must be smaller or equal than max value!'})
         }
     
     # get current poll id
@@ -326,7 +327,7 @@ def update_current_poll(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'errorMessage': 'Database error!'
+            'body': json.dumps({'errorMessage': 'Database error!'})
         }
     
     # check if max value is smaller than the number of the current participants
@@ -337,13 +338,13 @@ def update_current_poll(event, context):
         except Exception:
             return {
                 'statusCode': 500,
-                'errorMessage': 'Database error!'
+                'body': json.dumps({'errorMessage': 'Database error!'})
             }
 
         if len(participants) > update_properties['max']:
             return { 
                 'statusCode': 400,
-                'errorMessage': 'There are more participants than the max value!'
+                'body': json.dumps({'errorMessage': 'There are more participants than the max value!'})
             }
 
     # prepare the expressions for the update query
@@ -381,7 +382,7 @@ def update_current_poll(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'errorMessage': 'Database error!'
+            'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
     return update_status

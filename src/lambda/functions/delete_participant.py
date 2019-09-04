@@ -1,5 +1,6 @@
 import boto3
 import time
+import json
         
 dynamodb = boto3.resource('dynamodb')
 
@@ -64,12 +65,12 @@ def delete_item_participants(poll_id, participant_id, second_attempt = False):
     if 'Attributes' not in response:
         return {
             'statusCode': 400,
-            'errorMessage': 'Participant ' + str(participant_id) + ' doesn\'t exist in the current poll!'
+            'body': json.dumps({'errorMessage': 'Participant ' + str(participant_id) + ' doesn\'t exist in the current poll!'})
         }
 
     return {
         'statusCode': 200,
-        'statusMessage': 'Participant ' + str(participant_id) + ' is successfully deleted!'
+        'body': json.dumps({'statusMessage': 'Participant ' + str(participant_id) + ' is successfully deleted!'})
     }
 
 def delete_participant(event, context):
@@ -82,7 +83,7 @@ def delete_participant(event, context):
     if 'participant_id' not in event:
         return {
             'statusCode': 400,
-            'errorMessage': 'participant_id parameter doesn\'t exist in the API call!'
+            'body': json.dumps({'errorMessage': 'participant_id parameter doesn\'t exist in the API call!'})
         }
         
     try:
@@ -90,7 +91,7 @@ def delete_participant(event, context):
     except:
         return {
             'statusCode': 400,
-            'errorMessage': 'participant_id value is not an integer number!'
+            'body': json.dumps({'errorMessage': 'participant_id value is not an integer number!'})
         }
 
     # get current poll id
@@ -99,7 +100,7 @@ def delete_participant(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'errorMessage': 'Database error!'
+            'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
     # delete the participant
@@ -108,7 +109,7 @@ def delete_participant(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'errorMessage': 'Database error!'
+            'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
     return delete_status

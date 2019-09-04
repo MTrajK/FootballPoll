@@ -2,6 +2,7 @@ import boto3
 import time
 import datetime
 import re
+import json
 from boto3.dynamodb.conditions import Key
         
 dynamodb = boto3.resource('dynamodb')
@@ -140,7 +141,7 @@ def put_item_participants(item, second_attempt = False):
 
     return {
         'statusCode': 200,
-        'statusMessage': 'Participant ' + item['person'] + (' (' + item['friend'] + ')' if item['friend'] != '/' else '') + ' is successfully added!'
+        'body': json.dumps({'statusMessage': 'Participant ' + item['person'] + (' (' + item['friend'] + ')' if item['friend'] != '/' else '') + ' is successfully added!'})
     }
 
 def add_participant(event, context):
@@ -153,7 +154,7 @@ def add_participant(event, context):
     if 'person' not in event:
         return {
             'statusCode': 400,
-            'errorMessage': 'person parameter doesn\'t exist in the API call!'
+            'body': json.dumps({'errorMessage': 'person parameter doesn\'t exist in the API call!'})
         }
     
     # lower letters and remove all unnecessary whitespaces
@@ -166,25 +167,25 @@ def add_participant(event, context):
     if len(person) < 3:
         return {
             'statusCode': 400,
-            'errorMessage': 'Person name should contains at least 3 letters!'
+            'body': json.dumps({'errorMessage': 'Person name should contains at least 3 letters!'})
         }
 
     if len(person) > 25:
         return {
             'statusCode': 400,
-            'errorMessage': 'Too long person name!'
+            'body': json.dumps({'errorMessage': 'Too long person name!'})
         }
     
     if len(friend) == 0:
         return {
             'statusCode': 400,
-            'errorMessage': 'Friend name should contains at least 1 letter!'
+            'body': json.dumps({'errorMessage': 'Friend name should contains at least 1 letter!'})
         }
 
     if len(friend) > 25:
         return {
             'statusCode': 400,
-            'errorMessage': 'Too long friend name!'
+            'body': json.dumps({'errorMessage': 'Too long friend name!'})
         }
 
     # person allowed characters - lower letters (mac cyrilic, eng latin), digits, whitespace between characters
@@ -194,7 +195,7 @@ def add_participant(event, context):
     if re.search(search_not_allowed, person):
         return {
             'statusCode': 400,
-            'errorMessage': 'person value contains not allowed characters!'
+            'body': json.dumps({'errorMessage': 'person value contains not allowed characters!'})
         }
 
     # friend allowed characters - lower letters (mac cyrilic, eng latin), digits, +, whitespace between characters
@@ -203,7 +204,7 @@ def add_participant(event, context):
     if (friend != '/') and re.search(search_not_allowed, friend):
         return {
             'statusCode': 400,
-            'errorMessage': 'friend value contains not allowed characters!'
+            'body': json.dumps({'errorMessage': 'friend value contains not allowed characters!'})
         }
 
     # get current poll id
@@ -212,7 +213,7 @@ def add_participant(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'errorMessage': 'Database error!'
+            'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
     # get max participants
@@ -227,7 +228,7 @@ def add_participant(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'errorMessage': 'Database error!'
+            'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
     max_participants = current_poll['Item']['max']
@@ -238,13 +239,13 @@ def add_participant(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'errorMessage': 'Database error!'
+            'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
     if len(participants) == max_participants:
         return {
             'statusCode': 400,
-            'errorMessage': 'No more participants in this poll!'
+            'body': json.dumps({'errorMessage': 'No more participants in this poll!'})
         }
 
     # check for duplicate
@@ -253,7 +254,7 @@ def add_participant(event, context):
             if (participant['person'] == person) and (participant['friend'] == '/'):
                 return {
                     'statusCode': 400,
-                    'errorMessage': 'Participant ' + person + ' exists in the current poll!'
+                    'body': json.dumps({'errorMessage': 'Participant ' + person + ' exists in the current poll!'})
                 }
 
     # add the participant
@@ -269,7 +270,7 @@ def add_participant(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'errorMessage': 'Database error!'
+            'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
     return put_status

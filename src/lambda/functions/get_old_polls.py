@@ -70,7 +70,7 @@ def get_old_polls(event, context):
         List of max 5 polls.
     """
 
-    if ('queryStringParameters' not in event) or ('last_poll' not in event['queryStringParameters']):
+    if (event['queryStringParameters'] is None) or ('last_poll' not in event['queryStringParameters']):
         return {
             'statusCode': 400,
             'body': json.dumps({'errorMessage': 'last_poll parameter doesn\'t exist in the API call!'})

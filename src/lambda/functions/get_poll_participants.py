@@ -74,7 +74,7 @@ def get_poll_participants(event, context):
         List of all participants from the wanted poll.
     """
 
-    if ('queryStringParameters' not in event) or ('poll_id' not in event['queryStringParameters']):
+    if (event['queryStringParameters'] is None) or ('poll_id' not in event['queryStringParameters']):
         return {
             'statusCode': 400,
             'body': json.dumps({'errorMessage': 'poll_id parameter doesn\'t exist in the API call!'})

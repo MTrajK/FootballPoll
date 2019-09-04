@@ -150,19 +150,39 @@ def add_participant(event, context):
     Returns:
         Status of adding.
     """
+
+    if event['body'] is None:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'errorMessage': 'No request body!'})
+        }
+
+    try:
+        requestBody = json.loads(event['body'])
+    except:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'errorMessage': 'Bad request body!'})
+        }
     
-    if 'person' not in event:
+    if type(requestBody) != dict:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'errorMessage': 'Bad request body!'})
+        }
+    
+    if 'person' not in requestBody:
         return {
             'statusCode': 400,
             'body': json.dumps({'errorMessage': 'person parameter doesn\'t exist in the API call!'})
         }
     
     # lower letters and remove all unnecessary whitespaces
-    person = ' '.join(event['person'].lower().split())
+    person = ' '.join(requestBody['person'].lower().split())
     friend = '/'
 
-    if 'friend' in event:
-        friend = ' '.join(event['friend'].lower().split())
+    if 'friend' in requestBody:
+        friend = ' '.join(requestBody['friend'].lower().split())
 
     if len(person) < 3:
         return {

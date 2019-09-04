@@ -193,16 +193,36 @@ def update_current_poll(event, context):
     Returns:
         Status of updating.
     """
+    
+    if event['body'] is None:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'errorMessage': 'No request body!'})
+        }
+
+    try:
+        requestBody = json.loads(event['body'])
+    except:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'errorMessage': 'Bad request body!'})
+        }
+    
+    if type(requestBody) != dict:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'errorMessage': 'Bad request body!'})
+        }
 
     # check admin credentials
-    if ('admin_name' not in event) or ('admin_password' not in event):
+    if ('admin_name' not in requestBody) or ('admin_password' not in requestBody):
         return {
             'statusCode': 403,
             'body': json.dumps({'errorMessage': 'Access denied, missing admin_name and/or admin_password!'})
         }
     
-    admin_name = event['admin_name']
-    admin_password = event['admin_password']
+    admin_name = requestBody['admin_name']
+    admin_password = requestBody['admin_password']
 
     try:
         admin = get_item_admins(admin_name)
@@ -237,8 +257,8 @@ def update_current_poll(event, context):
     for prop in properties:
         update_properties[prop] = None
 
-        if prop in event:
-            update_properties[prop] = event[prop]
+        if prop in requestBody:
+            update_properties[prop] = requestBody[prop]
             found = True
 
     if not found:
@@ -273,7 +293,7 @@ def update_current_poll(event, context):
         }
     
     for prop in ['max', 'need', 'end', 'dt']:
-        if prop in event:
+        if prop in requestBody:
             try:
                 update_properties[prop] = int(update_properties[prop])
             except:

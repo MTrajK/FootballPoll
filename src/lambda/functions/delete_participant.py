@@ -80,14 +80,34 @@ def delete_participant(event, context):
         Status of deleting.
     """
 
-    if 'participant_id' not in event:
+    if event['body'] is None:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'errorMessage': 'No request body!'})
+        }
+
+    try:
+        requestBody = json.loads(event['body'])
+    except:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'errorMessage': 'Bad request body!'})
+        }
+    
+    if type(requestBody) != dict:
+        return {
+            'statusCode': 400,
+            'body': json.dumps({'errorMessage': 'Bad request body!'})
+        }
+
+    if 'participant_id' not in requestBody:
         return {
             'statusCode': 400,
             'body': json.dumps({'errorMessage': 'participant_id parameter doesn\'t exist in the API call!'})
         }
         
     try:
-        participant_id = int(event['participant_id'])
+        participant_id = int(requestBody['participant_id'])
     except:
         return {
             'statusCode': 400,

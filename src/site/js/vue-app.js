@@ -140,7 +140,24 @@ var app = new Vue({
         })
     },
     watch: {
-        
+        'addPollParticipantForm.personName': function (newValue) {
+            var allParts = newValue.split(/\s+/);
+
+            for (var i=0; i<allParts.length; i++)
+                // TODO: CHANGE THIS
+                allParts[i] = allParts[i].replace(/[^a-zA-ZабвгдѓежзѕијклљмнњопрстќуфхцчџшАБВГДЃЕЖЗЅИЈКЛЉМНЊОПРСТЌУФХЦЧЏШ0-9]+/g, '');
+            
+            this.addPollParticipantForm.personName = allParts.join(' ');
+        },
+        'addPollParticipantForm.friendName': function (newValue) {
+            var allParts = newValue.split(/\s+/);
+
+            for (var i=0; i<allParts.length; i++)
+                // TODO: CHANGE THIS
+                allParts[i] = allParts[i].replace(/[^+a-zA-ZабвгдѓежзѕијклљмнњопрстќуфхцчџшАБВГДЃЕЖЗЅИЈКЛЉМНЊОПРСТЌУФХЦЧЏШ0-9]+/g, '');
+            
+            this.addPollParticipantForm.friendName = allParts.join(' ');
+        }
     },
     computed: {
 

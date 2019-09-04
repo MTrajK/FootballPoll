@@ -118,22 +118,26 @@ main {
     font-size: 1.2rem;
 }
 
-.info-input-field input[type=text]:not(.browser-default) {
+.info-input-field input[type=text]:not(.browser-default),
+.info-input-field input[type=number]:not(.browser-default) {
     border-bottom: 1px solid #ffffff;
 }
 
 .info-input-field input[type=text]:not(.browser-default),
+.info-input-field input[type=number]:not(.browser-default),
 .add-input-field input[type=text]:not(.browser-default),
 .add-input-field input[type=password]:not(.browser-default),
 .poll-info-modal-text {
     color: #50565d;
 }
 
-.info-input-field input[type=text]:not(.browser-default) + label {
+.info-input-field input[type=text]:not(.browser-default) + label,
+.info-input-field input[type=number]:not(.browser-default) + label {
     color: #ffffff;
 }
 
 .info-input-field input[type=text]:not(.browser-default):focus:not([readonly]),
+.info-input-field input[type=number]:not(.browser-default):focus:not([readonly]),
 .add-input-field input[type=text]:not(.browser-default):focus:not([readonly]),
 .add-input-field input[type=password]:not(.browser-default):focus:not([readonly]) {
     border-bottom: 1px solid #7cb342;
@@ -148,6 +152,7 @@ main {
 }
 
 .info-input-field input[type=text]:not(.browser-default):focus:not([readonly]) + label,
+.info-input-field input[type=number]:not(.browser-default):focus:not([readonly]) + label,
 .add-input-field input[type=text]:not(.browser-default):focus:not([readonly]) ~ label,
 .add-input-field input[type=password]:not(.browser-default):focus:not([readonly]) ~ label,
 .timepicker-close, .datepicker-cancel, 

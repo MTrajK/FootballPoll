@@ -1,8 +1,22 @@
 import boto3
 import time
+import json
+import decimal
 from boto3.dynamodb.conditions import Key
         
 dynamodb = boto3.resource('dynamodb')
+
+class DecimalEncoder(json.JSONEncoder):
+	"""Helper class to convert a DynamoDB decimal/item to JSON
+	"""
+	
+	def default(self, o):
+		if isinstance(o, decimal.Decimal):
+			if o % 1 > 0:
+				return float(o)
+			else:
+				return int(o)
+		return super(DecimalEncoder, self).default(o)
 
 def get_current_poll_id(second_attempt = False):
     """Tries 2 times to access the config table and takes the current poll id.
@@ -182,7 +196,7 @@ def get_site_data(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'errorMessage': 'Database error!'
+            'body': json.dumps({'errorMessage': 'Database error!'})
         }
     
     # get polls
@@ -194,7 +208,7 @@ def get_site_data(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'errorMessage': 'Database error!'
+            'body': json.dumps({'errorMessage': 'Database error!'})
         }
         
     # query participants
@@ -203,7 +217,7 @@ def get_site_data(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'errorMessage': 'Database error!'
+            'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
     # get persons
@@ -212,15 +226,17 @@ def get_site_data(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'errorMessage': 'Database error!'
+            'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
+    response = {
+        'current_poll': current_poll_id,
+        'polls': polls,
+        'participants': participants,
+        'persons': persons
+    }
+    
     return {
         'statusCode': 200,
-        'body': {
-            'current_poll': current_poll_id,
-            'polls': polls,
-            'participants': participants,
-            'persons': persons
-        }
+        'body': json.dumps(response, cls=DecimalEncoder, ensure_ascii=False)
     }

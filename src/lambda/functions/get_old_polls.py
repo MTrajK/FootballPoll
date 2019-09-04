@@ -1,7 +1,21 @@
 import boto3
 import time
+import json
+import decimal
         
 dynamodb = boto3.resource('dynamodb')
+
+class DecimalEncoder(json.JSONEncoder):
+	"""Helper class to convert a DynamoDB decimal/item to JSON
+	"""
+	
+	def default(self, o):
+		if isinstance(o, decimal.Decimal):
+			if o % 1 > 0:
+				return float(o)
+			else:
+				return int(o)
+		return super(DecimalEncoder, self).default(o)
 
 def batch_get_item_polls(keys, second_attempt = False):
     """Performs batch get items on polls table, if the first attempt failed or has unprocessed keys tries again.
@@ -56,18 +70,18 @@ def get_old_polls(event, context):
         List of max 5 polls.
     """
 
-    if 'last_poll' not in event:
+    if ('queryStringParameters' not in event) or ('last_poll' not in event['queryStringParameters']):
         return {
             'statusCode': 400,
-            'errorMessage': 'last_poll parameter doesn\'t exist in the API call!'
+            'body': json.dumps({'errorMessage': 'last_poll parameter doesn\'t exist in the API call!'})
         }
 
     try:
-        last_poll = int(event['last_poll'])
+        last_poll = int(event['queryStringParameters']['last_poll'])
     except:
         return {
             'statusCode': 400,
-            'errorMessage': 'last_poll value is not an integer number!'
+            'body': json.dumps({'errorMessage': 'last_poll value is not an integer number!'})
         }
 
     first_poll = max(last_poll - 5, 0)
@@ -78,10 +92,10 @@ def get_old_polls(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'errorMessage': 'Database error!'
+            'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
     return {
         'statusCode': 200,
-        'body': polls
+        'body': json.dumps(polls, cls=DecimalEncoder, ensure_ascii=False)
     }

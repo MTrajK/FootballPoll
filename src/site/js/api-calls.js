@@ -316,7 +316,7 @@
     var parsedResult = {
       currentPoll: {
         info: {},
-        editedInfo: {},
+        editInfo: {},
         participants: [],
       },
       allNames: {
@@ -351,7 +351,7 @@
 
     // current poll editing info
     // create a deep copy/clone of that object (or use JSON.parse(JSON.stringify(object)))
-    parsedResult.currentPoll.editedInfo = {
+    parsedResult.currentPoll.editInfo = {
       title: parsedResult.currentPoll.info.title,
       note: parsedResult.currentPoll.info.note,
       locationDescription: parsedResult.currentPoll.info.locationDescription,

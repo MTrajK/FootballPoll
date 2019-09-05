@@ -107,31 +107,31 @@
                 <div id="poll-info-edit" class="row" v-show="!UIBindings.showPollInfo">
 
                   <div class="input-field info-input-field col s12 m6 offset-l1 l5 offset-xl2 xl4">
-                    <input id="title-input" type="text" v-model="currentPoll.editedInfo.title" maxlength="50">
+                    <input id="title-input" type="text" v-model="currentPoll.editInfo.title" maxlength="50">
                     <label for="title-input">Title</label>
                   </div>
                   <div class="input-field info-input-field col s12 m6 l5 xl4">
-                    <input id="note-input" type="text" v-model="currentPoll.editedInfo.note" maxlength="100">
-                    <label for="note-input">Note</label>
+                    <input id="note-input" type="text" v-model="currentPoll.editInfo.note" maxlength="100">
+                    <label id="note-input-label" for="note-input">Note</label>
                   </div>
                   <div class="input-field info-input-field col s12 m6  offset-l1 l5 offset-xl2 xl4">
-                    <input id="loc-desc-input" type="text" v-model="currentPoll.editedInfo.locationDescription" maxlength="50">
+                    <input id="loc-desc-input" type="text" v-model="currentPoll.editInfo.locationDescription" maxlength="50">
                     <label for="loc-desc-input">Location description</label>
                   </div>
                   <div class="input-field info-input-field col s12 m6 l5 xl4">
-                    <input id="loc-url-input" type="text" v-model="currentPoll.editedInfo.locationURL" maxlength="100">
+                    <input id="loc-url-input" type="text" v-model="currentPoll.editInfo.locationURL" maxlength="100">
                     <label for="loc-url-input">Location URL</label>
                   </div>
                   <div class="input-field info-input-field col s12 m6 offset-l1 l5 offset-xl2 xl4">
-                    <input id="need-input" type="number" v-model="currentPoll.editedInfo.needPlayers">
+                    <input id="need-input" type="number" v-model="currentPoll.editInfo.needPlayers">
                     <label for="need-input">Need players</label>
                   </div>
                   <div class="input-field info-input-field col s12 m6 l5 xl4">
-                    <input id="max-input" type="number" v-model="currentPoll.editedInfo.maxPlayers">
+                    <input id="max-input" type="number" v-model="currentPoll.editInfo.maxPlayers">
                     <label for="max-input">Max players</label>
                   </div>
                   <div class="input-field info-input-field col s12 m6 offset-l1 l5 offset-xl2 xl4">
-                    <input type="text" id="time-input" class="timepicker" v-model="currentPoll.editedInfo.time">
+                    <input type="text" id="time-input" class="timepicker" v-model="currentPoll.editInfo.time">
                     <label for="time-input">Time</label>
                   </div>
                   <div class="input-field info-input-field col s12 m6 l5 xl4">
@@ -172,11 +172,11 @@
                         <div class="input-field add-input-field col s12 m6">
                           <input id="name-autocomplete" type="text" class="autocomplete"
                             v-model="addPollParticipantForm.personName" maxlength="25">
-                          <label for="name-autocomplete">Player</label>
+                          <label id="name-autocomplete-label" for="name-autocomplete">Player</label>
                         </div>
                         <div class="input-field add-input-field col s12 m6">
                           <input id="friend-input" type="text" v-model="addPollParticipantForm.friendName" maxlength="25" >
-                          <label for="friend-input">Friend</label>
+                          <label id="friend-input-label" for="friend-input">Friend</label>
                         </div>
                       </div>
                       <a id="add-participant-button"

@@ -31,7 +31,7 @@ var app = new Vue({
                 startDate: undefined,
                 pollId: undefined,
             },
-            editedInfo: {
+            editInfo: {
                 title: undefined,
                 note: undefined,
                 locationDescription: undefined,
@@ -53,22 +53,14 @@ var app = new Vue({
         oldPolls: {
             oldestPollId: undefined,
             selectedPollIdx: undefined,
-            polls: [
-                /*
-                {
-                    info: {
-
-                    },
-                    participants: [],
-                }
-                */
-            ],
+            polls: [ /* { info: {}, participants: [] } */ ],
         },
     },
     mounted: function () {
         /**
-        * init ui components and get the data needed for the app
+        * Init UI components and get the data needed for the app, after everything from the dom is rendered
         */
+
         this.$nextTick(function () {
             var thisApp = this;
 
@@ -86,22 +78,35 @@ var app = new Vue({
             // Init time/date pickers
             UIComponents.pickers.timePicker = M.Timepicker.init(
                 document.querySelector('#time-input'), {
-                'twelveHour': false,
-                'autoClose': true
-            });
+                    'twelveHour': false,
+                    'autoClose': true
+                }
+            );
             UIComponents.pickers.dayPicker = M.Datepicker.init(
                 document.querySelector('#day-input'), {
-                'format': 'dddd (dd.mm.yyyy)',
-                'autoClose': true
-            });
+                    'format': 'dddd (dd.mm.yyyy)',
+                    'autoClose': true
+                }
+            );
             UIComponents.pickers.endDatePicker = M.Datepicker.init(
                 document.querySelector('#end-date-input'), {
-                'format': 'dddd (dd.mm.yyyy)',
-                'autoClose': true
-            });
+                    'format': 'dddd (dd.mm.yyyy)',
+                    'autoClose': true
+                }
+            );
 
             // Init modals
-            UIComponents.modals.saveInfoModal = M.Modal.init(document.querySelector('#save-info-modal'));
+            UIComponents.modals.saveInfoModal = M.Modal.init(document.querySelector('#save-info-modal'), {
+                onCloseStart: function () {
+                    thisApp.adminCredentials.name = '';
+                    thisApp.adminCredentials.password = '';
+                    UIComponents.labels.saveInfoAdminName.classList.remove('active');
+                    UIComponents.labels.saveInfoAdminPassword.classList.remove('active');
+                },
+                onOpenEnd: function () {
+                    document.querySelector('#save-info-admin-name').focus();
+                }
+            });
             UIComponents.modals.showStatsModal = M.Modal.init(document.querySelector('#show-stats-modal'));
             UIComponents.modals.showOldPollModal = M.Modal.init(document.querySelector('#show-old-poll-modal'), {
                 onCloseEnd: function () {
@@ -109,26 +114,26 @@ var app = new Vue({
                 }
             });
 
+            // Save label elements
+            UIComponents.labels.saveInfoAdminName = document.querySelector('#save-info-admin-name-label');
+            UIComponents.labels.saveInfoAdminPassword = document.querySelector('#save-info-admin-password-label');
+            UIComponents.labels.addParticipantName = document.querySelector('#name-autocomplete-label');
+            UIComponents.labels.addParticipantFriend = document.querySelector('#friend-input-label');
+            UIComponents.labels.editInfoNote = document.querySelector('#note-input-label');
+
             // Get site data
             API.getSiteData(function (results) {
+                // update data
                 thisApp.currentPoll = results.currentPoll;
                 thisApp.allNames = results.allNames;
                 thisApp.participantsStats = results.participantsStats;
                 thisApp.oldPolls = results.oldPolls;
 
                 // update autocomplete
-                var mergedNames = {...thisApp.allNames.oldNames, ...thisApp.allNames.newNames};
-                UIComponents.nameAutocomplete.updateData(mergedNames);
-                
+                thisApp.updateAutocomplete();
+
                 // update pickers
-                UIComponents.pickers.dayPicker.setDate(new Date(thisApp.currentPoll.info.dayTime));
-                UIComponents.pickers.dayPicker._finishSelection();
-
-                UIComponents.pickers.endDatePicker.setDate(new Date(thisApp.currentPoll.info.endDate));
-                UIComponents.pickers.endDatePicker._finishSelection();
-
-                thisApp.currentPoll.editedInfo.time = thisApp.formatTime(thisApp.currentPoll.info.dayTime);
-                UIComponents.pickers.timePicker._updateTimeFromInput();
+                thisApp.updatePickers();
 
                 // Remove the main spinner after all of the content is loaded
                 // DON'T USE VUE FOR THE MAIN SPINNER!
@@ -143,19 +148,17 @@ var app = new Vue({
         'addPollParticipantForm.personName': function (newValue) {
             var allParts = newValue.split(/\s+/);
 
-            for (var i=0; i<allParts.length; i++)
-                // TODO: CHANGE THIS
+            for (var i = 0; i < allParts.length; i++)
                 allParts[i] = allParts[i].replace(/[^a-zA-ZабвгдѓежзѕијклљмнњопрстќуфхцчџшАБВГДЃЕЖЗЅИЈКЛЉМНЊОПРСТЌУФХЦЧЏШ0-9]+/g, '');
-            
+
             this.addPollParticipantForm.personName = allParts.join(' ');
         },
         'addPollParticipantForm.friendName': function (newValue) {
             var allParts = newValue.split(/\s+/);
 
-            for (var i=0; i<allParts.length; i++)
-                // TODO: CHANGE THIS
-                allParts[i] = allParts[i].replace(/[^+a-zA-ZабвгдѓежзѕијклљмнњопрстќуфхцчџшАБВГДЃЕЖЗЅИЈКЛЉМНЊОПРСТЌУФХЦЧЏШ0-9]+/g, '');
-            
+            for (var i = 0; i < allParts.length; i++)
+                allParts[i] = allParts[i].replace(/[^a-zA-ZабвгдѓежзѕијклљмнњопрстќуфхцчџшАБВГДЃЕЖЗЅИЈКЛЉМНЊОПРСТЌУФХЦЧЏШ0-9+]+/g, '');
+
             this.addPollParticipantForm.friendName = allParts.join(' ');
         }
     },
@@ -173,38 +176,42 @@ var app = new Vue({
             UIComponents.modals.saveInfoModal.options.dismissible = false;
 
             var thisApp = this;
-            setTimeout(function(){
+            setTimeout(function () {
                 thisApp.UIBindings.showPollInfo = true;
-                UIComponents.modals.saveInfoModal.close(); 
+                UIComponents.modals.saveInfoModal.close();
                 thisApp.UIBindings.savingPollInfo = false;
                 UIComponents.modals.saveInfoModal.options.dismissible = true;
-                M.toast({html: 'The poll info is successfully updated!'});
+                M.toast({ html: 'The poll info is successfully updated!' });
             }, 5000);
         },
         addPollParticipant: function () {
             this.UIBindings.updatingPollParticipants = true;
 
             var thisApp = this;
-            setTimeout(function(){ 
+            setTimeout(function () {
+                thisApp.addPollParticipantForm.personName = '';
+                thisApp.addPollParticipantForm.friendName = '';
+                UIComponents.labels.addParticipantName.classList.remove('active');
+                UIComponents.labels.addParticipantFriend.classList.remove('active');
                 thisApp.UIBindings.updatingPollParticipants = false;
-                M.toast({html: 'The participant is successfully added!'});
+                M.toast({ html: 'The participant is successfully added!' });
             }, 5000);
         },
         deletePollParticipant: function () {
             this.UIBindings.updatingPollParticipants = true;
 
             var thisApp = this;
-            setTimeout(function(){ 
+            setTimeout(function () {
                 thisApp.UIBindings.updatingPollParticipants = false;
-                M.toast({html: 'The participant is successfully deleted!'});
+                M.toast({ html: 'The participant is successfully deleted!' });
             }, 5000);
         },
         loadOldPolls: function () {
             this.UIBindings.loadingOldPolls = true;
 
             var thisApp = this;
-            setTimeout(function(){ 
-                thisApp.UIBindings.loadingOldPolls = false; 
+            setTimeout(function () {
+                thisApp.UIBindings.loadingOldPolls = false;
             }, 5000);
         },
         loadOldPollInfo: function (selectedPollIdx) {
@@ -234,6 +241,17 @@ var app = new Vue({
         },
         cancelEditingPollInfo: function () {
             this.UIBindings.showPollInfo = true;
+
+            this.currentPoll.editInfo.title = this.currentPoll.info.title;
+            this.currentPoll.editInfo.note = this.currentPoll.info.note;
+            this.currentPoll.editInfo.locationDescription = this.currentPoll.info.locationDescription;
+            this.currentPoll.editInfo.locationURL = this.currentPoll.info.locationURL;
+            this.currentPoll.editInfo.needPlayers = this.currentPoll.info.needPlayers;
+            this.currentPoll.editInfo.maxPlayers = this.currentPoll.info.maxPlayers;
+            this.currentPoll.editInfo.note = this.currentPoll.info.note;
+
+            UIComponents.labels.editInfoNote.classList.remove('active');
+            this.updatePickers();
         },
         formatDate: function (milliseconds) {
             var date = new Date(milliseconds);
@@ -258,7 +276,7 @@ var app = new Vue({
 
             var hours = date.getHours();
             var minutes = date.getMinutes();
-            
+
             return `${hours}:${minutes}`;
         },
         formatDayDate: function (milliseconds) {
@@ -277,9 +295,9 @@ var app = new Vue({
         capitalizeFirstLetters: function (name) {
             var splitted = name.split(/\s+/);
 
-            for (var i=0; i<splitted.length; i++)
+            for (var i = 0; i < splitted.length; i++)
                 splitted[i] = splitted[i][0].toUpperCase() + splitted[i].slice(1);
-            
+
             return splitted.join(' ');
         },
         showFriendName: function (name) {
@@ -304,18 +322,34 @@ var app = new Vue({
             var green = [124, 179, 66]; // #7cb342
 
             var percentage = total / need;
-            if (total > need) {
-                percentage = 1 - (total - need)/(max - need)*0.5;
-            }
+            if (total > need)
+                percentage = 1 - (total - need) / (max - need) * 0.5;
 
             var newColor = '#';
-            for (var i = 0; i < 3; i++) {
+            for (var i = 0; i < 3; i++)
                 newColor += Math.round(red[i] + (green[i] - red[i]) * percentage).toString(16);
-            }
-            
+
             return {
                 backgroundColor: newColor
             };
+        },
+        updatePickers: function () {
+            UIComponents.pickers.dayPicker.setDate(new Date(this.currentPoll.info.dayTime));
+            UIComponents.pickers.dayPicker._finishSelection();
+
+            UIComponents.pickers.endDatePicker.setDate(new Date(this.currentPoll.info.endDate));
+            UIComponents.pickers.endDatePicker._finishSelection();
+
+            this.currentPoll.editInfo.time = this.formatTime(this.currentPoll.info.dayTime);
+            UIComponents.pickers.timePicker._updateTimeFromInput();
+        },
+        updateAutocomplete: function () {
+            var oldNames = {};
+            var newNames = {};
+            Object.keys(this.allNames.oldNames).forEach((a) => (oldNames[this.capitalizeFirstLetters(a)] = null));
+            Object.keys(this.allNames.newNames).forEach((a) => (newNames[this.capitalizeFirstLetters(a)] = null));
+            var mergedNames = { ...oldNames, ...newNames };
+            UIComponents.nameAutocomplete.updateData(mergedNames);
         },
     }
 });

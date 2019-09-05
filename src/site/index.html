@@ -131,7 +131,7 @@
                     <label for="max-input">Max players</label>
                   </div>
                   <div class="input-field info-input-field col s12 m6 offset-l1 l5 offset-xl2 xl4">
-                    <input type="text" id="time-input" class="timepicker" v-model="currentPoll.editInfo.time">
+                    <input type="text" id="time-input" class="timepicker">
                     <label for="time-input">Time</label>
                   </div>
                   <div class="input-field info-input-field col s12 m6 l5 xl4">
@@ -199,7 +199,7 @@
                         <div> {{capitalizeFirstLetters(participant.personName)}}
                           <span class="my-badge my-green"
                             v-if="showFriendName(participant.friendName)">{{capitalizeFirstLetters(participant.friendName)}}</span>
-                          <a class="secondary-content waves-effect waves-red" @click="deletePollParticipant"> <i
+                          <a class="secondary-content waves-effect waves-red" @click="deletePollParticipant(index)"> <i
                               class="material-icons">delete</i></a>
                         </div>
                       </li>
@@ -306,8 +306,8 @@
                       <!-- LOADING SPINNER -->
                     </div>
                   </div>
-                  <div class="col s12 center" v-if="!UIBindings.loadingOldPolls">
-                    <a id="load-more-button" class="waves-effect waves-light button-green btn" @click="loadOldPolls">
+                  <div class="col s12 center" >
+                    <a id="load-more-button" v-bind:disabled="disableLoadMoreButton" class="waves-effect waves-light button-green btn" @click="loadOldPolls">
                       <i class="material-icons left">expand_more</i>load more
                     </a>
                   </div>

@@ -139,7 +139,7 @@ var app = new Vue({
                 // DON'T USE VUE FOR THE MAIN SPINNER!
                 var mainSpinner = document.querySelector('#main-spinner');
                 mainSpinner.parentNode.removeChild(mainSpinner);
-                document.querySelector('body').classList.remove('spinner-loading');
+                document.body.classList.remove('spinner-loading');
 
                 // focus on adding player input
                 UIComponents.labels.addParticipantName.focus();
@@ -466,6 +466,15 @@ var app = new Vue({
                 updateProperties['endDate'] = endDate;
 
             return updateProperties;
+        },
+        openTimePicker: function () {
+            UIComponents.pickers.timePicker.open();
+        },
+        openDayPicker: function () {
+            UIComponents.pickers.dayPicker.open();
+        },
+        openEndDatePicker: function () {
+            UIComponents.pickers.endDatePicker.open();
         }
     }
 });

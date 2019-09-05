@@ -132,15 +132,15 @@
                     <label for="max-input">Max players</label>
                   </div>
                   <div class="input-field info-input-field col s12 m6 offset-l1 l5 offset-xl2 xl4">
-                    <input type="text" id="time-input" class="timepicker">
+                    <input type="text" id="time-input" class="timepicker" @focus="openTimePicker">
                     <label for="time-input">Time</label>
                   </div>
                   <div class="input-field info-input-field col s12 m6 l5 xl4">
-                    <input type="text" id="day-input" class="datepicker">
+                    <input type="text" id="day-input" class="datepicker" @focus="openDayPicker">
                     <label for="day-input">Day</label>
                   </div>
                   <div class="input-field info-input-field col s12 offset-m3 m6 offset-l3 l6 offset-xl4 xl4">
-                    <input type="text" id="end-date-input" class="datepicker">
+                    <input type="text" id="end-date-input" class="datepicker" @focus="openEndDatePicker">
                     <label for="end-date-input">End date</label>
                   </div>
                   <div class="col s12 center">

@@ -1,4 +1,5 @@
 /*!
+ * Updated by MTrajk, Meto Trajkovski (removed focus event after TimePicker is closed)
  * Materialize v1.0.0 (http://materializecss.com)
  * Copyright 2014-2017 Materialize
  * MIT License (https://raw.githubusercontent.com/Dogfalo/materialize/master/LICENSE)
@@ -10211,7 +10212,6 @@ $jscomp.polyfill = function (e, r, p, m) {
         }
 
         this.close();
-        this.el.focus();
       }
     }, {
       key: "clear",

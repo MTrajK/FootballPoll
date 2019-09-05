@@ -174,8 +174,8 @@ var app = new Vue({
         }
     },
     computed: {
-        addButtonDisabled: function () {
-            if (this.currentPoll.participants.length >= this.currentPoll.info.maxPlayers)
+        disableAddButton: function () {
+            if (this.currentPoll.participants.length >= parseInt(this.currentPoll.info.maxPlayers))
                 return true;
 
             var personName = this.addPollParticipantForm.personName;
@@ -197,6 +197,9 @@ var app = new Vue({
         },
         disableLoadMoreButton: function () {
             return this.UIBindings.loadingOldPolls || (this.oldPolls.oldestPollId === 0);
+        },
+        disableSaveButton: function () {
+            return (this.adminCredentials.name === '') || (this.adminCredentials.password === '');
         }
     },
     methods: {
@@ -209,28 +212,14 @@ var app = new Vue({
             this.UIBindings.savingPollInfo = true;
             UIComponents.modals.saveInfoModal.options.dismissible = false;
 
+            var updatedProperties = this.findUpdatedInfoProperties();
+
             var thisApp = this;
-            var updateProperties = {};
-            Object.keys(this.currentPoll.editInfo).forEach(function (editedProperty) {
-                if (thisApp.currentPoll.info[editedProperty] !== thisApp.currentPoll.editInfo[editedProperty])
-                    updateProperties[editedProperty] = thisApp.currentPoll.editInfo[editedProperty];
-            });
-
-            var millisecondsFromTime = UIComponents.pickers.timePicker.hours * 3600000 + UIComponents.pickers.timePicker.minutes * 60000;
-            var dayTime = UIComponents.pickers.dayPicker.date.getTime() + millisecondsFromTime;
-            var endDate = UIComponents.pickers.endDatePicker.date.getTime();
-
-            if (this.currentPoll.info.dayTime !== dayTime)
-                this.currentPoll.info.dayTime = dayTime;
-            if (this.currentPoll.info.endDate !== endDate)
-                this.currentPoll.info.endDate = endDate;
-
             setTimeout(function () {
-                Object.keys(thisApp.currentPoll.editInfo).forEach(function (editedProperty) {
-                    thisApp.currentPoll.info[editedProperty] = thisApp.currentPoll.editInfo[editedProperty];
+                // update in the poll info view
+                Object.keys(updatedProperties).forEach(function (propertyName) {
+                    thisApp.currentPoll.info[propertyName] = updatedProperties[propertyName];
                 });
-                thisApp.currentPoll.info.dayTime = dayTime;
-                thisApp.currentPoll.info.endDate = endDate;
 
                 thisApp.UIBindings.showPollInfo = true;
                 UIComponents.modals.saveInfoModal.close();
@@ -364,6 +353,11 @@ var app = new Vue({
             var hours = date.getHours();
             var minutes = date.getMinutes();
 
+            if (hours < 10)
+                hours = `0${hours}`;
+            if (minutes < 10)
+                minutes = `0${minutes}`;
+
             return `${hours}:${minutes}`;
         },
         formatDayDate: function (milliseconds) {
@@ -402,6 +396,9 @@ var app = new Vue({
             return number > comapreWith;
         },
         calculateColor: function (total, need, max) {
+            need = parseInt(need);
+            max = parseInt(max);
+
             if ((need === undefined) || (max === undefined) || (total > max))
                 return {};
 
@@ -414,6 +411,7 @@ var app = new Vue({
 
             var newColor = '#';
             for (var i = 0; i < 3; i++)
+                // interpolate between colors
                 newColor += Math.round(red[i] + (green[i] - red[i]) * percentage).toString(16);
 
             return {
@@ -435,13 +433,39 @@ var app = new Vue({
             var thisApp = this;
             var func = function (name) { result[thisApp.capitalizeFirstLetters(name)] = null };
 
+            // capitalize first letters for all names in the autocomplete list
             Object.keys(this.allNames.oldNames).forEach(func);
             Object.keys(this.allNames.newNames).forEach(func);
 
             UIComponents.nameAutocomplete.updateData(result);
         },
-        calculateMillisecondsFromTime: function () {
-            return UIComponents.pickers.timePicker.hours * 3600000 + UIComponents.pickers.timePicker.minutes * 60000;
+        openSaveInfoModal: function () {
+            if (Object.keys(this.findUpdatedInfoProperties()).length === 0) 
+                M.toast({ html: 'There are no changes into the poll info!' });
+            else
+                UIComponents.modals.saveInfoModal.open();
+        },
+        findUpdatedInfoProperties: function () {
+            var thisApp = this;
+            var updateProperties = {};
+
+            Object.keys(this.currentPoll.editInfo).forEach(function (propertyName) {
+                // save property name and value if there is difference
+                if (thisApp.currentPoll.info[propertyName] !== thisApp.currentPoll.editInfo[propertyName])
+                    updateProperties[propertyName] = thisApp.currentPoll.editInfo[propertyName];
+            });
+
+            // calculate values for dayTime and endTime (from the pickers)
+            var millisecondsFromTime = UIComponents.pickers.timePicker.hours * 3600000 + UIComponents.pickers.timePicker.minutes * 60000;
+            var dayTime = UIComponents.pickers.dayPicker.date.getTime() + millisecondsFromTime;
+            var endDate = UIComponents.pickers.endDatePicker.date.getTime();
+
+            if (this.currentPoll.info.dayTime !== dayTime)
+                updateProperties['dayTime'] = dayTime;
+            if (this.currentPoll.info.endDate !== endDate)
+                updateProperties['endDate'] = endDate;
+
+            return updateProperties;
         }
     }
 });

@@ -115,7 +115,8 @@
                     <label id="note-input-label" for="note-input">Note</label>
                   </div>
                   <div class="input-field info-input-field col s12 m6  offset-l1 l5 offset-xl2 xl4">
-                    <input id="loc-desc-input" type="text" v-model="currentPoll.editInfo.locationDescription" maxlength="50">
+                    <input id="loc-desc-input" type="text" v-model="currentPoll.editInfo.locationDescription"
+                      maxlength="50">
                     <label for="loc-desc-input">Location description</label>
                   </div>
                   <div class="input-field info-input-field col s12 m6 l5 xl4">
@@ -146,8 +147,8 @@
                     <button class="waves-effect waves-my-green button-white btn btn-font"
                       @click="cancelEditingPollInfo"><i class="material-icons left">clear</i>cancel</button>
                     <a id="save-info-button"
-                      class="waves-effect waves-my-green button-white btn modal-trigger left-margin-btn"
-                      href="#save-info-modal"><i class="material-icons left">save</i>save info</a>
+                      class="waves-effect waves-my-green button-white btn left-margin-btn"
+                      @click="openSaveInfoModal"><i class="material-icons left">save</i>save info</a>
                   </div>
 
                 </div>
@@ -175,13 +176,15 @@
                           <label id="name-autocomplete-label" for="name-autocomplete">Player</label>
                         </div>
                         <div class="input-field add-input-field col s12 m6">
-                          <input id="friend-input" type="text" v-model="addPollParticipantForm.friendName" maxlength="25" >
+                          <input id="friend-input" type="text" v-model="addPollParticipantForm.friendName"
+                            maxlength="25">
                           <label id="friend-input-label" for="friend-input">Friend</label>
                         </div>
                       </div>
                       <a id="add-participant-button"
                         class="btn-floating btn-large waves-effect waves-light button-green waves-light my-floating-button z-depth-2-half"
-                        @click="addPollParticipant" v-bind:disabled="addButtonDisabled"><i class="material-icons">add</i></a>
+                        @click="addPollParticipant" v-bind:disabled="disableAddButton"><i
+                          class="material-icons">add</i></a>
                     </div>
                   </div>
                   <div class="col s12 l10 offset-l1 xl8 offset-xl2">
@@ -189,7 +192,7 @@
                       <li class="collection-header">
                         <h5>Players
                           <span class="my-badge my-green">Friends</span>
-                          <span class="my-badge total-badge" 
+                          <span class="my-badge total-badge"
                             v-bind:style="calculateColor(currentPoll.participants.length,currentPoll.info.needPlayers,currentPoll.info.maxPlayers)">
                             {{currentPoll.participants.length}}/{{currentPoll.info.needPlayers}}
                           </span>
@@ -241,13 +244,16 @@
                 <div class="row">
                   <div class="col s12 l6 offset-xl2 xl4 center white-text">
                     <h4 class="header-title">Played Games</h4>
-                    <div class="gold" v-if="checkIfGrt(participantsStats.playedGames.length,0)"><i class="material-icons">star</i>
+                    <div class="gold" v-if="checkIfGrt(participantsStats.playedGames.length,0)"><i
+                        class="material-icons">star</i>
                       <span>{{capitalizeFirstLetters(participantsStats.playedGames[0].name)}}</span> -
                       <span>{{participantsStats.playedGames[0].polls}}</span></div>
-                    <div class="silver" v-if="checkIfGrt(participantsStats.playedGames.length,1)"><i class="material-icons">star</i>
+                    <div class="silver" v-if="checkIfGrt(participantsStats.playedGames.length,1)"><i
+                        class="material-icons">star</i>
                       <span>{{capitalizeFirstLetters(participantsStats.playedGames[1].name)}}</span> -
                       <span>{{participantsStats.playedGames[1].polls}}</span></div>
-                    <div class="bronze" v-if="checkIfGrt(participantsStats.playedGames.length,2)"><i class="material-icons">star</i>
+                    <div class="bronze" v-if="checkIfGrt(participantsStats.playedGames.length,2)"><i
+                        class="material-icons">star</i>
                       <span>{{capitalizeFirstLetters(participantsStats.playedGames[2].name)}}</span> -
                       <span>{{participantsStats.playedGames[2].polls}}</span></div>
                   </div>
@@ -306,8 +312,9 @@
                       <!-- LOADING SPINNER -->
                     </div>
                   </div>
-                  <div class="col s12 center" >
-                    <a id="load-more-button" v-bind:disabled="disableLoadMoreButton" class="waves-effect waves-light button-green btn" @click="loadOldPolls">
+                  <div class="col s12 center">
+                    <a id="load-more-button" v-bind:disabled="disableLoadMoreButton"
+                      class="waves-effect waves-light button-green btn" @click="loadOldPolls">
                       <i class="material-icons left">expand_more</i>load more
                     </a>
                   </div>
@@ -364,7 +371,8 @@
       </div>
       <div class="modal-footer">
         <a class="modal-close waves-effect waves-my-green my-green-text btn-flat">cancel</a>
-        <a class="waves-effect waves-my-green my-green-text btn-flat" @click="savePollInfo">save</a>
+        <a class="waves-effect waves-my-green my-green-text btn-flat" @click="savePollInfo"
+          v-bind:disabled="disableSaveButton">save</a>
       </div>
 
       <!-- SAVE INFO SPINNER -->
@@ -430,8 +438,8 @@
           <div class="col s12">
             <ul class="collection with-header z-depth-1">
               <li class="collection-header">
-                <h5>Players 
-                  <span class="my-badge my-green">Friends</span> 
+                <h5>Players
+                  <span class="my-badge my-green">Friends</span>
                   <span class="my-badge total-badge"
                     v-bind:style="calculateColor(oldPolls.polls[oldPolls.selectedPollIdx].participants.length,oldPolls.polls[oldPolls.selectedPollIdx].info.needPlayers,oldPolls.polls[oldPolls.selectedPollIdx].info.maxPlayers)">
                     {{oldPolls.polls[oldPolls.selectedPollIdx].participants.length}}/{{oldPolls.polls[oldPolls.selectedPollIdx].info.needPlayers}}
@@ -439,8 +447,9 @@
                 </h5>
               </li>
               <li class="collection-item" v-for="participant in oldPolls.polls[oldPolls.selectedPollIdx].participants">
-                <div> {{capitalizeFirstLetters(participant.personName)}} 
-                  <span class="my-badge my-green" v-if="showFriendName(participant.friendName)">{{capitalizeFirstLetters(participant.friendName)}}</span>
+                <div> {{capitalizeFirstLetters(participant.personName)}}
+                  <span class="my-badge my-green"
+                    v-if="showFriendName(participant.friendName)">{{capitalizeFirstLetters(participant.friendName)}}</span>
                 </div>
               </li>
             </ul>

@@ -19,12 +19,12 @@
 
   var parsePoll = function (poll) {
     var parsed = {
-      title: poll.title,
-      note: poll.note,
-      locationDescription: poll.locDesc,
-      locationURL: poll.locUrl,
-      needPlayers: parseInt(poll.need),
-      maxPlayers: parseInt(poll.max),
+      title: `${poll.title}`,
+      note: `${poll.note}`,
+      locationDescription: `${poll.locDesc}`,
+      locationURL: `${poll.locUrl}`,
+      needPlayers: `${poll.need}`,
+      maxPlayers: `${poll.max}`,
       dayTime: parseInt(poll.dt),
       endDate: parseInt(poll.end),
       startDate: parseInt(poll.start),

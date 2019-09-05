@@ -135,6 +135,14 @@ var app = new Vue({
                 // update pickers
                 thisApp.updatePickers();
 
+                // update page title
+                document.title = thisApp.currentPoll.info.title;
+                
+                // show the latest added name as suggestion
+                var lastAddedName = localStorage.getItem('FootballPoll.lastAdded');
+                if (lastAddedName !== null)
+                    thisApp.addPollParticipantForm.personName = thisApp.capitalizeFirstLetters(lastAddedName);
+
                 // Remove the main spinner after all of the content is loaded
                 // DON'T USE VUE FOR THE MAIN SPINNER!
                 var mainSpinner = document.querySelector('#main-spinner');
@@ -221,6 +229,10 @@ var app = new Vue({
                     thisApp.currentPoll.info[propertyName] = updatedProperties[propertyName];
                 });
 
+                if (thisApp.currentPoll.info.title !== document.title)
+                    // update page title
+                    document.title = thisApp.currentPoll.info.title;
+
                 thisApp.UIBindings.showPollInfo = true;
                 UIComponents.modals.saveInfoModal.close();
                 thisApp.UIBindings.savingPollInfo = false;
@@ -240,6 +252,9 @@ var app = new Vue({
                     personName: personName,
                     friendName: friendName
                 });
+
+                // save this name to browser's storage
+                localStorage.setItem('FootballPoll.lastAdded', personName);
 
                 thisApp.addPollParticipantForm.personName = '';
                 thisApp.addPollParticipantForm.friendName = '';

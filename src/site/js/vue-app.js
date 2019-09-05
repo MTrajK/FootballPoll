@@ -102,9 +102,10 @@ var app = new Vue({
                     thisApp.adminCredentials.password = '';
                     UIComponents.labels.saveInfoAdminName.classList.remove('active');
                     UIComponents.labels.saveInfoAdminPassword.classList.remove('active');
+                    thisApp.UIBindings.wrongAdminCredentials = false;
                 },
                 onOpenEnd: function () {
-                    document.querySelector('#save-info-admin-name').focus();
+                    UIComponents.labels.saveInfoAdminName.focus();
                 }
             });
             UIComponents.modals.showStatsModal = M.Modal.init(document.querySelector('#show-stats-modal'));
@@ -140,6 +141,9 @@ var app = new Vue({
                 var mainSpinner = document.querySelector('#main-spinner');
                 mainSpinner.parentNode.removeChild(mainSpinner);
                 document.querySelector('body').classList.remove('spinner-loading');
+
+                // focus on adding player input
+                UIComponents.labels.addParticipantName.focus();
             });
 
         })
@@ -150,8 +154,12 @@ var app = new Vue({
 
             for (var i = 0; i < allParts.length; i++)
                 allParts[i] = allParts[i].replace(/[^a-zA-ZабвгдѓежзѕијклљмнњопрстќуфхцчџшАБВГДЃЕЖЗЅИЈКЛЉМНЊОПРСТЌУФХЦЧЏШ0-9]+/g, '');
+            
+            var result = allParts.join(' ');
+            if (result[0] === ' ')
+                result = result.slice(1);
 
-            this.addPollParticipantForm.personName = allParts.join(' ');
+            this.addPollParticipantForm.personName = result;
         },
         'addPollParticipantForm.friendName': function (newValue) {
             var allParts = newValue.split(/\s+/);
@@ -159,11 +167,30 @@ var app = new Vue({
             for (var i = 0; i < allParts.length; i++)
                 allParts[i] = allParts[i].replace(/[^a-zA-ZабвгдѓежзѕијклљмнњопрстќуфхцчџшАБВГДЃЕЖЗЅИЈКЛЉМНЊОПРСТЌУФХЦЧЏШ0-9+]+/g, '');
 
-            this.addPollParticipantForm.friendName = allParts.join(' ');
+            var result = allParts.join(' ');
+            if (result[0] === ' ')
+                result = result.slice(1);
+
+            this.addPollParticipantForm.friendName = result;
         }
     },
     computed: {
+        addButtonDisabled: function () {
+            var personName = this.addPollParticipantForm.personName;
+            var friendName = this.addPollParticipantForm.friendName;
 
+            if ((personName === undefined) || (friendName === undefined) || (personName === ''))
+                return true;
+
+            if (friendName !== '')
+                return false;
+
+            personName = personName.toLowerCase();
+            if (this.allNames.newNames[personName] === undefined)
+                return false
+                
+            return true;
+        }
     },
     methods: {
 

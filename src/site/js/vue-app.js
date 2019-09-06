@@ -151,7 +151,7 @@ var app = new Vue({
 
                     // focus on adding player input
                     UIComponents.labels.addParticipantName.focus();
-                }, 
+                },
                 function (status, message) {
                     document.querySelector('#spinning-part').remove();
                     document.querySelector('#error-info-text').style.display = 'block';
@@ -227,24 +227,46 @@ var app = new Vue({
             UIComponents.modals.saveInfoModal.options.dismissible = false;
 
             var updatedProperties = this.findUpdatedInfoProperties();
+            updatedProperties['name'] = this.adminCredentials.name;
+            updatedProperties['password'] = this.adminCredentials.password;
 
             var thisApp = this;
-            setTimeout(function () {
-                // update in the poll info view
-                Object.keys(updatedProperties).forEach(function (propertyName) {
-                    thisApp.currentPoll.info[propertyName] = updatedProperties[propertyName];
-                });
+            API.updateCurrentPoll(
+                updatedProperties,
+                function () {
+                    // update in the poll info view
+                    Object.keys(updatedProperties).forEach(function (propertyName) {
+                        thisApp.currentPoll.info[propertyName] = updatedProperties[propertyName];
+                    });
 
-                if (thisApp.currentPoll.info.title !== document.title)
-                    // update page title
-                    document.title = thisApp.currentPoll.info.title;
+                    if (thisApp.currentPoll.info.title !== document.title)
+                        // update page title
+                        document.title = thisApp.currentPoll.info.title;
 
-                thisApp.UIBindings.showPollInfo = true;
-                UIComponents.modals.saveInfoModal.close();
-                thisApp.UIBindings.savingPollInfo = false;
-                UIComponents.modals.saveInfoModal.options.dismissible = true;
-                M.toast({ html: 'The poll info is successfully updated!' });
-            }, 5000);
+                    thisApp.UIBindings.showPollInfo = true;
+                    UIComponents.modals.saveInfoModal.close();
+                    thisApp.UIBindings.savingPollInfo = false;
+                    UIComponents.modals.saveInfoModal.options.dismissible = true;
+                    M.toast({ html: 'The poll info is successfully updated!' });
+                },
+                function (status, message) {
+                    if (status === 400) {
+                        UIComponents.modals.saveInfoModal.close();
+                        thisApp.UIBindings.savingPollInfo = false;
+                        UIComponents.modals.saveInfoModal.options.dismissible = true;
+                        M.toast({ html: `Some of the updated values is wrong! Error message: ${message}` });
+                    } else if (status === 403) {
+                        thisApp.adminCredentials.name = '';
+                        thisApp.adminCredentials.password = '';
+                        UIComponents.labels.saveInfoAdminName.classList.remove('active');
+                        UIComponents.labels.saveInfoAdminPassword.classList.remove('active');
+                        thisApp.UIBindings.savingPollInfo = false;
+                        thisApp.UIBindings.wrongAdminCredentials = true;
+                    } else {
+                        M.toast({ html: `Can\'t save the updated info! Error message: ${message}` });    
+                    }
+                }
+            );
         },
         addPollParticipant: function () {
             this.UIBindings.updatingPollParticipants = true;
@@ -313,14 +335,18 @@ var app = new Vue({
                     oldPolls.polls.forEach(function (a) { thisApp.oldPolls.polls.push(a); });
                     thisApp.oldPolls.oldestPollId = oldPolls.oldestPollId;
                     thisApp.UIBindings.loadingOldPolls = false;
-                }, 
+                    /*
+                    // scroll to bottom (think about this)
+                    setTimeout(function() {
+                        window.scrollTo(0, document.body.scrollHeight);
+                    }, 100);
+                    */
+                },
                 function (status, message) {
-                    M.toast({ html: `Can\'t load oldest polls! Error message: ${message}` });
+                    M.toast({ html: `Can\'t load the oldest polls! Error message: ${message}` });
                     thisApp.UIBindings.loadingOldPolls = false;
                 }
             );
-            setTimeout(function () {
-            }, 5000);
         },
         loadOldPollInfo: function (selectedPollIdx) {
             this.UIBindings.loadingOldPollInfo = true;
@@ -335,7 +361,7 @@ var app = new Vue({
                     function (participants) {
                         thisApp.oldPolls.polls[selectedPollIdx].participants = participants;
                         thisApp.loadedOldPollInfo();
-                    }, 
+                    },
                     function (status, message) {
                         UIComponents.modals.showOldPollModal.close();
                         M.toast({ html: `Can\'t load the poll info! Error message: ${message}` });
@@ -503,6 +529,11 @@ var app = new Vue({
                 updateProperties['dayTime'] = dayTime;
             if (this.currentPoll.info.endDate !== endDate)
                 updateProperties['endDate'] = endDate;
+
+            if (updateProperties['needPlayers'] !== undefined)
+                updateProperties['needPlayers'] = parseInt(updateProperties['needPlayers']);
+            if (updateProperties['maxPlayers'] !== undefined)
+                updateProperties['maxPlayers'] = parseInt(updateProperties['maxPlayers']);
 
             return updateProperties;
         },

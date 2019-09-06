@@ -72,8 +72,8 @@
       if (error.response.status !== undefined)
         status = error.response.status;
 
-      if ((error.response.data !== undefined) && (error.response.data.ererrorMessage !== undefined))
-        message = error.response.data.ererrorMessage;
+      if ((error.response.data !== undefined) && (error.response.data.errorMessage !== undefined))
+        message = error.response.data.errorMessage;
     }
     errorCallback(status, message);
   };
@@ -211,10 +211,46 @@
 
   };
 
+  var updateCurrentPoll = function (updatedInfo, successCallback, errorCallback) {
+
+    var mappings = {
+      'note': 'note',
+      'title': 'title',
+      'locationURL': 'locUrl',
+      'locationDescription': 'locDesc',
+      'maxPlayers': 'max',
+      'needPlayers': 'need',
+      'endDate': 'end',
+      'dayTime': 'dt',
+      'name': 'admin_name',
+      'password': 'admin_password'
+    };
+    var data = {};
+    Object.keys(updatedInfo).forEach(function (a) { data[mappings[a]] = updatedInfo[a]; })
+
+    axios({
+      method: 'put',
+      url: apiURL + 'update-current-poll',
+      timeout: maxRequestTime,
+      data: data
+    }).then(function (response) {
+
+      successCallback();
+
+    }).catch(function (error) {
+
+      errorHandling(error, errorCallback);
+
+    });
+
+  };
+
   global.API = {
     getSiteData: getSiteData,
     getPollParticipants: getPollParticipants,
     getOldPolls: getOldPolls,
+    updateCurrentPoll: updateCurrentPoll,
+
   };
 
 }(this));

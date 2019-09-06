@@ -1,13 +1,13 @@
 # Football Poll
 
-A serverless application which uses the Amazon Web Services as the backend and it's hosted on GitHub 
+A serverless application which uses the Amazon Web Services (Lambda, DynamoDB, CloudWatch, API Gateway) as the backend and the frontend is hosted on GitHub 
 pages.
 
 <p align="center">
-    <img src="https://raw.githubusercontent.com/MTrajK/FootballPoll/master/images/banner.png" alt="Official banner" width="300px" />
+    <img src="https://raw.githubusercontent.com/MTrajK/FootballPoll/master/images/banner.png" alt="Official banner" width="400px" />
 </p>
 
-Inspired by [Doodle](https://doodle.com), this application is recreating the poll after it ends (the new poll lasts one week and the event day and time are the same as in the previous poll, only the admin can change this).\
+Inspired by [Doodle](https://doodle.com), this application is recreating the poll after it ends (the new poll lasts one week and after that, the new event day&time are the same as in the previous poll, only the admin can change this).\
 This application is saving the old polls and everyone can access them, also there is a simple statistic: in how many events has each player participated and how many friends has each player invited.
 
 ![App workflow](https://raw.githubusercontent.com/MTrajK/FootballPoll/master/images/app_workflow.gif "App workflow")

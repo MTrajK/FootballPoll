@@ -10,7 +10,7 @@ All unit tests are located in [tests](https://github.com/MTrajK/FootballPoll/blo
 
 ## HTTP/Rest calls (API Gateway)
 
-- **[add_participant](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/functions/add_participant.py)** - Adds a new participant into the current poll. (*REST **POST** method*)
+- **[add_participant](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/functions/add_participant.py)** - Adds a new participant into the current poll and returns the new participant ID. (*REST **POST** method*)
 
     **Lambda policies/permisions (used DynamoDB operation - table):**\
     get_item - fp.config\
@@ -51,7 +51,7 @@ All unit tests are located in [tests](https://github.com/MTrajK/FootballPoll/blo
     }
     ```
 
-- **[get_poll_participants](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/functions/get_old_polls.py)** - Returns all participants of the chosen poll. (*REST **GET** method*)
+- **[get_poll_participants](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/functions/get_old_polls.py)** - Returns all participants from the chosen poll. (*REST **GET** method*)
 
     **Lambda policies/permisions (used DynamoDB operation - table):**\
     query - fp.participants

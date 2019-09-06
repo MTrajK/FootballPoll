@@ -6,6 +6,7 @@ from botocore.exceptions import ClientError
 from boto3.dynamodb.conditions import Key
         
 dynamodb = boto3.resource('dynamodb')
+responseHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials' : True }
 
 def hash_password(password, salt):
     """Using the sha256 crypto algorithm hash the combination of password and salt in 10 iterations.
@@ -172,7 +173,7 @@ def update_item_polls(poll_id, update_expression, expression_attributes, express
         if e.response['Error']['Code'] == "ConditionalCheckFailedException":
             return { 
                 'statusCode': 400,
-                'headers': { 'Access-Control-Allow-Origin': '*' },
+                'headers': responseHeaders,
                 'body': json.dumps({'errorMessage': e.response['Error']['Message'] + '!'})
             }
 
@@ -185,7 +186,7 @@ def update_item_polls(poll_id, update_expression, expression_attributes, express
     
     return {
         'statusCode': 200,
-        'headers': { 'Access-Control-Allow-Origin': '*' },
+        'headers': responseHeaders,
         'body': json.dumps({'statusMessage': 'The current poll is successfully updated!'})
     }
 
@@ -199,7 +200,7 @@ def update_current_poll(event, context):
     if event['body'] is None:
         return {
             'statusCode': 400,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'No request body!'})
         }
 
@@ -208,14 +209,14 @@ def update_current_poll(event, context):
     except:
         return {
             'statusCode': 400,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'Bad request body!'})
         }
     
     if type(requestBody) != dict:
         return {
             'statusCode': 400,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'Bad request body!'})
         }
 
@@ -223,7 +224,7 @@ def update_current_poll(event, context):
     if ('admin_name' not in requestBody) or ('admin_password' not in requestBody):
         return {
             'statusCode': 403,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'Access denied, missing admin_name and/or admin_password!'})
         }
     
@@ -235,14 +236,14 @@ def update_current_poll(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
     if admin == None:
         return {
             'statusCode': 403,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'Access denied, wrong credentials!'})
         }
     
@@ -254,7 +255,7 @@ def update_current_poll(event, context):
     if db_hashed_password != hashed_password:
         return {
             'statusCode': 403,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'Access denied, wrong credentials!'})
         }
 
@@ -273,7 +274,7 @@ def update_current_poll(event, context):
     if not found:
         return {
             'statusCode': 400,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'Nothing to update!'})
         }
 
@@ -281,28 +282,28 @@ def update_current_poll(event, context):
     if (update_properties['title'] != None) and (len(update_properties['title']) > 50):
         return { 
             'statusCode': 400,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'Too long title!'})
         }
 
     if (update_properties['note'] != None) and (len(update_properties['note']) > 100):
         return { 
             'statusCode': 400,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'Too long note!'})
         }
     
     if (update_properties['locUrl'] != None) and (len(update_properties['locUrl']) > 100):
         return { 
             'statusCode': 400,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'Too long locUrl!'})
         }
     
     if (update_properties['locDesc'] != None) and (len(update_properties['locDesc']) > 50):
         return { 
             'statusCode': 400,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'Too long locDesc!'})
         }
     
@@ -313,7 +314,7 @@ def update_current_poll(event, context):
             except:
                 return {
                     'statusCode': 400,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
                     'body': json.dumps({'errorMessage': prop + ' value is not an integer number!'})
                 }
 
@@ -321,28 +322,28 @@ def update_current_poll(event, context):
     if (update_properties['dt'] != None) and (update_properties['dt'] < 0):
         return { 
             'statusCode': 400,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'dt value shouldn\'t be negative!'})
         }
 
     if (update_properties['end'] != None) and (update_properties['end'] < 0):
         return { 
             'statusCode': 400,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'end value shouldn\'t be negative!'})
         }
 
     if (update_properties['need'] != None) and (update_properties['need'] < 1):
         return { 
             'statusCode': 400,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'need value should be bigger than 1!'})
         }
 
     if (update_properties['max'] != None) and (update_properties['max'] < 1):
         return { 
             'statusCode': 400,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'max value should be bigger than 1!'})
         }
 
@@ -350,7 +351,7 @@ def update_current_poll(event, context):
     if (update_properties['end'] != None) and (update_properties['dt'] != None) and (update_properties['dt'] > update_properties['end']):
         return { 
             'statusCode': 400,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'dt value must be smaller or equal than end value!'})
         }
 
@@ -358,7 +359,7 @@ def update_current_poll(event, context):
     if (update_properties['need'] != None) and (update_properties['max'] != None) and (update_properties['need'] > update_properties['max']):
         return { 
             'statusCode': 400,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'need value must be smaller or equal than max value!'})
         }
     
@@ -368,7 +369,7 @@ def update_current_poll(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
     
@@ -380,14 +381,14 @@ def update_current_poll(event, context):
         except Exception:
             return {
                 'statusCode': 500,
-                'headers': { 'Access-Control-Allow-Origin': '*' },
+                'headers': responseHeaders,
                 'body': json.dumps({'errorMessage': 'Database error!'})
             }
 
         if len(participants) > update_properties['max']:
             return { 
                 'statusCode': 400,
-                'headers': { 'Access-Control-Allow-Origin': '*' },
+                'headers': responseHeaders,
                 'body': json.dumps({'errorMessage': 'There are more participants than the max value!'})
             }
 
@@ -426,7 +427,7 @@ def update_current_poll(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
 

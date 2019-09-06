@@ -415,6 +415,14 @@ body.spinner-loading {
     left: calc(50% - 32px);
 }
 
+#error-info-text {
+    position: absolute;
+    top: calc(50% + 50px);
+    width: 100%;
+    text-align: center;
+    display: none;
+}
+
 .circle-clipper .circle {
     border-width: 3px;
 }

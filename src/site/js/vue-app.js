@@ -145,12 +145,15 @@ var app = new Vue({
 
                 // Remove the main spinner after all of the content is loaded
                 // DON'T USE VUE FOR THE MAIN SPINNER!
-                var mainSpinner = document.querySelector('#main-spinner');
-                mainSpinner.parentNode.removeChild(mainSpinner);
+                document.querySelector('#main-spinner').remove();
                 document.body.classList.remove('spinner-loading');
 
                 // focus on adding player input
                 UIComponents.labels.addParticipantName.focus();
+            }, function (status, message) {
+                document.querySelector('#spinning-part').remove();
+                document.querySelector('#error-info-text').style.display = 'block';
+                document.querySelector('#main-spinner').style.cursor = 'default';
             });
 
         })

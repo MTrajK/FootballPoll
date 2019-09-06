@@ -5,6 +5,7 @@ import decimal
 from boto3.dynamodb.conditions import Key
         
 dynamodb = boto3.resource('dynamodb')
+responseHeaders = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials' : True }
 
 class DecimalEncoder(json.JSONEncoder):
 	"""Helper class to convert a DynamoDB decimal/item to JSON
@@ -196,7 +197,7 @@ def get_site_data(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
     
@@ -209,7 +210,7 @@ def get_site_data(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
         
@@ -219,7 +220,7 @@ def get_site_data(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
@@ -229,7 +230,7 @@ def get_site_data(event, context):
     except Exception:
         return {
             'statusCode': 500,
-            'headers': { 'Access-Control-Allow-Origin': '*' },
+            'headers': responseHeaders,
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
@@ -242,6 +243,6 @@ def get_site_data(event, context):
     
     return {
         'statusCode': 200,
-        'headers': { 'Access-Control-Allow-Origin': '*' },
+        'headers': responseHeaders,
         'body': json.dumps(response, cls=DecimalEncoder, ensure_ascii=False)
     }

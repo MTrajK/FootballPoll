@@ -1,6 +1,6 @@
 (function (global) {
   /*
-      API: https://v0u768t0yk.execute-api.eu-central-1.amazonaws.com/v1
+      API: https://v0u768t0yk.execute-api.eu-central-1.amazonaws.com/v1/
 
       POST method:
       add_participant: https://v0u768t0yk.execute-api.eu-central-1.amazonaws.com/v1/add-participant
@@ -38,6 +38,20 @@
       parsed.note = '';
 
     return parsed;
+  };
+
+  var errorHandling = function (error, errorCallback) {
+    var status = 500;
+    var message = error.message;
+
+    if (error.response !== undefined) {
+      if (error.response.status !== undefined)
+        status = error.response.status;
+
+      if ((error.response.data !== undefined) && (error.response.data.ererrorMessage !== undefined))
+        message = error.response.data.ererrorMessage;
+    }
+    errorCallback(status, message);
   };
 
   var getSiteData = function (successCallback, errorCallback) {
@@ -99,17 +113,19 @@
 
       // current poll participants
       var participants = jsonResult.participants;
-      participants.sort((a, b) => (a.added - b.added));
-      parsedResult.currentPoll.participants = participants.map((a) => ({
-        personName: a.person,
-        friendName: (a.friend == '/') ? '' : a.friend
-      }));
+      participants.sort(function (a, b) { return a.added - b.added; });
+      parsedResult.currentPoll.participants = participants.map(function (a) {
+        return {
+          personName: a.person,
+          friendName: (a.friend == '/') ? '' : a.friend
+        };
+      });
 
       // all names
       var newNames = {};
       var oldNames = {};
-      jsonResult.participants.forEach(function (a) { newNames[a.person] = null }); // remove duplicates
-      jsonResult.persons.forEach(function (a) { oldNames[a.name] = null });
+      jsonResult.participants.forEach(function (a) { newNames[a.person] = null; }); // remove duplicates
+      jsonResult.persons.forEach(function (a) { oldNames[a.name] = null; });
       parsedResult.allNames = {
         newNames: newNames,
         oldNames: oldNames,
@@ -127,22 +143,24 @@
         if (friends > 0)
           invitedFriends.push({ name: a.name, friends: friends });
       });
-      playedGames.sort((a, b) => (b.polls - a.polls));
-      invitedFriends.sort((a, b) => (b.friends - a.friends));
+      playedGames.sort(function (a, b) { return b.polls - a.polls; });
+      invitedFriends.sort(function (a, b) { return b.friends - a.friends; });
       parsedResult.participantsStats = {
         playedGames: playedGames,
         invitedFriends: invitedFriends,
       };
 
       // old polls
-      oldPolls.sort((a, b) => (b.info.pollId - a.info.pollId));
+      oldPolls.sort(function (a, b) { return b.info.pollId - a.info.pollId; });
       parsedResult.oldPolls.polls = oldPolls;
       parsedResult.oldPolls.oldestPollId = oldPolls[oldPolls.length - 1].info.pollId;
 
       successCallback(parsedResult);
 
     }).catch(function (error) {
-      errorCallback(error.response.status, error.response.data);
+
+      errorHandling(error, errorCallback);
+
     });
 
   };
@@ -229,13 +247,16 @@
         }
       }
     `
+    pollId = parseInt(pollId);
     var jsonResult = JSON.parse(result);
     var participants = jsonResult.body.participants;
-    participants.sort((a, b) => (a.added - b.added));
-    var parsedResult = participants.map((a) => ({
-      personName: a.person,
-      friendName: (a.friend == '/') ? '' : a.friend
-    }));
+    participants.sort(function (a, b) { return a.added - b.added; });
+    var parsedResult = participants.map(function (a) {
+      return {
+        personName: a.person,
+        friendName: (a.friend == '/') ? '' : a.friend
+      };
+    });
 
     // callback(parsedResult)
     setTimeout(() => callback(parsedResult), 5000);

@@ -172,7 +172,7 @@ new Vue({
                     // focus on adding player input
                     UIComponents.labels.addParticipantName.focus();
                     if (thisApp.addPollParticipantForm.personName !== '')
-                        UIComponents.labels.addParticipantName.add('active'); // just in case this
+                        UIComponents.labels.addParticipantName.classList.add('active'); // just in case this
                 },
                 function (status, message) {
                     document.querySelector('#spinning-part').remove();

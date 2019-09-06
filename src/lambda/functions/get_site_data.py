@@ -196,6 +196,7 @@ def get_site_data(event, context):
     except Exception:
         return {
             'statusCode': 500,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
     
@@ -208,6 +209,7 @@ def get_site_data(event, context):
     except Exception:
         return {
             'statusCode': 500,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
         
@@ -217,6 +219,7 @@ def get_site_data(event, context):
     except Exception:
         return {
             'statusCode': 500,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
@@ -226,6 +229,7 @@ def get_site_data(event, context):
     except Exception:
         return {
             'statusCode': 500,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
@@ -238,5 +242,6 @@ def get_site_data(event, context):
     
     return {
         'statusCode': 200,
+        'headers': { 'Access-Control-Allow-Origin': '*' },
         'body': json.dumps(response, cls=DecimalEncoder, ensure_ascii=False)
     }

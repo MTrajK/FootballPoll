@@ -141,6 +141,7 @@ def put_item_participants(item, second_attempt = False):
 
     return {
         'statusCode': 200,
+        'headers': { 'Access-Control-Allow-Origin': '*' },
         'body': json.dumps({'statusMessage': 'Participant ' + item['person'] + (' (' + item['friend'] + ')' if item['friend'] != '/' else '') + ' is successfully added!'})
     }
 
@@ -154,6 +155,7 @@ def add_participant(event, context):
     if event['body'] is None:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'No request body!'})
         }
 
@@ -162,18 +164,21 @@ def add_participant(event, context):
     except:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Bad request body!'})
         }
     
     if type(requestBody) != dict:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Bad request body!'})
         }
     
     if 'person' not in requestBody:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'person parameter doesn\'t exist in the API call!'})
         }
     
@@ -187,24 +192,28 @@ def add_participant(event, context):
     if len(person) < 3:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Person name should contains at least 3 letters!'})
         }
 
     if len(person) > 25:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Too long person name!'})
         }
     
     if len(friend) == 0:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Friend name should contains at least 1 letter!'})
         }
 
     if len(friend) > 25:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Too long friend name!'})
         }
 
@@ -215,6 +224,7 @@ def add_participant(event, context):
     if re.search(search_not_allowed, person):
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'person value contains not allowed characters!'})
         }
 
@@ -224,6 +234,7 @@ def add_participant(event, context):
     if (friend != '/') and re.search(search_not_allowed, friend):
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'friend value contains not allowed characters!'})
         }
 
@@ -233,6 +244,7 @@ def add_participant(event, context):
     except Exception:
         return {
             'statusCode': 500,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
@@ -248,6 +260,7 @@ def add_participant(event, context):
     except Exception:
         return {
             'statusCode': 500,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
@@ -259,12 +272,14 @@ def add_participant(event, context):
     except Exception:
         return {
             'statusCode': 500,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
     if len(participants) == max_participants:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'No more participants in this poll!'})
         }
 
@@ -274,6 +289,7 @@ def add_participant(event, context):
             if (participant['person'] == person) and (participant['friend'] == '/'):
                 return {
                     'statusCode': 400,
+                    'headers': { 'Access-Control-Allow-Origin': '*' },
                     'body': json.dumps({'errorMessage': 'Participant ' + person + ' exists in the current poll!'})
                 }
 
@@ -290,6 +306,7 @@ def add_participant(event, context):
     except Exception:
         return {
             'statusCode': 500,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
 

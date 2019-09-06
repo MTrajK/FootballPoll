@@ -73,6 +73,7 @@ def get_old_polls(event, context):
     if (event['queryStringParameters'] is None) or ('last_poll' not in event['queryStringParameters']):
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'last_poll parameter doesn\'t exist in the API call!'})
         }
 
@@ -81,6 +82,7 @@ def get_old_polls(event, context):
     except:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'last_poll value is not an integer number!'})
         }
 
@@ -92,10 +94,12 @@ def get_old_polls(event, context):
     except Exception:
         return {
             'statusCode': 500,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
     return {
         'statusCode': 200,
+        'headers': { 'Access-Control-Allow-Origin': '*' },
         'body': json.dumps(polls, cls=DecimalEncoder, ensure_ascii=False)
     }

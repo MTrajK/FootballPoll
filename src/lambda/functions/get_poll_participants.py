@@ -77,6 +77,7 @@ def get_poll_participants(event, context):
     if (event['queryStringParameters'] is None) or ('poll_id' not in event['queryStringParameters']):
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'poll_id parameter doesn\'t exist in the API call!'})
         }
         
@@ -85,12 +86,14 @@ def get_poll_participants(event, context):
     except:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'poll_id value is not an integer number!'})
         }
 
     if poll_id < 0:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'poll_id value shouldn\'t be smaller than 0!'})
         }
 
@@ -100,10 +103,12 @@ def get_poll_participants(event, context):
     except Exception:
         return {
             'statusCode': 500,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
     return {
         'statusCode': 200,
+        'headers': { 'Access-Control-Allow-Origin': '*' },
         'body': json.dumps(participants, cls=DecimalEncoder, ensure_ascii=False)
     }

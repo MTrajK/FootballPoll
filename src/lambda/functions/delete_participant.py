@@ -65,11 +65,13 @@ def delete_item_participants(poll_id, participant_id, second_attempt = False):
     if 'Attributes' not in response:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Participant ' + str(participant_id) + ' doesn\'t exist in the current poll!'})
         }
 
     return {
         'statusCode': 200,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
         'body': json.dumps({'statusMessage': 'Participant ' + str(participant_id) + ' is successfully deleted!'})
     }
 
@@ -83,6 +85,7 @@ def delete_participant(event, context):
     if event['body'] is None:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'No request body!'})
         }
 
@@ -91,18 +94,21 @@ def delete_participant(event, context):
     except:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Bad request body!'})
         }
     
     if type(requestBody) != dict:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Bad request body!'})
         }
 
     if 'participant_id' not in requestBody:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'participant_id parameter doesn\'t exist in the API call!'})
         }
         
@@ -111,6 +117,7 @@ def delete_participant(event, context):
     except:
         return {
             'statusCode': 400,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'participant_id value is not an integer number!'})
         }
 
@@ -120,6 +127,7 @@ def delete_participant(event, context):
     except Exception:
         return {
             'statusCode': 500,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
 
@@ -129,6 +137,7 @@ def delete_participant(event, context):
     except Exception:
         return {
             'statusCode': 500,
+            'headers': { 'Access-Control-Allow-Origin': '*' },
             'body': json.dumps({'errorMessage': 'Database error!'})
         }
 

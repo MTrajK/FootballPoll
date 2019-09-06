@@ -313,6 +313,7 @@ main {
 .wrong-credentials {
     margin-top: 0px;
     color: #e53935;
+    margin-bottom: 0;
 }
 
 /* MAIN */

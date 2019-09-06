@@ -119,7 +119,15 @@ var app = new Vue({
             UIComponents.labels.saveInfoAdminPassword = document.querySelector('#save-info-admin-password-label');
             UIComponents.labels.addParticipantName = document.querySelector('#name-autocomplete-label');
             UIComponents.labels.addParticipantFriend = document.querySelector('#friend-input-label');
+            UIComponents.labels.editInfoTitle = document.querySelector('#title-input-label');
             UIComponents.labels.editInfoNote = document.querySelector('#note-input-label');
+            UIComponents.labels.editInfoLocDesc = document.querySelector('#loc-desc-input-label');
+            UIComponents.labels.editInfoLocUrl = document.querySelector('#loc-url-input-label');
+            UIComponents.labels.editInfoNeed = document.querySelector('#need-input-label');
+            UIComponents.labels.editInfoMax = document.querySelector('#max-input-label');
+            UIComponents.labels.editInfoTime = document.querySelector('#time-input-label');
+            UIComponents.labels.editInfoDay = document.querySelector('#day-input-label');
+            UIComponents.labels.editInfoEndDate = document.querySelector('#end-date-input-label');
 
             // Get site data
             API.getSiteData(
@@ -148,6 +156,18 @@ var app = new Vue({
                     // DON'T USE VUE FOR THE MAIN SPINNER!
                     document.querySelector('#main-spinner').remove();
                     document.body.classList.remove('spinner-loading');
+
+                    // update labels for the input fields (materialize bug)
+                    if (thisApp.currentPoll.editInfo.note !== '')
+                        UIComponents.labels.editInfoNote.classList.add('active');   // only this field can be empty
+                    UIComponents.labels.editInfoTitle.classList.add('active');
+                    UIComponents.labels.editInfoLocDesc.classList.add('active');
+                    UIComponents.labels.editInfoLocUrl.classList.add('active');
+                    UIComponents.labels.editInfoNeed.classList.add('active');
+                    UIComponents.labels.editInfoMax.classList.add('active');
+                    UIComponents.labels.editInfoTime.classList.add('active');
+                    UIComponents.labels.editInfoDay.classList.add('active');
+                    UIComponents.labels.editInfoEndDate.classList.add('active');
 
                     // focus on adding player input
                     UIComponents.labels.addParticipantName.focus();
@@ -234,6 +254,9 @@ var app = new Vue({
             API.updateCurrentPoll(
                 updatedProperties,
                 function () {
+                    if ((updatedProperties['note'] !== undefined) && (updatedProperties['note'] === '/'))
+                    updatedProperties['note'] = '';
+
                     // update in the poll info view
                     Object.keys(updatedProperties).forEach(function (propertyName) {
                         thisApp.currentPoll.info[propertyName] = updatedProperties[propertyName];
@@ -252,7 +275,6 @@ var app = new Vue({
                 function (status, message) {
                     if (status === 400) {
                         UIComponents.modals.saveInfoModal.close();
-                        thisApp.UIBindings.savingPollInfo = false;
                         UIComponents.modals.saveInfoModal.options.dismissible = true;
                         M.toast({ html: `Some of the updated values is wrong! Error message: ${message}` });
                     } else if (status === 403) {
@@ -260,11 +282,13 @@ var app = new Vue({
                         thisApp.adminCredentials.password = '';
                         UIComponents.labels.saveInfoAdminName.classList.remove('active');
                         UIComponents.labels.saveInfoAdminPassword.classList.remove('active');
-                        thisApp.UIBindings.savingPollInfo = false;
                         thisApp.UIBindings.wrongAdminCredentials = true;
                     } else {
+                        UIComponents.modals.saveInfoModal.close();
+                        UIComponents.modals.saveInfoModal.options.dismissible = true;
                         M.toast({ html: `Can\'t save the updated info! Error message: ${message}` });    
                     }
+                    thisApp.UIBindings.savingPollInfo = false;
                 }
             );
         },
@@ -534,6 +558,9 @@ var app = new Vue({
                 updateProperties['needPlayers'] = parseInt(updateProperties['needPlayers']);
             if (updateProperties['maxPlayers'] !== undefined)
                 updateProperties['maxPlayers'] = parseInt(updateProperties['maxPlayers']);
+
+            if ((updateProperties['note'] !== undefined) && (updateProperties['note'] === ''))
+                updateProperties['note'] = '/';
 
             return updateProperties;
         },

@@ -17,7 +17,15 @@
             saveInfoAdminPassword: undefined,
             addParticipantName: undefined,
             addParticipantFriend: undefined,
+            editInfoTitle: undefined,
             editInfoNote: undefined,
+            editInfoLocDesc: undefined,
+            editInfoLocUrl: undefined,
+            editInfoNeed: undefined,
+            editInfoMax: undefined,
+            editInfoTime: undefined,
+            editInfoDay: undefined,
+            editInfoEndDate: undefined
         },
     };
     

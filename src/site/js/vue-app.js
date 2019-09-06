@@ -171,6 +171,8 @@ new Vue({
 
                     // focus on adding player input
                     UIComponents.labels.addParticipantName.focus();
+                    if (thisApp.addPollParticipantForm.personName !== '')
+                        UIComponents.labels.addParticipantName.add('active'); // just in case this
                 },
                 function (status, message) {
                     document.querySelector('#spinning-part').remove();
@@ -348,6 +350,7 @@ new Vue({
                 { 'participant_id': this.currentPoll.participants[deletedIndex].participantId },
                 function () {
                     var personName = thisApp.currentPoll.participants[deletedIndex].personName;
+                    var friendName = thisApp.currentPoll.participants[deletedIndex].friendName;
                     thisApp.currentPoll.participants.splice(deletedIndex, 1);
 
                     if ((thisApp.allNames.oldNames[personName] !== null) && (thisApp.allNames.newNames[personName] === null)) {
@@ -368,7 +371,6 @@ new Vue({
 
                     thisApp.UIBindings.updatingPollParticipants = false;
 
-                    var friendName = thisApp.currentPoll.participants[deletedIndex].friendName;
                     var fullName = thisApp.capitalizeFirstLetters(personName);
                     if (friendName !== '')
                         fullName += ` (${friendName})`;
@@ -399,7 +401,7 @@ new Vue({
                     */
                 },
                 function (status, message) {
-                    M.toast({ html: `Can\'t load the oldest polls! Error message: ${message}` });
+                    M.toast({ html: `Can\'t load the older polls! Error message: ${message}` });
                     thisApp.UIBindings.loadingOldPolls = false;
                 }
             );
@@ -562,7 +564,7 @@ new Vue({
         },
         openSaveInfoModal: function () {
             if (Object.keys(this.findUpdatedInfoProperties()).length === 0)
-                M.toast({ html: 'There are no changes into the poll info!' });
+                M.toast({ html: 'There are no changes in the poll info!' });
             else
                 UIComponents.modals.saveInfoModal.open();
         },

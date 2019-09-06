@@ -1,4 +1,4 @@
-var app = new Vue({
+new Vue({
     el: '#app',
     data: {
         UIBindings: {
@@ -255,7 +255,7 @@ var app = new Vue({
                 updatedProperties,
                 function () {
                     if ((updatedProperties['note'] !== undefined) && (updatedProperties['note'] === '/'))
-                    updatedProperties['note'] = '';
+                        updatedProperties['note'] = '';
 
                     // update in the poll info view
                     Object.keys(updatedProperties).forEach(function (propertyName) {
@@ -270,13 +270,13 @@ var app = new Vue({
                     UIComponents.modals.saveInfoModal.close();
                     thisApp.UIBindings.savingPollInfo = false;
                     UIComponents.modals.saveInfoModal.options.dismissible = true;
-                    M.toast({ html: 'The poll info is successfully updated!' });
+                    M.toast({ html: 'The poll info is updated!' });
                 },
                 function (status, message) {
                     if (status === 400) {
                         UIComponents.modals.saveInfoModal.close();
                         UIComponents.modals.saveInfoModal.options.dismissible = true;
-                        M.toast({ html: `Some of the updated values is wrong! Error message: ${message}` });
+                        M.toast({ html: `Something in the updated values is wrong! Error message: ${message}` });
                     } else if (status === 403) {
                         thisApp.adminCredentials.name = '';
                         thisApp.adminCredentials.password = '';
@@ -286,7 +286,7 @@ var app = new Vue({
                     } else {
                         UIComponents.modals.saveInfoModal.close();
                         UIComponents.modals.saveInfoModal.options.dismissible = true;
-                        M.toast({ html: `Can\'t save the updated info! Error message: ${message}` });    
+                        M.toast({ html: `Can\'t save the updated info! Error message: ${message}` });
                     }
                     thisApp.UIBindings.savingPollInfo = false;
                 }
@@ -295,59 +295,91 @@ var app = new Vue({
         addPollParticipant: function () {
             this.UIBindings.updatingPollParticipants = true;
 
+            var personName = this.addPollParticipantForm.personName.toLowerCase();
+            var friendName = this.addPollParticipantForm.friendName.toLowerCase();
+
+            var participant = {
+                'person': personName
+            };
+            if (friendName !== '')
+                participant['friend'] = friendName;
+
             var thisApp = this;
-            setTimeout(function () {
-                var personName = thisApp.addPollParticipantForm.personName.toLowerCase();
-                var friendName = thisApp.addPollParticipantForm.friendName.toLowerCase();
+            API.addParticipant(
+                participant,
+                function (participantId) {
+                    thisApp.currentPoll.participants.push({
+                        personName: personName,
+                        friendName: friendName,
+                        participantId: participantId
+                    });
 
-                thisApp.currentPoll.participants.push({
-                    personName: personName,
-                    friendName: friendName
-                });
+                    // save this name to browser's storage
+                    localStorage.setItem('FootballPoll.lastAdded', personName);
 
-                // save this name to browser's storage
-                localStorage.setItem('FootballPoll.lastAdded', personName);
+                    thisApp.addPollParticipantForm.personName = '';
+                    thisApp.addPollParticipantForm.friendName = '';
 
-                thisApp.addPollParticipantForm.personName = '';
-                thisApp.addPollParticipantForm.friendName = '';
+                    UIComponents.labels.addParticipantName.classList.remove('active');
+                    UIComponents.labels.addParticipantFriend.classList.remove('active');
 
-                UIComponents.labels.addParticipantName.classList.remove('active');
-                UIComponents.labels.addParticipantFriend.classList.remove('active');
+                    thisApp.UIBindings.updatingPollParticipants = false;
 
-                thisApp.UIBindings.updatingPollParticipants = false;
+                    thisApp.allNames.newNames[personName] = null;
+                    thisApp.updateAutocomplete();
 
-                thisApp.allNames.newNames[personName] = null;
-                thisApp.updateAutocomplete();
-                M.toast({ html: 'The participant is successfully added!' });
-            }, 5000);
+                    var fullName = thisApp.capitalizeFirstLetters(personName);
+                    if (friendName !== '')
+                        fullName += ` (${friendName})`;
+
+                    M.toast({ html: `${fullName} is added to the poll!` });
+                },
+                function (status, message) {
+                    thisApp.UIBindings.updatingPollParticipants = false;
+                    M.toast({ html: `Can\'t add the participant! Error message: ${message}` });
+                }
+            );
         },
         deletePollParticipant: function (deletedIndex) {
             this.UIBindings.updatingPollParticipants = true;
 
             var thisApp = this;
-            setTimeout(function () {
-                var personName = thisApp.currentPoll.participants[deletedIndex].personName;
-                thisApp.currentPoll.participants.splice(deletedIndex, 1);
+            API.deleteParticipant(
+                { 'participant_id': this.currentPoll.participants[deletedIndex].participantId },
+                function () {
+                    var personName = thisApp.currentPoll.participants[deletedIndex].personName;
+                    thisApp.currentPoll.participants.splice(deletedIndex, 1);
 
-                if ((thisApp.allNames.oldNames[personName] !== null) && (thisApp.allNames.newNames[personName] === null)) {
-                    var found = false;
+                    if ((thisApp.allNames.oldNames[personName] !== null) && (thisApp.allNames.newNames[personName] === null)) {
+                        var found = false;
 
-                    for (var i = 0; i < thisApp.currentPoll.participants.length; i++)
-                        if (thisApp.currentPoll.participants[i].personName === personName) {
-                            found = true;
-                            break;
+                        for (var i = 0; i < thisApp.currentPoll.participants.length; i++)
+                            if (thisApp.currentPoll.participants[i].personName === personName) {
+                                found = true;
+                                break;
+                            }
+
+                        if (!found) {
+                            // update the autocomplete if the person doesn't exist anymore
+                            delete thisApp.allNames.newNames[personName];
+                            thisApp.updateAutocomplete();
                         }
-
-                    if (!found) {
-                        // update the autocomplete if the person doesn't exist anymore
-                        delete thisApp.allNames.newNames[personName];
-                        thisApp.updateAutocomplete();
                     }
-                }
 
-                thisApp.UIBindings.updatingPollParticipants = false;
-                M.toast({ html: 'The participant is successfully deleted!' });
-            }, 5000);
+                    thisApp.UIBindings.updatingPollParticipants = false;
+
+                    var friendName = thisApp.currentPoll.participants[deletedIndex].friendName;
+                    var fullName = thisApp.capitalizeFirstLetters(personName);
+                    if (friendName !== '')
+                        fullName += ` (${friendName})`;
+
+                    M.toast({ html: `${fullName} is deleted from the poll!` });
+                },
+                function (status, message) {
+                    thisApp.UIBindings.updatingPollParticipants = false;
+                    M.toast({ html: `Can\'t delete the participant! Error message: ${message}` });
+                }
+            );
         },
         loadOldPolls: function () {
             this.UIBindings.loadingOldPolls = true;

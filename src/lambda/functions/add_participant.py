@@ -143,7 +143,7 @@ def put_item_participants(item, second_attempt = False):
     return {
         'statusCode': 200,
         'headers': responseHeaders,
-        'body': json.dumps({'statusMessage': 'Participant ' + item['person'] + (' (' + item['friend'] + ')' if item['friend'] != '/' else '') + ' is successfully added!'})
+        'body': json.dumps({ 'added': item['added'] })
     }
 
 def add_participant(event, context):

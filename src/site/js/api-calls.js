@@ -1,16 +1,4 @@
 (function (global) {
-  /*
-      API: https://v0u768t0yk.execute-api.eu-central-1.amazonaws.com/v1/
-
-      POST method:
-      add_participant: https://v0u768t0yk.execute-api.eu-central-1.amazonaws.com/v1/add-participant
-
-      DELETE method:
-      delete_participant: https://v0u768t0yk.execute-api.eu-central-1.amazonaws.com/v1/delete-participant
-
-      PUT method:
-      update_current_poll: https://v0u768t0yk.execute-api.eu-central-1.amazonaws.com/v1/update-current-poll
-  */
 
   var apiURL = 'https://v0u768t0yk.execute-api.eu-central-1.amazonaws.com/v1/';
   var maxRequestTime = 15000;
@@ -41,7 +29,8 @@
     var sortedParticipants = participants.map(function (a) {
       return {
         personName: a.person,
-        friendName: (a.friend == '/') ? '' : a.friend
+        friendName: (a.friend == '/') ? '' : a.friend,
+        participantId: a.added
       };
     });
 
@@ -245,12 +234,51 @@
 
   };
 
+  var addParticipant = function (participant, successCallback, errorCallback) {
+
+    axios({
+      method: 'post',
+      url: apiURL + 'add-participant',
+      timeout: maxRequestTime,
+      data: participant
+    }).then(function (response) {
+
+      successCallback(response.data['added']);
+
+    }).catch(function (error) {
+
+      errorHandling(error, errorCallback);
+
+    });
+
+  };
+
+  var deleteParticipant = function (participant, successCallback, errorCallback) {
+
+    axios({
+      method: 'delete',
+      url: apiURL + 'delete-participant',
+      timeout: maxRequestTime,
+      data: participant
+    }).then(function (response) {
+
+      successCallback();
+
+    }).catch(function (error) {
+
+      errorHandling(error, errorCallback);
+
+    });
+
+  };
+
   global.API = {
     getSiteData: getSiteData,
     getPollParticipants: getPollParticipants,
     getOldPolls: getOldPolls,
     updateCurrentPoll: updateCurrentPoll,
-
+    addParticipant: addParticipant,
+    deleteParticipant: deleteParticipant
   };
 
 }(this));

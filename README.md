@@ -13,7 +13,7 @@ This application is saving the old polls and everyone can access them, also ther
 ![App workflow](https://raw.githubusercontent.com/MTrajK/FootballPoll/master/images/app_workflow.gif "App workflow")
 
 
-## Project Structure
+## Project Architecture
 
 The project is composed of 3 parts: database, functions and web site.
 
@@ -34,7 +34,7 @@ More info about the lambdas in the [README file](https://github.com/MTrajK/Footb
 ### Web site
 
 Located in [src/site](https://github.com/MTrajK/FootballPoll/blob/master/src/site/) directory.\
-The web site is hosted on GitHub, from the gh-pages branch.
+The web site is fully responsive and mobile-friendly. It's hosted on GitHub, from the gh-pages branch.
 
 ## Tech/frameworks
 

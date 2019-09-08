@@ -1,6 +1,9 @@
 (function (global) {
 
   var apiURL = 'https://v0u768t0yk.execute-api.eu-central-1.amazonaws.com/v1/';
+  // apiKey is used only to limit the quota of the API calls 
+  // (with this key, this app is allowed to make 500 requests daily)
+  var apiKey = {'x-api-key': 'HqX2gUHiTd9Cu0XYmOorZ5doUUGOl3JqamoPl37H'};
   var maxRequestTime = 15000;
 
   var parsePoll = function (poll) {
@@ -72,7 +75,8 @@
     axios({
       method: 'get',
       url: apiURL + 'get-site-data',
-      timeout: maxRequestTime
+      timeout: maxRequestTime,
+      headers: apiKey
     }).then(function (response) {
 
       var jsonResult = response.data;
@@ -164,7 +168,8 @@
       timeout: maxRequestTime,
       params: {
         'poll_id': parseInt(pollId)
-      }
+      },
+      headers: apiKey
     }).then(function (response) {
 
       var sortedParticipants = sortParticipants(response.data);
@@ -186,7 +191,8 @@
       timeout: maxRequestTime,
       params: {
         'last_poll': parseInt(lastPoll)
-      }
+      },
+      headers: apiKey
     }).then(function (response) {
 
       var sortedAndParsedPolls = parseAndSortPolls(response.data);
@@ -221,7 +227,8 @@
       method: 'put',
       url: apiURL + 'update-current-poll',
       timeout: maxRequestTime,
-      data: data
+      data: data,
+      headers: apiKey
     }).then(function (response) {
 
       successCallback();
@@ -240,7 +247,8 @@
       method: 'post',
       url: apiURL + 'add-participant',
       timeout: maxRequestTime,
-      data: participant
+      data: participant,
+      headers: apiKey
     }).then(function (response) {
 
       successCallback(response.data['added']);
@@ -259,7 +267,8 @@
       method: 'delete',
       url: apiURL + 'delete-participant',
       timeout: maxRequestTime,
-      data: participant
+      data: participant,
+      headers: apiKey
     }).then(function (response) {
 
       successCallback();

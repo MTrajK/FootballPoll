@@ -150,7 +150,7 @@ new Vue({
                     // show the latest added name as suggestion
                     var lastAddedName = localStorage.getItem('FootballPoll.lastAdded');
                     if (lastAddedName !== null)
-                        thisApp.addPollParticipantForm.personName = thisApp.capitalizeFirstLetters(lastAddedName);
+                        thisApp.addPollParticipantForm.personName = thisApp.capitalizeFirstLetters(lastAddedName.trim());
 
                     // Remove the main spinner after all of the content is loaded
                     // DON'T USE VUE FOR THE MAIN SPINNER!
@@ -297,8 +297,8 @@ new Vue({
         addPollParticipant: function () {
             this.UIBindings.updatingPollParticipants = true;
 
-            var personName = this.addPollParticipantForm.personName.toLowerCase();
-            var friendName = this.addPollParticipantForm.friendName.toLowerCase();
+            var personName = this.addPollParticipantForm.personName.trim().toLowerCase();
+            var friendName = this.addPollParticipantForm.friendName.trim().toLowerCase();
 
             var participant = {
                 'person': personName

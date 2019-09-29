@@ -102,7 +102,7 @@ All unit tests are located in [tests](https://github.com/MTrajK/FootballPoll/blo
 
 ## Scheduled call (CloudWatch)
 
-- **[check_if_current_poll_expired](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/functions/check_if_current_poll_expired.py)** - Checks if the current poll is expired (if current date is greater than the end date from the current poll). If the current poll is expired then updates the persons table with the participants from the current poll, updates the current poll id in the config table and creates a new poll.\
+- **[check_if_current_poll_expired](https://github.com/MTrajK/FootballPoll/blob/master/src/lambda/functions/check_if_current_poll_expired.py)** - Checks if the current poll is expired (if current date is greater than the end date from the current poll). If the current poll is expired then if there are enough participants updates the persons table with the participants from the current poll, otherwise deletes all participants, and at the end updates the current poll id in the config table and creates a new poll.\
 This function will be executed (with the [CloudWatch Event Rule](https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/Create-CloudWatch-Events-Scheduled-Rule.html) that triggers on a schedule) every day after midnight at 00:05 (or 22:05 according to GMT, eu-central-1 region is GMT +2), [cron expression](https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html): 5 22 * * ? *.
 
     **Lambda policies/permisions (used DynamoDB operation - table):**\

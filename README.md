@@ -8,6 +8,7 @@ pages.
 </p>
 
 Inspired by [Doodle](https://doodle.com), this application is recreating the poll after it ends (the new poll lasts one week and after that, the new event day&time are the same as in the previous poll, only the admin can change this).\
+At the end of the poll, if there aren't enough participants, all participants will be deleted because that means the poll was canceled (the poll could have at most 2 participants less than the needed participants, e.g. if the poll needs 12 participants, then the poll won't be canceled if there are at least 10 participants available).\
 This application is saving the old polls and everyone can access them, also there is a simple statistic: in how many events has each player participated and how many friends has each player invited.
 
 ![App workflow](https://raw.githubusercontent.com/MTrajK/FootballPoll/master/images/app_workflow.gif "App workflow")

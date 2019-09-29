@@ -95,6 +95,33 @@ def query_participants(poll_id, last_evaluated_key = None):
     
     return result
 
+def delete_item_participants(poll_id, participants):
+    """Deletes all participants, tries until the query succeeded.
+
+    Parameters:
+        poll_id: Current poll id.
+        participants: List with participants.
+    """
+
+    if len(participants) != 0:
+        participants_table = dynamodb.Table('fp.participants')
+
+        try:
+            response = participants_table.delete_item(
+                Key={
+                    'poll': poll_id,
+                    'added': participants[0]['added']
+                },
+                ReturnValues='ALL_OLD'
+            )
+        except Exception:
+            # tries again
+            time.sleep(1)
+            delete_item_participants(poll_id, participants)
+        else:
+            # ignores only the deleted participant
+            delete_item_participants(poll_id, participants[1:])
+
 def scan_persons(last_evaluated_key = None):
     """Scans the persons table and returns all results, tries until the query succeeded.
 
@@ -253,63 +280,69 @@ def check_if_current_poll_expired(event, context):
     # get current participants
     participants = query_participants(current_poll_id)
 
-    # find all unique persons from the current poll
-    all_poll_persons = {}
+    # check if there are enough participats for the game (at least 2 participants could miss)
+    if len(participants) < current_poll['need'] - 2:
+        # if there are less participants, then delete all of them
+        delete_item_participants(current_poll_id, participants)
+    else:
+        # if there are enough participants update players and participants
+        all_poll_persons = {}
+        
+        # find all unique persons from the current poll
+        for participant in participants:
+            person = participant['person']
 
-    for participant in participants:
-        person = participant['person']
+            if person not in all_poll_persons:
+                all_poll_persons[person] = {
+                    'name': person,
+                    'friends': 0,
+                    'polls': 0
+                }
+                
+            if participant['friend'] == '/':
+                all_poll_persons[person]['polls'] += 1
+            else:
+                all_poll_persons[person]['friends'] += 1
+                
+        # get persons
+        persons = scan_persons()
 
-        if person not in all_poll_persons:
-            all_poll_persons[person] = {
-                'name': person,
-                'friends': 0,
-                'polls': 0
-            }
-            
-        if participant['friend'] == '/':
-            all_poll_persons[person]['polls'] += 1
-        else:
-            all_poll_persons[person]['friends'] += 1
-            
-    # get persons
-    persons = scan_persons()
+        db_persons = {}
 
-    db_persons = {}
-
-    for person in persons:
-        db_persons[person['name']] = person
-   
-    # find which unique persons from the current poll exist in the db and which are new
-    old_persons = []
-    new_persons = []
+        for person in persons:
+            db_persons[person['name']] = person
     
-    for name in all_poll_persons.keys():
-        if name in db_persons:
-            # exists in the db
-            old_persons.append({
-                'name': name,
-                'friends': all_poll_persons[name]['friends'] + db_persons[name]['friends'],
-                'polls': all_poll_persons[name]['polls'] + db_persons[name]['polls']
-            })
-        else:
-            # doesn't exist in the db
-            new_persons.append(all_poll_persons[name])
+        # find which unique persons from the current poll exist in the db and which are new
+        old_persons = []
+        new_persons = []
+        
+        for name in all_poll_persons.keys():
+            if name in db_persons:
+                # exists in the db
+                old_persons.append({
+                    'name': name,
+                    'friends': all_poll_persons[name]['friends'] + db_persons[name]['friends'],
+                    'polls': all_poll_persons[name]['polls'] + db_persons[name]['polls']
+                })
+            else:
+                # doesn't exist in the db
+                new_persons.append(all_poll_persons[name])
 
-    # batch write - add new persons (if there are)
-    if len(new_persons) > 0:
-        batch_write_item_persons({
-            'fp.persons' : [
-                { 
-                    'PutRequest': { 
-                        'Item': new_person
+        # batch write - add new persons (if there are)
+        if len(new_persons) > 0:
+            batch_write_item_persons({
+                'fp.persons' : [
+                    { 
+                        'PutRequest': { 
+                            'Item': new_person
+                        } 
                     } 
-                } 
-            for new_person in new_persons]
-        })
+                for new_person in new_persons]
+            })
 
-    # update persons (if there are persons that need to be updated)
-    if len(old_persons) > 0:
-        update_item_persons(old_persons)
+        # update persons (if there are persons that need to be updated)
+        if len(old_persons) > 0:
+            update_item_persons(old_persons)
 
     # add new poll
     new_poll_id = current_poll_id + 1

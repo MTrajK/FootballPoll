@@ -316,6 +316,11 @@ main {
     margin-bottom: 0;
 }
 
+.canceled-game {
+    color: #d32f2f;
+    padding-top: 35px;
+}
+
 /* MAIN */
 
 /* FOOTER */

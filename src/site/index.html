@@ -440,7 +440,10 @@
         </div>
         <div class="row no-margin-bot" v-if="UIBindings.showOldPollInfo">
           <div class="col s12">
-            <ul class="collection with-header z-depth-1">
+            <div class="center" v-if="oldPolls.polls[oldPolls.selectedPollIdx].participants.length==0">
+              <h4 class="canceled-game">The game was canceled.</h4>
+            </div>
+            <ul class="collection with-header z-depth-1" v-if="oldPolls.polls[oldPolls.selectedPollIdx].participants.length>0">
               <li class="collection-header">
                 <h5>Players
                   <span class="my-badge my-green">Friends</span>

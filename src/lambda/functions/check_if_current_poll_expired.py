@@ -107,12 +107,11 @@ def delete_item_participants(poll_id, participants):
         participants_table = dynamodb.Table('fp.participants')
 
         try:
-            response = participants_table.delete_item(
+            participants_table.delete_item(
                 Key={
                     'poll': poll_id,
                     'added': participants[0]['added']
-                },
-                ReturnValues='ALL_OLD'
+                }
             )
         except Exception:
             # tries again

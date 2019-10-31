@@ -343,15 +343,39 @@ def check_if_current_poll_expired(event, context):
         if len(old_persons) > 0:
             update_item_persons(old_persons)
 
+    hour_milliseconds = 1000 * 60 * 60
+    week_milliseconds = hour_milliseconds * 24 * 7
+
+    # handle daylight savings time changes for end date
+    end_milliseconds = current_poll['end'] + week_milliseconds
+    old_end = datetime.datetime.fromtimestamp(current_poll['end'] / 1000.0)
+    new_end = datetime.datetime.fromtimestamp(end_milliseconds / 1000.0)
+    if (old_end.hour == 0) and (new_end.hour == 23):
+        end_milliseconds += hour_milliseconds
+    elif (old_end.hour == 23) and (new_end.hour == 0):
+        end_milliseconds -= hour_milliseconds
+    else:
+        end_milliseconds += (old_end.hour - new_end.hour) * hour_milliseconds
+
+    # handle daylight savings time changes for dt date
+    dt_milliseconds = current_poll['dt'] + week_milliseconds
+    old_dt = datetime.datetime.fromtimestamp(current_poll['dt'] / 1000.0)
+    new_dt = datetime.datetime.fromtimestamp(dt_milliseconds / 1000.0)
+    if (old_dt.hour == 0) and (new_dt.hour == 23):
+        dt_milliseconds += hour_milliseconds
+    elif (old_dt.hour == 23) and (new_dt.hour == 0):
+        dt_milliseconds -= hour_milliseconds
+    else:
+        dt_milliseconds += (old_dt.hour - new_dt.hour) * hour_milliseconds
+
     # add new poll
     new_poll_id = current_poll_id + 1
-    week_milliseconds = 1000 * 60 * 60 * 24 * 7
-
+    
     put_item_polls({
         'id': new_poll_id,
         'start': current_poll['end'], # because the end and dt dates can be changed
-        'end': current_poll['end'] + week_milliseconds,
-        'dt': current_poll['dt'] + week_milliseconds,
+        'end': end_milliseconds,
+        'dt': dt_milliseconds,
         'title': current_poll['title'],
         'note': current_poll['note'],
         'locDesc': current_poll['locDesc'],

@@ -348,8 +348,8 @@ def check_if_current_poll_expired(event, context):
 
     # handle daylight savings time changes for end date
     end_milliseconds = current_poll['end'] + week_milliseconds
-    old_end = datetime.datetime.fromtimestamp(current_poll['end'] / 1000.0)
-    new_end = datetime.datetime.fromtimestamp(end_milliseconds / 1000.0)
+    old_end = datetime.datetime.fromtimestamp(current_poll['end'] / 1000)
+    new_end = datetime.datetime.fromtimestamp(end_milliseconds / 1000)
     if (old_end.hour == 0) and (new_end.hour == 23):
         end_milliseconds += hour_milliseconds
     elif (old_end.hour == 23) and (new_end.hour == 0):
@@ -359,8 +359,8 @@ def check_if_current_poll_expired(event, context):
 
     # handle daylight savings time changes for dt date
     dt_milliseconds = current_poll['dt'] + week_milliseconds
-    old_dt = datetime.datetime.fromtimestamp(current_poll['dt'] / 1000.0)
-    new_dt = datetime.datetime.fromtimestamp(dt_milliseconds / 1000.0)
+    old_dt = datetime.datetime.fromtimestamp(current_poll['dt'] / 1000)
+    new_dt = datetime.datetime.fromtimestamp(dt_milliseconds / 1000)
     if (old_dt.hour == 0) and (new_dt.hour == 23):
         dt_milliseconds += hour_milliseconds
     elif (old_dt.hour == 23) and (new_dt.hour == 0):

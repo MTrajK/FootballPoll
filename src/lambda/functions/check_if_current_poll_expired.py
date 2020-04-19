@@ -24,7 +24,7 @@ def get_current_poll_id():
         # tries again
         time.sleep(1)
         return get_current_poll_id()
-        
+
     return int(response['Item']['value'])
 
 def get_item_polls(poll_id):
@@ -49,7 +49,7 @@ def get_item_polls(poll_id):
         # tries again
         time.sleep(1)
         return get_item_polls(poll_id)
-        
+
     return response['Item']
 
 def query_participants(poll_id, last_evaluated_key = None):
@@ -62,7 +62,7 @@ def query_participants(poll_id, last_evaluated_key = None):
     Returns:
         List with participants.
     """
-    
+
     result = []
 
     participants_table = dynamodb.Table('fp.participants')
@@ -83,7 +83,7 @@ def query_participants(poll_id, last_evaluated_key = None):
         # tries again
         time.sleep(1)
         return query_participants(poll_id, last_evaluated_key)
-       
+
     if 'Items' in response:
         result = response['Items']
 
@@ -92,7 +92,7 @@ def query_participants(poll_id, last_evaluated_key = None):
         time.sleep(1)
         second_result = query_participants(poll_id, response['LastEvaluatedKey'])
         result.append(second_result)
-    
+
     return result
 
 def delete_item_participants(poll_id, participants):
@@ -150,7 +150,7 @@ def scan_persons(last_evaluated_key = None):
         time.sleep(1)
         second_result = scan_persons(response['LastEvaluatedKey'])
         result.append(second_result)
-    
+
     return result
 
 def batch_write_item_persons(item):
@@ -286,7 +286,7 @@ def check_if_current_poll_expired(event, context):
     else:
         # if there are enough participants update players and participants
         all_poll_persons = {}
-        
+
         # find all unique persons from the current poll
         for participant in participants:
             person = participant['person']
@@ -297,12 +297,12 @@ def check_if_current_poll_expired(event, context):
                     'friends': 0,
                     'polls': 0
                 }
-                
+
             if participant['friend'] == '/':
                 all_poll_persons[person]['polls'] += 1
             else:
                 all_poll_persons[person]['friends'] += 1
-                
+
         # get persons
         persons = scan_persons()
 
@@ -310,11 +310,11 @@ def check_if_current_poll_expired(event, context):
 
         for person in persons:
             db_persons[person['name']] = person
-    
+
         # find which unique persons from the current poll exist in the db and which are new
         old_persons = []
         new_persons = []
-        
+
         for name in all_poll_persons.keys():
             if name in db_persons:
                 # exists in the db
@@ -331,11 +331,11 @@ def check_if_current_poll_expired(event, context):
         if len(new_persons) > 0:
             batch_write_item_persons({
                 'fp.persons' : [
-                    { 
-                        'PutRequest': { 
+                    {
+                        'PutRequest': {
                             'Item': new_person
-                        } 
-                    } 
+                        }
+                    }
                 for new_person in new_persons]
             })
 
@@ -346,31 +346,18 @@ def check_if_current_poll_expired(event, context):
     hour_milliseconds = 1000 * 60 * 60
     week_milliseconds = hour_milliseconds * 24 * 7
 
-    # handle daylight savings time changes for end date
+    # handle DST (Daylight Savings Time) changes!!!!
+    # server time is always in UTC (Coordinated Universal Time), there is no DST (the time isn't changing, and Python DateTime is using this time)
+    # DST is used in Macedonia (so Macedonia has 2 different time zones in 1 year, not in same period)
+    # CEST (Central European Summer Time/Daylight Saving Time), UTC Offset UTC +1: From end of March till end of October
+    # CET (Central European Time/Standard Time), UTC Offset - UTC +2:  The rest of the year
+    # should I save times in UTC??? Use CET and CEST only on frontend???
     end_milliseconds = current_poll['end'] + week_milliseconds
-    old_end = datetime.datetime.fromtimestamp(current_poll['end'] / 1000)
-    new_end = datetime.datetime.fromtimestamp(end_milliseconds / 1000)
-    if (old_end.hour == 0) and (new_end.hour == 23):
-        end_milliseconds += hour_milliseconds
-    elif (old_end.hour == 23) and (new_end.hour == 0):
-        end_milliseconds -= hour_milliseconds
-    else:
-        end_milliseconds += (old_end.hour - new_end.hour) * hour_milliseconds
-
-    # handle daylight savings time changes for dt date
     dt_milliseconds = current_poll['dt'] + week_milliseconds
-    old_dt = datetime.datetime.fromtimestamp(current_poll['dt'] / 1000)
-    new_dt = datetime.datetime.fromtimestamp(dt_milliseconds / 1000)
-    if (old_dt.hour == 0) and (new_dt.hour == 23):
-        dt_milliseconds += hour_milliseconds
-    elif (old_dt.hour == 23) and (new_dt.hour == 0):
-        dt_milliseconds -= hour_milliseconds
-    else:
-        dt_milliseconds += (old_dt.hour - new_dt.hour) * hour_milliseconds
 
     # add new poll
     new_poll_id = current_poll_id + 1
-    
+
     put_item_polls({
         'id': new_poll_id,
         'start': current_poll['end'], # because the end and dt dates can be changed
@@ -383,7 +370,7 @@ def check_if_current_poll_expired(event, context):
         'need': current_poll['need'],
         'max': current_poll['max']
     })
-    
+
     # update current id
     update_item_config(new_poll_id)
 

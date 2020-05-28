@@ -54,6 +54,7 @@ new Vue({
             selectedPollIdx: undefined,
             polls: [ /* { info: {}, participants: [] } */],
         },
+        fullYear: new Date().getFullYear(),
     },
     mounted: function () {
         /**
